@@ -1,37 +1,33 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input
-        v-model="params.account"
-        placeholder="用户账号"
-        style="width: 250px;margin-right: 5px;"
-        class="filter-item"
-        clearable
-      />
-      <el-input
-        v-model="params.name"
-        placeholder="用户姓名"
-        style="width: 250px;margin-right: 5px;"
-        class="filter-item"
-        clearable
-      />
-      <el-input
-        v-model="params.phone"
-        placeholder="手机号码"
-        style="width: 250px;margin-right: 5px;"
-        class="filter-item"
-        clearable
-      />
-      <el-input
-        v-model="params.identity_no"
-        placeholder="证件号码"
-        style="width: 250px;margin-right: 5px;"
-        class="filter-item"
-        clearable
-      />
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="queryData">查询</el-button>
+      <el-date-picker
+        v-model="selectTime"
+        type="daterange"
+        range-separator="至"
+        :picker-options="pickerDisabled"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        style="margin-right:1%;"
+      ></el-date-picker>
+      <el-select v-model="orderStatus" placeholder="订单状态" style="margin-right:1%;">
+        <el-option label="新订单" value="0"></el-option>
+        <el-option label="挂起" value="10"></el-option>
+        <el-option label="待付款" value="20"></el-option>
+        <el-option label="付款失败" value="25"></el-option>
+        <el-option label="已付款" value="30"></el-option>
+        <el-option label="发货中" value="40"></el-option>
+        <el-option label="已发货" value="50"></el-option>
+        <el-option label="交易成功" value="60"></el-option>
+        <el-option label="交易取消" value="70"></el-option>
+      </el-select>
+      <el-select v-model="orderType" placeholder="类型" style="margin-right:1%;">
+        <el-option label="待支付" value="1"></el-option>
+        <el-option label="成功" value="2"></el-option>
+      </el-select>
+      <el-button  type="primary" icon="el-icon-search" @click="queryData">查询</el-button>
     </div>
-
+<!-- 
     <div data-v-0b02e756 class="toolbar-group">
       <button
         data-v-0b02e756
@@ -43,7 +39,7 @@
           <i data-v-0b02e756 class="ali-icons el-iconxinzeng" /> 新增住户
         </span>
       </button>
-    </div>
+    </div> -->
 
     <el-table
       ref="singleTable"
@@ -86,7 +82,7 @@
         <template slot-scope="{row}">
           <span>{{ row.identity_no }}</span>
         </template>
-        </el-table-column>
+      </el-table-column>
       <el-table-column label="操作" width="220">
         <template slot-scope="scope">
           <div class="btnGroup">
@@ -110,33 +106,40 @@
     />
     <OrderDetails></OrderDetails>
   </div>
-  
 </template>
 <script>
-import OrderDetails from "./components/OrderDetails"
+import OrderDetails from "./components/OrderDetails";
 export default {
-  components:{
+  components: {
     OrderDetails
   },
   data() {
     return {
-        params: {
-          pageNum: 1,
-          pageSize: 10,
-          account: undefined,
-          name: undefined,
-          phone: null,
-          identity_no: undefined,
-          orderBy: undefined
-        },
-        list:{}
+      params: {
+        pageNum: 1,
+        pageSize: 10,
+        account: undefined,
+        name: undefined,
+        phone: null,
+        identity_no: undefined,
+        orderBy: undefined
+      },
+      selectTime:null,
+      orderStatus:null,
+      orderType:null,
+      list: {}
     };
   },
-  methods:{
-      orderDetails(){
-
-      }
+  methods: {
+    getList() {},
+    orderDetails() {}
   }
-  
 };
 </script>
+
+<style lang="scss" scoped>
+/deep/ .el-range-separator {
+  width: 6%;
+  padding: 0 !important;
+}
+</style>

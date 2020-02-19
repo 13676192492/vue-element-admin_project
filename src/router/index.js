@@ -71,6 +71,8 @@ export const asyncRouterMap =
     path: '/spendingOrder',
     component: Layout,
     redirect: '/spendingOrder/index',
+    name: '订单管理',
+    meta: { title: '订单管理', icon: 'guide', noCache: true },
     children: [
       {
         path: 'index',
