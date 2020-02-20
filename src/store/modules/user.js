@@ -1,5 +1,5 @@
 import { loginByUsername, logout, getUserInfo, login } from '@/api/login'
-import { getToken, setToken, removeToken , setAccessToken } from '@/utils/auth'
+import { getToken, setToken, removeToken , setAccessToken,removeAccessToken } from '@/utils/auth'
 import {
   Message
 } from 'element-ui'
@@ -112,6 +112,7 @@ const user = {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
           removeToken()
+          removeAccessToken()
           resolve()
         }).catch(error => {
           reject(error)
@@ -124,6 +125,7 @@ const user = {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
         removeToken()
+        removeAccessToken()
         resolve()
       })
     },

@@ -9,8 +9,9 @@ import store from './store'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 import '@/styles/index.scss' // global css
-import '@/styles/common.scss' // 通用样式
+
 import './styles/element-variables.scss'
+import '@/styles/common.scss' // 通用样式
 import './icons' // icon
 import './errorLog' // error log
 import './permission' // permission control

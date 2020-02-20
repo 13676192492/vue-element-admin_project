@@ -1,28 +1,59 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import { getToken, getAccessToken } from '@/utils/auth'
 let base_url;
 if (process.env.NODE_ENV === 'production') {
   base_url = ''
 } else if (process.env.NODE_ENV === 'development') {
   base_url = ''
 }
-console.log(process.env.NODE_ENV)
+
+// console.log('执行')
+// var SS = getAccessToken()
+// if(!SS&&getToken()){
+
+// }
+
+
 // create an axios instance
 const service = axios.create({
   baseURL: base_url, // api 的 base_url
   timeout: 5000 // request timeout
 })
 
+service.defaults.headers = {
+  // "Authorization" :'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjFDNjJEMzZBMjBGRjYxNzI3OUI3M0RDN0Q2Njc1QTc4MDI3QTdERjUiLCJ0eXAiOiJhdCtqd3QiLCJ4NXQiOiJIR0xUYWlEX1lYSjV0ejNIMW1kYWVBSjZmZlUifQ.eyJuYmYiOjE1NzQ5ODk5MTIsImV4cCI6MTU3NDk5MzUxMiwiaXNzIjoiaHR0cDovLzEwLjAuMS4yMjIvb2F1dGgiLCJhdWQiOiJ1aG9tZSIsImNsaWVudF9pZCI6InVob21lLndlYiIsInN1YiI6IjEwMDAwIiwiYXV0aF90aW1lIjoxNTc0OTg4NDk5LCJpZHAiOiJsb2NhbCIsInJvbGUiOiJBRE1JTiIsIm5hbWUiOiJhZG1pbiIsInRlbmFudF9pZCI6IjEwMDAwIiwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsInVob21lLm8ybyIsInVob21lLnJrZSJdLCJhbXIiOlsicHdkIl19.pu8CBbdPuIw9CJiowsNuR-ertiFHsTVCFsEspZZyJv2kR_emDGeWw9MU9mKfS-R6SF1OrmDfkbDObZFa6eB0xCEYMgnLErHi-OWyBRExgCNIlV_1lbNcqRaj-MMAhRUF3wFzZ5xe8oPWbEGUGBO-dMC7xQtRo5-jT3fy8Y_niKaUveBH4OWYcKTMMjr36vfTjnaar7n856ueLfkQfZtb9rDNMbbjlis5dBhg6CDLArgLerSbrwdso8OF7A47wFcbQryOpORyeui975bTT6Lv8V-vcjJuE_przkh_xSPAZNHEoxkCf_VxRKgkramm20gNM8iW2D8lPyLoBIiPULO68w',
+  // "Authorization": 'Bearer ' + SS,
+  "Content-Type": 'application/json',
+  'Cache-Control': 'no-cache',
+  'Pragma': 'no-cache',
+}
+
+
 // request interceptor
 service.interceptors.request.use(
   config => {
     // Do something before request is sent
-    if (store.getters.token) {
-      // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
-      config.headers['X-Token'] = getToken()
+    // console.log(getAccessToken())
+    if (getAccessToken()) {
+      config.headers["Authorization"] = 'Bearer ' + getAccessToken();
     }
+    // else if(!getAccessToken()&&getToken()){
+    //   MessageBox.alert('用户身份已失效，请重新登录！', '权限提示', {
+    //     confirmButtonText: '确定',
+    //     showClose: false,
+    //     type: 'warning'
+    //   }).then(() => {
+    //     // window.location.href = `${location.protocol}//${location.host}`;
+    //   });
+    // }
+    // if (store.getters.token) {
+
+    //   // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
+    //   config.headers['X-Token'] = getToken();
+
+    // }
     return config
   },
   error => {

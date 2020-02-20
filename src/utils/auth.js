@@ -15,6 +15,14 @@ export function setAccessToken(token) {
   return Cookies.set(tokenName, token)
 }
 
+export function getAccessToken() {
+  return Cookies.get(tokenName)
+}
+
+export function removeAccessToken() {
+  return Cookies.remove(tokenName)
+}
+
 export function removeToken() {
   return Cookies.remove(TokenKey)
 }

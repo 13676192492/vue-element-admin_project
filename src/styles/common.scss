@@ -82,11 +82,17 @@
     align-items: center;
     // justify-content: space-around;
     .el-tag {
+        background-color: rgba(17,169,131,.1)!important;
+        
         display: flex;
         align-items: center;
         justify-content: center;
         //width: 60px;
         margin: 1%;
+
+        button{
+            color: #11A983 !important;
+        }
     }
 }
 
@@ -96,5 +102,9 @@
 }
 .el-button--primary{
     border-color:#11A983 !important;
+    background-color: #11A983 !important;
+}
+
+.el-pagination.is-background .el-pager li:not(.disabled).active{
     background-color: #11A983 !important;
 }
