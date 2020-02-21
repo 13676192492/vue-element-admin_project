@@ -95,5 +95,18 @@ export const asyncRouterMap =
       }
     ]
   },
+  {
+    path: '/plotConsumption',
+    component: Layout,
+    redirect: '/plotConsumptionRank/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/plotConsumptionRank/index'),
+        name: '小区消费排名',
+        meta: { title: '小区消费排名', icon: 'guide', noCache: true }
+      }
+    ]
+  },
 { path: '*', redirect: '/404', hidden: true }
 ]
