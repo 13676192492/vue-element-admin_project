@@ -123,5 +123,52 @@ export const asyncRouterMap =
       }
     ]
   },
+   {
+     path: '/invoice',
+     component: Layout,
+     meta: {
+       title: '发票管理',
+       icon: 'invoice',
+     },
+     children: [
+       {
+         path: '/invoice/index',
+         component: () => import('@/views/invoice/index'),
+         name: '发票管理',
+         meta: { title: '发票管理' }
+       },
+       {
+         path: '/invoice/lookUp/index',
+         component: () => import('@/views/invoice/lookUp/index'),
+         name: '发票抬头管理',
+         meta: { title: '发票抬头管理' }
+       },
+       {
+         path: '/invoice/address/index',
+         component: () => import('@/views/invoice/address/index'),
+         name: '发票地址管理',
+         meta: { title: '发票地址管理' }
+       },
+       {
+         path: '/invoice/history/index',
+         component: () => import('@/views/invoice/history/index'),
+         name: '发票历史',
+         meta: { title: '发票历史' }
+       }
+     ]
+   },
+   {
+     path: '/ticket',
+     component: Layout,
+     redirect: '/ticket/index',
+     children: [
+       {
+         path: 'index',
+         component: () => import('@/views/ticket/index'),
+         name: '开票管理',
+         meta: { title: '开票管理', icon: 'ticket', noCache: true }
+       }
+     ]
+   },
 { path: '*', redirect: '/404', hidden: true }
 ]
