@@ -96,6 +96,21 @@ export const asyncRouterMap =
     ]
   },
   {
+    path: '/account',
+    component: Layout,
+    redirect: '/account/index',
+    name: '账号管理',
+    meta: { title: '账号管理', icon: 'guide', noCache: true },
+    children: [
+    {
+      path: 'index',
+      component: () => import('@/views/account/index'),
+      name: '账号详情',
+      meta: { title: '账号详情', icon: 'guide', noCache: true }
+    }
+    ]
+  },
+  {
     path: '/plotConsumption',
     component: Layout,
     redirect: '/plotConsumptionRank/index',

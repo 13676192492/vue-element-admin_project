@@ -22,7 +22,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .app-main {
   /*84 = navbar + tags-view = 50 +34 */
   min-height: calc(100vh - 100px);
@@ -30,5 +30,11 @@ export default {
   position: relative;
   overflow: auto;
 }
-</style>
 
+.fixed-header+.app-main {
+  /* 84 = navbar + tags-view = 50 + 34 */
+  padding-top: 84px;
+  height: 100vh;
+  overflow: auto;
+}
+</style>

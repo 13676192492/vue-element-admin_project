@@ -62,7 +62,7 @@
 
 <script>
 export default {
-    name: 'HousesList',
+    name: 'PlotConsumptionRank',
     data() {
         return {
             data: [
@@ -124,7 +124,7 @@ export default {
             }
             this.queryData();
         },
-        //获取户主列表
+        //获取列表
         getList() {
             // this.loading = true;
             // housesDevice(this.params, machineId).then(response => {
@@ -141,7 +141,7 @@ export default {
             }
             this.total = this.data.length;
         },
-        //查询户主列表
+        //查询列表
         queryData() {
             if(this.params.coName === ''||this.params.coName === undefined){
                 this.params.pageIndex = 0;
