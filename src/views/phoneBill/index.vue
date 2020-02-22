@@ -1,145 +1,106 @@
 <template>
-  <div class="app-container">
+  <div class="app-container">    
     <div class="filter-container">
-      <el-input
-        v-model="params.account"
-        placeholder="用户账号"
-        style="width: 250px;margin-right: 5px;"
-        class="filter-item"
-        clearable
-      />
-      <el-input
-        v-model="params.name"
-        placeholder="用户姓名"
-        style="width: 250px;margin-right: 5px;"
-        class="filter-item"
-        clearable
-      />
-      <el-input
-        v-model="params.phone"
-        placeholder="手机号码"
-        style="width: 250px;margin-right: 5px;"
-        class="filter-item"
-        clearable
-      />
-      <el-input
-        v-model="params.identity_no"
-        placeholder="证件号码"
-        style="width: 250px;margin-right: 5px;"
-        class="filter-item"
-        clearable
-      />
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="queryData">查询</el-button>
-    </div>
-
-    <div data-v-0b02e756 class="toolbar-group">
-      <button
-        data-v-0b02e756
-        type="button"
-        class="el-button el-button--text el-button--mini"
-        @click="openAddCom"
-      >
-        <span>
-          <i data-v-0b02e756 class="ali-icons el-iconxinzeng" /> 新增住户
-        </span>
-      </button>
+      <el-input v-model="params.communityName" style="width:200px;margin-right:1%" placeholder="请输入小区名称"></el-input>
+      <el-date-picker
+        v-model="selectTime"
+        type="daterange"
+        range-separator="至"
+        :picker-options="pickerDisabled"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        style="margin-right:1%;"
+      ></el-date-picker>
+      <el-select v-model="params.sipType" placeholder="请选择呼叫类型" style="margin-right:1%;">
+        <el-option label="Sip通话" value="0"></el-option>
+        <el-option label="视频通话" value="1"></el-option>
+      </el-select>
+      <el-button  type="primary" icon="el-icon-search" @click="orderDetails">查询</el-button>
     </div>
 
     <el-table
-      ref="singleTable"
-      v-loading="loading"
-      :data="list"
-      :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+      :data="tableData"
       border
-      fit
-      highlight-current-row
-      style="width: 100%;"
-      @sort-change="sortChange"
-    >
-      <el-table-column label="序号" width="60" type="index" :index="tableIndex" />
-      <el-table-column label="小区" min-width="120" sortable prop="account">
-        <template slot-scope="{row}">
-          <span>{{ row.account }}</span>
-        </template>
+      style="width: 100%">
+      <el-table-column label="序号" width="60" type="index" />
+      <el-table-column
+        prop="communityName"
+        label="小区">
       </el-table-column>
-      <el-table-column label="呼叫类别" min-width="110" sortable prop="username">
-        <template slot-scope="{row}">
-          <span>{{ row.username }}</span>
-        </template>
+      <el-table-column
+        prop="sipType"
+        label="呼叫类别">
       </el-table-column>
-      <el-table-column label="起始时间" min-width="80" sortable prop="gender">
-        <template slot-scope="{row}">
-          <span>{{ setFormData('gender', row) }}</span>
-        </template>
+      <el-table-column
+        prop="beginTime"
+        label="起始时间">
       </el-table-column>
-      <el-table-column label="结束时间" min-width="110" sortable prop="phone">
-        <template slot-scope="{row}">
-          <span>{{ row.phone }}</span>
-        </template>
+      <el-table-column
+        prop="endTime"
+        label="结束时间">
       </el-table-column>
-      <el-table-column label="主叫" min-width="110" sortable prop="identity_type">
-        <template slot-scope="{row}">
-          <span>{{ setFormData('identity_type', row) }}</span>
-        </template>
+      <el-table-column
+        prop="caller"
+        label="主叫">
       </el-table-column>
-      <el-table-column label="被叫" min-width="120" sortable prop="identity_no">
-        <template slot-scope="{row}">
-          <span>{{ row.identity_no }}</span>
-        </template>
-        </el-table-column>
-      <!-- <el-table-column label="状态" min-width="80" sortable prop="gender">
-        <template slot-scope="{row}">
-          <span>{{ setFormData('gender', row) }}</span>
-        </template>
-      </el-table-column> -->
-      <el-table-column label="通话时长" min-width="110" sortable prop="phone">
-        <template slot-scope="{row}">
-          <span>{{ row.phone }}</span>
-        </template>
+      <el-table-column
+        prop="answer"
+        label="被叫">
       </el-table-column>
-      <el-table-column label="费用（元）" min-width="110" sortable prop="identity_type">
-        <template slot-scope="{row}">
-          <span>{{ setFormData('identity_type', row) }}</span>
-        </template>
+      <el-table-column
+        prop="duration"
+        label="通话时长">
       </el-table-column>
-      <el-table-column label="订单号" min-width="120" sortable prop="identity_no">
-        <template slot-scope="{row}">
-          <span>{{ row.identity_no }}</span>
-        </template>
-        </el-table-column>
+      <el-table-column
+        prop="amount"
+        label="费用（元）">
+      </el-table-column>
+      <el-table-column
+        prop="orderNo"
+        label="消费订单号">
+      </el-table-column>
     </el-table>
 
-    <el-pagination
-      background
-      :current-page="params.pageNum"
-      :page-sizes="[10, 20, 30, 40]"
-      :page-size="params.pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
   </div>
 </template>
 <script>
+import {getPhoneBillList} from '@/api/phoneBill/index'
 export default {
   data() {
     return {
-        params: {
-          pageNum: 1,
-          pageSize: 10,
-          account: undefined,
-          name: undefined,
-          phone: null,
-          identity_no: undefined,
-          orderBy: undefined
-        },
-        list:{}
+      pickerDisabled: {
+        disabledDate: (time) => {
+            return time.getTime() > new Date(new Date().toLocaleDateString()).getTime();
+          }
+      },
+      selectTime:null,
+      params: {
+          communityName:null,
+          beginTime:null,
+          endTime:null,
+          sipType:null,
+          pageSize:1,
+          lastId:null
+      },
+      tableData: []
+      
     };
+  },
+  mounted(){
+    this.orderDetails();
   },
   methods:{
       orderDetails(){
-
+        console.log(123)
+        if(this.selectTime){
+        this.params.createdOnStart = this.changeTimeFormat(this.selectTime[0])
+        this.params.createdOnEnd = this.changeTimeFormat(this.selectTime[1])
+      }
+        getPhoneBillList(this.params).then(res=>{        
+          if(res.data.success){
+            this.tableData = res.data.data.items
+          }
+        })
       }
   }
   

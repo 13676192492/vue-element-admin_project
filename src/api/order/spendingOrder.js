@@ -9,3 +9,12 @@ export function getOrderList(params) {
         data: params
     })
 }
+
+//查询订单详情列表
+export function getOrderDetails(no,params) {
+    return request({
+        url: runApi + '/api/orders/'+no+'/detail/sip',
+        method: 'get',
+        params
+    })
+}
