@@ -95,5 +95,80 @@ export const asyncRouterMap =
       }
     ]
   },
+  {
+    path: '/account',
+    component: Layout,
+    redirect: '/account/index',
+    name: '账号管理',
+    meta: { title: '账号管理', icon: 'guide', noCache: true },
+    children: [
+    {
+      path: 'index',
+      component: () => import('@/views/account/index'),
+      name: '账号详情',
+      meta: { title: '账号详情', icon: 'guide', noCache: true }
+    }
+    ]
+  },
+  {
+    path: '/plotConsumption',
+    component: Layout,
+    redirect: '/plotConsumptionRank/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/plotConsumptionRank/index'),
+        name: '小区消费排名',
+        meta: { title: '小区消费排名', icon: 'guide', noCache: true }
+      }
+    ]
+  },
+   {
+     path: '/invoice',
+     component: Layout,
+     meta: {
+       title: '发票管理',
+       icon: 'invoice',
+     },
+     children: [
+       {
+         path: '/invoice/index',
+         component: () => import('@/views/invoice/index'),
+         name: '发票管理',
+         meta: { title: '发票管理' }
+       },
+       {
+         path: '/invoice/lookUp/index',
+         component: () => import('@/views/invoice/lookUp/index'),
+         name: '发票抬头管理',
+         meta: { title: '发票抬头管理' }
+       },
+       {
+         path: '/invoice/address/index',
+         component: () => import('@/views/invoice/address/index'),
+         name: '发票地址管理',
+         meta: { title: '发票地址管理' }
+       },
+       {
+         path: '/invoice/history/index',
+         component: () => import('@/views/invoice/history/index'),
+         name: '发票历史',
+         meta: { title: '发票历史' }
+       }
+     ]
+   },
+   {
+     path: '/ticket',
+     component: Layout,
+     redirect: '/ticket/index',
+     children: [
+       {
+         path: 'index',
+         component: () => import('@/views/ticket/index'),
+         name: '开票管理',
+         meta: { title: '开票管理', icon: 'ticket', noCache: true }
+       }
+     ]
+   },
 { path: '*', redirect: '/404', hidden: true }
 ]
