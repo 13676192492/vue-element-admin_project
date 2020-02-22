@@ -142,24 +142,6 @@ export const asyncRouterMap =
          component: () => import('@/views/invoice/index'),
          name: '发票管理',
          meta: { title: '发票管理' }
-       },
-       {
-         path: '/invoice/lookUp/index',
-         component: () => import('@/views/invoice/lookUp/index'),
-         name: '发票抬头管理',
-         meta: { title: '发票抬头管理' }
-       },
-       {
-         path: '/invoice/address/index',
-         component: () => import('@/views/invoice/address/index'),
-         name: '发票地址管理',
-         meta: { title: '发票地址管理' }
-       },
-       {
-         path: '/invoice/history/index',
-         component: () => import('@/views/invoice/history/index'),
-         name: '发票历史',
-         meta: { title: '发票历史' }
        }
      ]
    },
