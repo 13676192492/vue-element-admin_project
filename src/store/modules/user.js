@@ -69,6 +69,7 @@ const user = {
               type: 'error',
               duration: 5 * 1000
             })
+            resolve()
           }
 
         })

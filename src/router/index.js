@@ -68,17 +68,23 @@ export default new Router({
 export const asyncRouterMap =
  [
 {
-    path: '/spendingOrder',
+    path: '/',
     component: Layout,
     redirect: '/spendingOrder/index',
     name: '订单管理',
     meta: { title: '订单管理', icon: 'guide', noCache: true },
     children: [
       {
-        path: 'index',
+        path: '/spendingOrder/index',
         component: () => import('@/views/spendingOrder/index'),
         name: '消费订单',
         meta: { title: '消费订单', icon: 'guide', noCache: true }
+      },
+      {
+        path: '/rechargeOrder/index',
+        component: () => import('@/views/rechargeOrder/index'),
+        name: '充值订单',
+        meta: { title: '充值订单', icon: 'guide', noCache: true }
       }
     ]
   },

@@ -15,7 +15,6 @@
       </ul>
       <div class="detailsTable">
         <el-table
-          ref="singleTable"
           v-loading="loading"
           :data="list"
           :header-cell-style="{background:'#eef1f6',color:'#606266'}"
@@ -25,40 +24,19 @@
           style="width: 96%;margin-left:2%"
         >
           <el-table-column label="序号" width="60" type="index" :index="tableIndex" />
-          <el-table-column label="小区" min-width="120" sortable>
-            <template slot-scope="{row}">
-              <span>{{ row.communityName }}</span>
-            </template>
+          <el-table-column label="小区" min-width="120" prop="communityName" >
           </el-table-column>
-          <el-table-column label="呼叫类别" min-width="80" sortable>
-            <template slot-scope="{row}">
-              <span>{{ row.sipType }}</span>
-            </template>
+          <el-table-column label="呼叫类别" min-width="80" prop="sipType">
           </el-table-column>
-          <el-table-column label="起始时间" min-width="110" sortable>
-            <template slot-scope="{row}">
-              <span>{{ row.beginTime }}</span>
-            </template>
+          <el-table-column label="起始时间" min-width="110"  prop="beginTime">
           </el-table-column>
-          <el-table-column label="结束时间" min-width="110" sortable>
-            <template slot-scope="{row}">
-              <span>{{ row.endTime }}</span>
-            </template>
+          <el-table-column label="结束时间" min-width="110" prop="endTime" >
           </el-table-column>
-          <el-table-column label="主叫" min-width="120" sortable>
-            <template slot-scope="{row}">
-              <span>{{ row.caller }}</span>
-            </template>
+          <el-table-column label="主叫" min-width="120" prop="caller" >
           </el-table-column>
-          <el-table-column label="被叫" min-width="80" sortable>
-            <template slot-scope="{row}">
-              <span>{{ row.answer }}</span>
-            </template>
+          <el-table-column label="被叫" min-width="80" prop="answer" >
           </el-table-column>
-          <el-table-column label="通话时长" min-width="110" sortable>
-            <template slot-scope="{row}">
-              <span>{{ row.duration }}</span>
-            </template>
+          <el-table-column label="通话时长" min-width="110" prop="duration" >
           </el-table-column>
           <el-table-column label="费用（元）
 " min-width="120" sortable>
@@ -128,11 +106,11 @@ for(let i of res.data.data.items){
 <style lang="scss" scoped>
 .body {
   width: 100%;
-  height: 100%;
+  height: 90%;
   position: absolute;
-  top: 0;
+  top: 90px;
   left: 0;
-  z-index: 2000;
+  z-index: 8;
   background-color: #fff;
 
   .box {

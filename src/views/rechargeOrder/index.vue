@@ -65,17 +65,17 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-    <OrderDetails ref="getDetails" v-bind:param="param" v-on:closeMask="closeMask"></OrderDetails>
+    <!-- <OrderDetails ref="getDetails" v-bind:param="param" v-on:closeMask="closeMask"></OrderDetails> -->
     
   </div>
 </template>
 <script>
 import {getOrderList} from '@/api/order/spendingOrder'
-import OrderDetails from "./components/OrderDetails";
+// import OrderDetails from "./components/OrderDetails";
 import { updateTime } from '@/assets/publicScript/public'
 export default {
   components: {
-    OrderDetails
+    // OrderDetails
   },
   data() {
     return {
@@ -104,7 +104,7 @@ export default {
     };
   },
   mounted(){
-    this.getList();
+    // this.getList();
   },
   methods: {
     handleSizeChange(val) {
