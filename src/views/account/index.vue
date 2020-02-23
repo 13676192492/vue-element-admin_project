@@ -1,13 +1,13 @@
 <template>
   <div class="app-container">
-    <div v-show="!accountTable">
+    <div v-show="!accountTable&&!rechargeTable">
       <div class="filter-container">
         <el-input v-model="params.account" placeholder="用户账号" style="width: 250px;margin-right: 5px;" class="filter-item" @keyup.enter.native="queryData" clearable/>
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="queryData">查询</el-button>
       </div>
 
       <div data-v-0b02e756 class="toolbar-group">
-        <button data-v-0b02e756 type="button" class="el-button el-button--text el-button--mini" @click="">
+        <button data-v-0b02e756 type="button" class="el-button el-button--text el-button--mini" @click="openAddCom">
         <span>
           <i data-v-0b02e756 class="ali-icons el-iconxinzeng"></i> 新增账号
         </span>
@@ -58,7 +58,7 @@
         <el-table-column label="操作" width="140">
           <template slot-scope="scope">
             <div class="btnGroup">
-              <el-tag><el-button type="text" @click="">充值</el-button></el-tag>
+              <el-tag><el-button type="text" @click="goRecharge(scope.row)">充值</el-button></el-tag>
               <el-tag><el-button type="text" @click="goDetails(scope.row)">详情</el-button></el-tag>
             </div>
           </template>
@@ -77,16 +77,55 @@
       />
     </div>
 
+    <el-dialog
+            title="新增账号"
+            :visible.sync="addDialog"
+            :close-on-click-modal="false"
+            :append-to-body="true"
+    >
+      <el-form
+              ref="dataForm"
+              :rules="accountRules"
+              :model="accountFormData"
+              label-position="right"
+              label-width="100px"
+              style="width: 80% !important;"
+      >
+        <el-form-item label="账号" prop="account">
+          <el-input v-model="accountFormData.account" placeholder="请输入账号" clearable/>
+        </el-form-item>
+        <el-form-item label="关联社区" prop="connectPlot">
+          <el-input v-model="accountFormData.connectPlot" placeholder="请输入关联的社区" clearable/>
+        </el-form-item>
+        <el-form-item label="充值总金额" prop="amount">
+          <el-input v-model="accountFormData.amount" placeholder="请输入充值总金额" clearable/>
+        </el-form-item>
+        <el-form-item label="充值次数" prop="count">
+          <el-input v-model="accountFormData.count" placeholder="请输入充值次数" clearable/>
+        </el-form-item>
+        <el-form-item label="余额" prop="balance">
+          <el-input v-model="accountFormData.balance" placeholder="请输入余额" clearable/>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addDialog = false">取消</el-button>
+        <el-button type="primary" @click="addData">确定</el-button>
+      </div>
+    </el-dialog>
+
+    <recharge ref="rechargeChild" v-show="rechargeTable" :row="currentRow" @backRecharge="backRecharge"/>
+
     <account-list ref="accountChild" v-show="accountTable" :row="currentRow" @backAccount="backAccount"/>
   </div>
 </template>
 
 <script>
 import accountList from "./components/AccountList";
+import recharge from "@/views/property/components/Recharge";
 
 export default {
     name: 'Account',
-    components: { accountList },
+    components: { accountList, recharge },
     data() {
         return {
             data: [
@@ -115,8 +154,26 @@ export default {
                 account: undefined,
                 orderBy: undefined
             },
+            accountFormData: {
+                account: undefined,
+                connectPlot: undefined,
+                amount: undefined,
+                count: undefined,
+                balance: undefined
+            },
+            addDialog: false,
             accountTable: false,
-            currentRow: {}
+            rechargeTable: false,
+            currentRow: {},
+            accountRules: {
+                title: [
+                    { required: true, message: "请输入公告标题", trigger: "change" },
+                    { max: 20, message: "标题不能超过20个单位", trigger: "blur" }
+                ],
+                textContent: [
+                    { required: true, message: "请输入公告内容", trigger: "change" }
+                ]
+            },
         }
     },
     created(){
@@ -173,20 +230,56 @@ export default {
             } else {
                 this.accountList = [];
                 for(let j in this.data){
-                    if(this.data[j].account === this.params.account) this.accountList.push(this.data[j]);
+                    if(this.data[j].account.indexOf(this.params.account) !== -1) this.accountList.push(this.data[j]);
                 }
                 this.total = this.accountList.length;
             }
+        },
+        //打开新增账号弹框
+        openAddCom(){
+            this.resetFormData();
+            this.addDialog = true;
+            this.$nextTick(() => {
+                this.$refs["dataForm"].clearValidate();
+            });
+        },
+        //新增账户
+        addData(){
+            this.$refs["dataForm"].validate(valid => {
+                if (valid) {
+                    this.addDialog = false;
+                    console.log(this.accountFormData);
+                }
+            });
         },
         //组件切换
         backAccount(a) {
             this.accountTable = a;
         },
+        backRecharge(b) {
+            this.rechargeTable = b;
+        },
         //跳转详情页面
         goDetails(row){
             this.accountTable = true;
             this.currentRow = row;
+            this.$refs.accountChild.getList();
             this.$refs.accountChild.getRechargeList();
+        },
+        goRecharge(row){
+            this.rechargeTable = true;
+            this.currentRow = row;
+            this.$refs.rechargeChild.resetFormData();
+        },
+        //重置表单数据
+        resetFormData() {
+            this.accountFormData = {
+                account: undefined,
+                connectPlot: undefined,
+                amount: undefined,
+                count: undefined,
+                balance: undefined
+            };
         }
     }
 }

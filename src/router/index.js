@@ -102,6 +102,19 @@ export const asyncRouterMap =
     ]
   },
   {
+      path: '/property',
+      component: Layout,
+      redirect: '/property/index',
+      children: [
+          {
+              path: 'index',
+              component: () => import('@/views/property/index'),
+              name: '首页',
+              meta: { title: '首页', icon: 'guide', noCache: true }
+          }
+      ]
+  },
+  {
     path: '/account',
     component: Layout,
     redirect: '/account/index',

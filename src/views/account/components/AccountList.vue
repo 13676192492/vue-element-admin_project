@@ -1,153 +1,161 @@
 <template>
   <div>
-    <div class="title-box clearfix">
-      <span class="title-name">账号详情</span>
-      <el-button class="title-button" type="primary" plain @click="goBack">返回</el-button>
-      <el-button class="title-button" style="margin-right: 10px;" type="primary" plain @click="">充值</el-button>
-    </div>
-
-    <div class="account-box clearfix">
-      <div class="info-box">
-        <p>
-          <span class="id-class">账号ID：{{ row.id }}</span>
-          <span class="del-class" @click="">删除账号</span>
-        </p>
-        <span class="other-class">账号：{{ row.account }}</span>
-        <span class="other-class">手机号码：{{ row.phone? row.phone:'无' }}</span>
-        <span class="other-class">公司：{{ row.company? row.company:'太川云科技有限公司' }}</span>
-        <span class="other-class">创建日期：{{ row.createTime? row.createTime:'2020-2-21' }}</span>
-      </div>
-      <div class="balance-box">
-        <p class="balance-title">余额</p>
-        <span class="balance-content">{{ row.balance }}</span>
-      </div>
-    </div>
-
-    <div class="table-box">
-      <div class="table-title-box clearfix">
-        <span class="title-name">已关联的社区</span>
-        <el-button class="title-button" type="primary" @click="">关联社区</el-button>
+    <div v-show="!plotTable&&!rechargeTable">
+      <div class="title-box clearfix">
+        <span class="title-name">账号详情</span>
+        <el-button class="title-button" type="primary" plain @click="goBack">返回</el-button>
+        <el-button class="title-button" style="margin-right: 10px;" type="primary" plain @click="goRecharge">充值</el-button>
       </div>
 
-      <el-table
-        :data="plotList"
-        ref="plotTable"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        border fit
-        highlight-current-row
-        style="width: 100%;"
-      >
-        <el-table-column label="序号" width="60" type="index"></el-table-column>
-        <el-table-column label="社区名称" min-width="100">
-          <template slot-scope="{ row }">
-            <span>{{ row.coName }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="社区地址" min-width="120">
-          <template slot-scope="{ row }">
-            <span>{{ row.address }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="社区电话" min-width="120">
-          <template slot-scope="{ row }">
-            <span>{{ row.phone }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="关联日期" min-width="100">
-          <template slot-scope="{ row }">
-            <span>{{ row.associatedDate }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="社区累计消耗" min-width="120">
-          <template slot-scope="{ row }">
-            <span>{{ row.consume }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="100">
-          <template slot-scope="scope">
-            <div class="btnGroup">
-              <el-tag><el-button type="text" @click="">取消关联</el-button></el-tag>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-
-    <div class="table-box">
-      <div class="table-title-box clearfix">
-        <span class="title-name">充值订单</span>
-        <span class="title-text">订单成功总金额：{{ row.amount }}</span>
-        <el-button class="title-button" type="primary" @click="">导出</el-button>
+      <div class="account-box clearfix">
+        <div class="info-box">
+          <p>
+            <span class="id-class">账号ID：{{ row.id }}</span>
+            <span class="del-class" @click="">删除账号</span>
+          </p>
+          <span class="other-class">账号：{{ row.account }}</span>
+          <span class="other-class">手机号码：{{ row.phone? row.phone:'无' }}</span>
+          <span class="other-class">公司：{{ row.company? row.company:'太川云科技有限公司' }}</span>
+          <span class="other-class">创建日期：{{ row.createTime? row.createTime:'2020-2-21' }}</span>
+        </div>
+        <div class="balance-box">
+          <p class="balance-title">余额</p>
+          <span class="balance-content">{{ row.balance }}</span>
+        </div>
       </div>
 
-      <el-table
-        :data="rechargeList"
-        ref="rechargTable"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        border
-        fit
-        highlight-current-row
-        style="width: 100%;"
-      >
-        <el-table-column label="序号" width="60" type="index" :index="tableIndex"></el-table-column>
-        <el-table-column label="订单号" min-width="120">
-          <template slot-scope="{ row }">
-            <span>{{ row.num }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="账号" min-width="100">
-          <template slot-scope="{ row }">
-            <span>{{ row.account }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="交易金额" min-width="120">
-          <template slot-scope="{ row }">
-            <span>{{ row.payAmount }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="支付方式" min-width="120">
-          <template slot-scope="{ row }">
-            <span>{{ row.payWay }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="支付状态" min-width="120">
-          <template slot-scope="{ row }">
-            <span>{{ row.payStatus }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="创建时间" min-width="140">
-          <template slot-scope="{ row }">
-            <span>{{ row.createTime }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="100">
-          <template slot-scope="scope">
-            <div class="btnGroup">
-              <el-tag><el-button type="text" @click="">查看单号</el-button></el-tag>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div class="table-box">
+        <div class="table-title-box clearfix">
+          <span class="title-name">已关联的社区</span>
+          <el-button class="title-button" type="primary" @click="goPlot">关联社区</el-button>
+        </div>
 
-      <el-pagination
-        background
-        :current-page="params.pageIndex + 1"
-        :page-sizes="[5, 10, 20, 50]"
-        :page-size="params.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
+        <el-table
+                :data="plotList"
+                ref="plotTable"
+                :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+                border fit
+                highlight-current-row
+                style="width: 100%;"
+        >
+          <el-table-column label="序号" width="60" type="index"></el-table-column>
+          <el-table-column label="社区名称" min-width="100">
+            <template slot-scope="{ row }">
+              <span>{{ row.coName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="社区地址" min-width="120">
+            <template slot-scope="{ row }">
+              <span>{{ row.address }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="社区电话" min-width="120">
+            <template slot-scope="{ row }">
+              <span>{{ row.phone }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="关联日期" min-width="100">
+            <template slot-scope="{ row }">
+              <span>{{ row.associatedDate }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="社区累计消耗" min-width="120">
+            <template slot-scope="{ row }">
+              <span>{{ row.consume }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="100">
+            <template slot-scope="scope">
+              <div class="btnGroup">
+                <el-tag><el-button type="text" @click="">取消关联</el-button></el-tag>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+
+      <div class="table-box">
+        <div class="table-title-box clearfix">
+          <span class="title-name">充值订单</span>
+          <span class="title-text">订单成功总金额：{{ row.amount }}</span>
+          <el-button class="title-button" type="primary" @click="">导出</el-button>
+        </div>
+
+        <el-table
+                :data="rechargeList"
+                ref="rechargTable"
+                :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+                border
+                fit
+                highlight-current-row
+                style="width: 100%;"
+        >
+          <el-table-column label="序号" width="60" type="index" :index="tableIndex"></el-table-column>
+          <el-table-column label="订单号" min-width="120">
+            <template slot-scope="{ row }">
+              <span>{{ row.num }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="账号" min-width="100">
+            <template slot-scope="{ row }">
+              <span>{{ row.account }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="交易金额" min-width="120">
+            <template slot-scope="{ row }">
+              <span>{{ row.payAmount }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="支付方式" min-width="120">
+            <template slot-scope="{ row }">
+              <span>{{ row.payWay }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="支付状态" min-width="120">
+            <template slot-scope="{ row }">
+              <span>{{ row.payStatus }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="创建时间" min-width="140">
+            <template slot-scope="{ row }">
+              <span>{{ row.createTime }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="100">
+            <template slot-scope="scope">
+              <div class="btnGroup">
+                <el-tag><el-button type="text" @click="">查看单号</el-button></el-tag>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <el-pagination
+          background
+          :current-page="params.pageIndex + 1"
+          :page-sizes="[5, 10, 20, 50]"
+          :page-size="params.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
     </div>
+
+    <connect-plot ref="plotChild" v-show="plotTable" :row="currentRow" @backPlot="backPlot"/>
+
+    <recharge ref="rechargeChild" v-show="rechargeTable" :row="currentRow" @backRecharge="backRecharge"/>
   </div>
 </template>
 
 <script>
-import { parseTime } from '@/utils'
+import connectPlot from "@/views/property/components/ConnectPlot";
+import recharge from "@/views/property/components/Recharge";
 
 export default {
     name: 'AccountList',
+    components: { connectPlot, recharge },
     props: {
         row: { type: Object, required: true }
     },
@@ -178,6 +186,9 @@ export default {
                 pageSize: 5,
                 orderBy: undefined
             },
+            plotTable: false,
+            rechargeTable: false,
+            currentRow: {}
         }
     },
     methods: {
@@ -210,8 +221,8 @@ export default {
             }
             this.getRechargeList();
         },
-        //获取关联社区列表
-        getPlotList() {
+        //获取已关联社区列表
+        getList() {
 
         },
         //获取充值订单列表
@@ -222,6 +233,24 @@ export default {
                 if(this.dataList[index+i]) this.rechargeList.push(this.dataList[index+i]);
             }
             this.total = this.dataList.length;
+        },
+        //组件切换
+        backPlot(a) {
+            this.plotTable = a;
+        },
+        backRecharge(b) {
+            this.rechargeTable = b;
+        },
+        //跳转页面
+        goPlot(){
+            this.plotTable = true;
+            this.currentRow = this.row;
+            this.$refs.plotChild.getPlotList();
+        },
+        goRecharge(){
+            this.rechargeTable = true;
+            this.currentRow = this.row;
+            this.$refs.rechargeChild.resetFormData();
         }
     }
 };

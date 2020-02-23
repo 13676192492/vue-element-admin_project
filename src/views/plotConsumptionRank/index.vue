@@ -149,7 +149,7 @@ export default {
             } else {
                 this.list = [];
                 for(let j in this.data){
-                    if(this.data[j].coName === this.params.coName) this.list.push(this.data[j]);
+                    if(this.data[j].coName.indexOf(this.params.coName) !== -1) this.list.push(this.data[j]);
                 }
                 this.total = this.list.length;
             }
