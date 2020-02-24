@@ -9,54 +9,22 @@
       </div>
       <div>
         <div class="tip-name">已关联社区</div>
-        <div class="plot-content">
-          <div class="plot-img"><img src=""></div>
+        <div class="plot-content" v-for="(item, index) in data" :key="index">
+          <div class="plot-img"><img :src="item.icon"></div>
           <div class="plot-info">
-            <p class="plot-name">小区名称</p>
-            <p><span style="margin-right: 10%;">累计消费：255.0</span><span>昨日消费：255.0</span></p>
-            <p style="margin: 0;"><span style="margin-right: 8%;">地址：广东省珠海市香洲区梅华东路188号</span><span>电话：15015946368</span></p>
+            <p class="plot-name">{{item.coName}}</p>
+            <p><span style="margin-right: 10%;">累计消费：{{item.amount}}</span><span>昨日消费：{{item.lastDayAmount}}</span></p>
+            <p style="margin: 0;"><span style="margin-right: 8%;">地址：{{item.address}}</span><span>电话：{{item.phone}}</span></p>
           </div>
           <div class="plot-consume">
             <p>本月消费</p>
-            <span>55.0</span>
+            <span>{{item.nowMonthAmount}}</span>
           </div>
           <div class="plot-operate">
             <el-button class="btn-box">取消关联</el-button>
-            <p class="btn-txt">sip通话已关闭</p>
+            <p class="btn-txt">{{ item.sipType? 'sip通话已开启':'sip通话已关闭' }}</p>
           </div>
-        </div>
-        <div class="plot-content">
-          <div class="plot-img"><img src=""></div>
-          <div class="plot-info">
-            <p class="plot-name">小区名称</p>
-            <p><span style="margin-right: 10%;">累计消费：255.0</span><span>昨日消费：255.0</span></p>
-            <p style="margin: 0;"><span style="margin-right: 8%;">地址：广东省珠海市香洲区梅华东路188号</span><span>电话：15015946368</span></p>
-          </div>
-          <div class="plot-consume">
-            <p>本月消费</p>
-            <span>55.0</span>
-          </div>
-          <div class="plot-operate">
-            <el-button class="btn-box">取消关联</el-button>
-            <p class="btn-txt">sip通话已关闭</p>
-          </div>
-        </div>
-        <div class="plot-content">
-          <div class="plot-img"><img src=""></div>
-          <div class="plot-info">
-            <p class="plot-name">小区名称</p>
-            <p><span style="margin-right: 10%;">累计消费：255.0</span><span>昨日消费：255.0</span></p>
-            <p style="margin: 0;"><span style="margin-right: 8%;">地址：广东省珠海市香洲区梅华东路188号</span><span>电话：15015946368</span></p>
-          </div>
-          <div class="plot-consume">
-            <p>本月消费</p>
-            <span>55.0</span>
-          </div>
-          <div class="plot-operate">
-            <el-button class="btn-box">取消关联</el-button>
-            <p class="btn-txt">sip通话已关闭</p>
-          </div>
-        </div>
+        </div>  
       </div>
     </div>
 
@@ -76,6 +44,12 @@ export default {
     data() {
         return {
             info: { id: 43463, account: 15015948432, connectPlot: '太川云社区', amount: 1000, count: 5, balance: 78 },
+            data: [
+                { id: 354168541, account: 15015948432, icon: 'http://a2.att.hudong.com/36/48/19300001357258133412489354717.jpg', coName:'发斯蒂芬', amount: 1000, sipType: 0, lastDayAmount: 79, nowMonthAmount: 11, address: '广东省珠海市香洲区梅华东路188号', phone: 15015946368 },
+                { id: 354168541, account: 15015948432, icon: 'http://a2.att.hudong.com/36/48/19300001357258133412489354717.jpg', coName:'手工费回电话', amount: 1200, sipType: 1, lastDayAmount: 133, nowMonthAmount: 50, address: '广东省珠海市香洲区梅华东路188号', phone: 15015946368 },
+                { id: 354168541, account: 15015948432, icon: 'http://a2.att.hudong.com/36/48/19300001357258133412489354717.jpg', coName:'哦幸福', amount: 1500, sipType: 0, lastDayAmount: 88, nowMonthAmount: 90, address: '广东省珠海市香洲区梅华东路188号', phone: 15015946368 },
+                { id: 354168541, account: 15015948432, icon: 'http://a2.att.hudong.com/36/48/19300001357258133412489354717.jpg', coName:'百色分公司', amount: 900, sipType: 1, lastDayAmount: 34, nowMonthAmount: 68, address: '广东省珠海市香洲区梅华东路188号', phone: 15015946368 },
+            ],
             plotTable: false,
             rechargeTable: false,
             currentRow: {}
