@@ -3,7 +3,7 @@
     <div class="box">
       <div class="top">
         <p>订单详情</p>
-        <el-button type @click="close">返回</el-button>
+        <el-button  type="primary" @click="close">返回</el-button>
       </div>
       <ul class="center">
         <li>消费订单号：{{param.data.no}}</li>

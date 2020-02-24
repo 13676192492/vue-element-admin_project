@@ -31,19 +31,32 @@ export const constantRouterMap = [
       }
     ]
   },
+  // {
+  //   path: '',
+  //   component: Layout,
+  //   redirect: 'dashboard',
+  //   children: [
+  //     {
+  //       path: 'dashboard',
+  //       component: () => import('@/views/dashboard/index'),
+  //       name: 'Dashboard',
+  //       meta: { title: 'dashboard', icon: 'dashboard', noCache: true, affix: true }
+  //     }
+  //   ]
+  // },
   {
     path: '',
     component: Layout,
-    redirect: 'dashboard',
+    redirect: '/property/index',
     children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: 'dashboard', icon: 'dashboard', noCache: true, affix: true }
-      }
+        {
+            path: '/property/index',
+            component: () => import('@/views/property/index'),
+            name: '首页',
+            meta: { title: '首页', icon: 'guide', noCache: true }
+        }
     ]
-  },
+},
   {
     path: '/login',
     component: () => import('@/views/login/index'),
@@ -67,8 +80,9 @@ export default new Router({
 })
 export const asyncRouterMap =
  [
+  
 {
-    path: '/',
+    path: '/spendingOrder',
     component: Layout,
     redirect: '/spendingOrder/index',
     name: '订单管理',
@@ -101,19 +115,7 @@ export const asyncRouterMap =
       }
     ]
   },
-  {
-      path: '/property',
-      component: Layout,
-      redirect: '/property/index',
-      children: [
-          {
-              path: 'index',
-              component: () => import('@/views/property/index'),
-              name: '首页',
-              meta: { title: '首页', icon: 'guide', noCache: true }
-          }
-      ]
-  },
+ 
   {
     path: '/account',
     component: Layout,
