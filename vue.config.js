@@ -27,11 +27,18 @@ module.exports = {
             errors: true
         },
     proxy: {
-        "/api": {
+        "/runApi": {
           target: "http://10.0.1.222:55200",
           pathRewrite: {"^/runApi" : ""}
         }
       }
+    },
+    chainWebpack(config) {
+        config
+        // https://webpack.js.org/configuration/devtool/#development
+            .when(process.env.NODE_ENV === 'development',
+            config => config.devtool('source-map')
+        )
     }
 
 }

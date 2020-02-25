@@ -55,7 +55,7 @@ export default {
         beginTime: null,
         endTime: null,
         sipType: null,
-        pageSize: 1,
+        pageSize: 5000,
         lastId: null
       },
       tableData: []
@@ -82,8 +82,11 @@ export default {
       }
       getPhoneBillList(this.params).then(res => {
         if (res.data.success) {
-          this.tableData.push(...res.data.data.items);
-          this.params.lastId = res.data.data.items[res.data.data.items.length-1].id
+          if(res.data.data.items.length>0){
+            this.tableData.push(...res.data.data.items);
+            this.params.lastId = res.data.data.items[res.data.data.items.length-1].id
+          }
+
         }
         this.onFetching = false;
       });

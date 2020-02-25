@@ -14,8 +14,8 @@ if (process.env.NODE_ENV === 'production') {
 // if(!SS&&getToken()){
 
 // }
-
-
+//不提示身份信息失效
+const whiteUrl = '/login';
 // create an axios instance
 const service = axios.create({
   baseURL: base_url, // api 的 base_url
@@ -36,18 +36,27 @@ service.interceptors.request.use(
   config => {
     // Do something before request is sent
     // console.log(getAccessToken())
-    if (getAccessToken()) {
-      config.headers["Authorization"] = 'Bearer ' + getAccessToken();
-    }
-    // else if(!getAccessToken()&&getToken()){
-    //   MessageBox.alert('用户身份已失效，请重新登录！', '权限提示', {
-    //     confirmButtonText: '确定',
-    //     showClose: false,
-    //     type: 'warning'
-    //   }).then(() => {
-    //     // window.location.href = `${location.protocol}//${location.host}`;
-    //   });
+    const url = config.url.replace(config.baseURL, '');
+
+    let isLogin = !!(url.indexOf(whiteUrl) + 1)
+    // if (getAccessToken()) {
+    //   config.headers["Authorization"] = 'Bearer ' + getAccessToken();
     // }
+    // else if(!getAccessToken()&&!isLogin){
+    if (getToken()) {
+      config.headers["Authorization"] = 'Bearer ' + getToken();
+    }
+    else if (!getToken() && !isLogin) {
+
+
+      MessageBox.alert('用户身份已失效，请重新登录！', '权限提示', {
+        confirmButtonText: '确定',
+        showClose: false,
+        type: 'warning'
+      }).then(() => {
+        window.location.href = `${location.protocol}//${location.host}`;
+      });
+    }
     // if (store.getters.token) {
 
     //   // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
@@ -59,6 +68,7 @@ service.interceptors.request.use(
   error => {
     // Do something with request error
     console.log(error) // for debug
+
     Promise.reject(error)
   }
 )
@@ -100,12 +110,15 @@ service.interceptors.response.use(
   //   }
   // },
   error => {
-    console.log('err' + error) // for debug
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
+    // console.log('err' + error) // for debug
+    if (getToken()) {
+      Message({
+        message: error.message,
+        type: 'error',
+        duration: 5 * 1000
+      })
+    }
+
     return Promise.reject(error)
   }
 )

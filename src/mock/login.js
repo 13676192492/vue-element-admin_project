@@ -25,18 +25,18 @@ const userMap = {
 
 export default {
   loginByUsername: config => {
-    console.log(config)
     // const { account } = JSON.parse(config.body)
     // return userMap[account]
     return userMap['admin']
   },
   getUserInfo: config => {
-    const { token } = param2Obj(config.url)
-    if (userMap[token]) {
-      return userMap[token]
-    } else {
-      return false
-    }
+    // const { token } = param2Obj(config.url)
+    // if (userMap[token]) {
+    //   return userMap[token]
+    // } else {
+    //   return false
+    // }
+    return userMap['admin']
   },
   getData: config => {
     return userMap['data']
