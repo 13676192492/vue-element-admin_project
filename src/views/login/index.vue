@@ -57,6 +57,11 @@
         style="width:100%;margin-bottom:30px;margin-left:0"
         @click.native.prevent="handleLogin"
       >{{ $t('login.logIn') }}</el-button>
+     
+      <el-button
+        type="text"
+        @click.native.prevent="forgetPwdDialog=true"
+      >忘记密码</el-button> 
     </el-form>
     <el-dialog
       width="28%"
@@ -111,12 +116,86 @@
         <el-button type="primary" @click="register('newUserForm')">确定</el-button>
       </div>
     </el-dialog>
+    <el-dialog
+      width="28%"
+      title="修改密码"
+      :visible.sync="changePwdDialog"
+      :close-on-click-modal="false"
+      :append-to-body="true"
+    >
+      <el-form ref="newPwdForm" :model="newPwdForm" :rules="newPwdFormRules" label-width="100px">
+        
+        <el-form-item label="旧密码:" prop="oldPwd" ref="oldPwd">
+          <el-input v-model="newPwdForm.oldPwd" show-password placeholder="请输入密码" clearable />
+        </el-form-item>
+        <el-form-item label="新密码:" prop="newPwd" ref="newPwd">
+          <el-input
+            v-model="newPwdForm.newPwd"
+            show-password
+            placeholder="请输入确认密码"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="确认密码:" prop="confirmPassword" ref="confirmPassword">
+          <el-input
+            v-model="newPwdForm.confirmPassword"
+            show-password
+            placeholder="请输入确认密码"
+            clearable
+          />
+        </el-form-item>
+      <!-- <el-form-item>
+        <el-button @click="changePwdDialog = false">取消</el-button>
+        <el-button type="primary" @click="changePwd('newPwdForm')">确定</el-button>
+      </el-form-item> -->
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="changePwdDialog = false">取消</el-button>
+        <el-button type="primary" @click="changePwd('newPwdForm')">确定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog
+      width="28%"
+      title="忘记密码"
+      :visible.sync="forgetPwdDialog"
+      :close-on-click-modal="false"
+      :append-to-body="true"
+    >
+      <el-form ref="forgetPwdForm" :model="forgetPwdForm" :rules="forgetPwdFormRules" label-width="100px">
+        
+
+        <el-form-item label="手机号:" prop="phone" ref="phone">
+          <el-input
+            v-model="forgetPwdForm.phone"
+            placeholder="请输入手机号"
+            maxlength="11"
+            style="width:80%"
+            clearable
+          />
+        </el-form-item>
+        
+        <el-button
+          :loading="loading"
+          type="primary"
+          class="getCode2"
+          :disabled="isGet"
+          @click="getCode2()"
+        >{{time}}</el-button>
+        <el-form-item label="验证码:" prop="captcha">
+          <el-input v-model="forgetPwdForm.captcha" placeholder="请输入验证码" clearable />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="forgetPwdDialog = false">取消</el-button>
+        <el-button type="primary" @click="forgetPwd('forgetPwdForm')">确定</el-button>
+      </div>
+    </el-dialog>
     <particles></particles>
   </div>
 </template>
 
 <script>
-import { getCaptcha, register } from "@/api/login";
+import { getCaptcha, register, changePwd, getCaptcha2 } from "@/api/login";
 import { validUsername } from "@/utils/validate";
 import LangSelect from "@/components/LangSelect";
 import Particles from "@/components/Particles/index";
@@ -139,14 +218,23 @@ export default {
       }
     };
     var validate = (rule, value, callback) => {
-            if (value === '') {
-                callback(new Error('请再次输入密码'));
-            } else if (value !== this.newUser.password) {
-                callback(new Error('两次输入密码不一致!'));
-            } else {
-                callback();
-            }
-        };
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.newUser.password) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
+      }
+    };
+    var validate2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.newPwdForm.newPwd) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
+      }
+    };
     return {
       time: "获取验证码",
       isGet: false,
@@ -164,6 +252,17 @@ export default {
         ]
       },
       registerDialog: false,
+      forgetPwdDialog: false,
+      changePwdDialog: false,
+      forgetPwdForm: {
+        phone: null,
+        captcha: null
+      },
+      newPwdForm: {
+        oldPwd: null,
+        newPwd: null,
+        confirmPassword: null
+      },
       newUser: {
         account: null,
         password: null,
@@ -179,20 +278,67 @@ export default {
         ],
         password: [
           { required: true, message: "必须填写密码", trigger: "change" },
-          { min: 6, max: 16, message: '密码必须设置在6到16位，且包含字母和数字', trigger: 'blur' },
+          {
+            min: 6,
+            max: 16,
+            message: "密码必须设置在6到16位，且包含字母和数字",
+            trigger: "blur"
+          },
           {
             pattern: /^(?=.*[A-z])(?=.*\d)[\d\D]*$/,
-            message: '密码设置在6到16位，且包含字母和数字',
-            trigger: 'blur'
+            message: "密码设置在6到16位，且包含字母和数字",
+            trigger: "blur"
           }
         ],
-        confirmPassword:[
+        confirmPassword: [
           { required: true, message: "必须填写确认密码", trigger: "change" },
-          { validator: validate, trigger: 'blur', required: true }
+          { validator: validate, trigger: "blur", required: true }
         ],
         company: [
           { required: true, message: "必须填写公司名", trigger: "change" }
         ],
+        phone: [
+          { required: true, message: "必须填写手机号码", trigger: "change" }
+        ],
+        captcha: [
+          { required: true, message: "必须填写验证码", trigger: "change" }
+        ]
+      },
+      newPwdFormRules: {
+        oldPwd: [
+          { required: true, message: "必须填写密码", trigger: "blur" },
+          {
+            min: 6,
+            max: 16,
+            message: "密码必须设置在6到16位，且包含字母和数字",
+            trigger: "blur"
+          },
+          {
+            pattern: /^(?=.*[A-z])(?=.*\d)[\d\D]*$/,
+            message: "密码设置在6到16位，且包含字母和数字",
+            trigger: "blur"
+          }
+        ],
+        newPwd: [
+          { required: true, message: "必须填写密码", trigger: "blur" },
+          {
+            min: 6,
+            max: 16,
+            message: "密码必须设置在6到16位，且包含字母和数字",
+            trigger: "blur"
+          },
+          {
+            pattern: /^(?=.*[A-z])(?=.*\d)[\d\D]*$/,
+            message: "密码设置在6到16位，且包含字母和数字",
+            trigger: "blur"
+          }
+        ],
+        confirmPassword: [
+          { required: true, message: "必须填写确认密码", trigger: "change" },
+          { validator: validate2, trigger: "blur", required: true }
+        ]
+      },
+      forgetPwdFormRules: {
         phone: [
           { required: true, message: "必须填写手机号码", trigger: "change" }
         ],
@@ -250,17 +396,42 @@ export default {
           phone: this.newUser.phone
         };
         getCaptcha(params).then(res => {
-          if(res.data.success){
+          if (res.data.success) {
             this.isGet = true;
             this.countDown(60);
-          }else{
+          } else {
             this.$notify({
               title: "失败",
               message: res.data.message,
               type: "error"
             });
           }
-         
+        });
+      }
+    },
+    getCode2() {
+      let phoneReg = /^1[3-9]\d{9}$/;
+      if (phoneReg.test(this.forgetPwdForm.phone)) {
+        let params = {
+          phone: this.forgetPwdForm.phone
+        };
+        getCaptcha2(params).then(res => {
+          if (res.data.success) {
+            this.isGet = true;
+            this.countDown(60);
+          } else {
+            this.$notify({
+              title: "失败",
+              message: res.data.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        this.$notify({
+          title: "获取验证码失败",
+          message: "手机格式不正确",
+          type: "error"
         });
       }
     },
@@ -288,6 +459,30 @@ export default {
               type: "success"
             });
             this.registerDialog = false;
+          });
+        }
+      });
+    },
+    //忘记密码
+    forgetPwd(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.forgetPwdDialog = false;
+          this.changePwdDialog = true;
+        }
+      });
+    },
+    //修改密码
+    changePwd(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          changePwd(this.newPwdForm).then(res => {
+            this.$notify({
+              title: "成功",
+              message: "修改成功",
+              type: "success"
+            });
+            this.changePwdDialog = false;
           });
         }
       });
@@ -418,5 +613,11 @@ $light_gray: #eee;
   position: absolute;
   top: 54%;
   right: 6%;
+}
+.getCode2 {
+  width: 18%;
+  position: absolute;
+  top: 29%;
+  right: 10%;
 }
 </style>

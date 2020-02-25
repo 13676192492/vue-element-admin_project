@@ -1,4 +1,3 @@
-
 const port = 8080;
 module.exports = {
     chainWebpack: config => {
@@ -26,12 +25,15 @@ module.exports = {
             warnings: false,
             errors: true
         },
-    proxy: {
-        "/runApi": {
-          target: "http://10.0.1.222:55200",
-          pathRewrite: {"^/runApi" : ""}
+        proxy: {
+            "/runApi": {
+                // target: "http://10.0.1.222:55200",
+                target: "http://10.0.1.112:8000",
+                pathRewrite: {
+                    "^/runApi": ""
+                }
+            }
         }
-      }
     },
     chainWebpack(config) {
         config
