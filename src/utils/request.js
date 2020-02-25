@@ -15,7 +15,7 @@ if (process.env.NODE_ENV === 'production') {
 
 // }
 //不提示身份信息失效
-const whiteUrl = '/login';
+const whiteUrl = ['/login','/register'];
 // create an axios instance
 const service = axios.create({
   baseURL: base_url, // api 的 base_url
@@ -37,8 +37,13 @@ service.interceptors.request.use(
     // Do something before request is sent
     // console.log(getAccessToken())
     const url = config.url.replace(config.baseURL, '');
-
-    let isLogin = !!(url.indexOf(whiteUrl) + 1)
+    
+    // console.log(url);
+    // console.log(url.indexOf(whiteUrl));
+    // let isLogin = !!(url.indexOf(whiteUrl) + 1)
+    let isLogin = whiteUrl.some((i)=>{
+      return i.indexOf(url)
+  })
     // if (getAccessToken()) {
     //   config.headers["Authorization"] = 'Bearer ' + getAccessToken();
     // }
