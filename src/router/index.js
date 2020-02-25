@@ -110,8 +110,8 @@ export const asyncRouterMap =
       {
         path: 'index',
         component: () => import('@/views/phoneBill/index'),
-        name: '话费订单',
-        meta: { title: '话费订单', icon: 'guide', noCache: true }
+        name: '话单记录',
+        meta: { title: '话单记录', icon: 'guide', noCache: true }
       }
     ]
   },
