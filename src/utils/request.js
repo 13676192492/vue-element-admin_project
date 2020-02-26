@@ -2,12 +2,12 @@ import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
 import store from '@/store'
 import { getToken, getAccessToken } from '@/utils/auth'
-let base_url;
-if (process.env.NODE_ENV === 'production') {
-  base_url = ''
-} else if (process.env.NODE_ENV === 'development') {
-  base_url = ''
-}
+// let base_url;
+// if (process.env.NODE_ENV === 'production') {
+//   base_url = process.env.VUE_APP_BASE_API
+// } else if (process.env.NODE_ENV === 'development') {
+//   base_url = ''
+// }
 
 // console.log('执行')
 // var SS = getAccessToken()
@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === 'production') {
 const whiteUrl = ['/login','/register'];
 // create an axios instance
 const service = axios.create({
-  baseURL: base_url, // api 的 base_url
+  baseURL: process.env.VUE_APP_BASE_API, // api 的 base_url
   timeout: 5000 // request timeout
 })
 

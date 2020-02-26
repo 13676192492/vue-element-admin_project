@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { runApi } from '@/assets/publicScript/public'
+
 
 export function loginByUsername(account, password) {
     const data = {
@@ -31,7 +31,7 @@ export function getUserInfo(token) {
 //获取验证码
 export function getCaptcha(params) {
     return request({
-        url: runApi + '/api/account/register-verify-phone',
+        url: '/api/account/register-verify-phone',
         method: 'post',
         data: params
     })
@@ -40,7 +40,7 @@ export function getCaptcha(params) {
 //登录
 export function login(params) {
     return request({
-        url: runApi + '/api/account/login',
+        url: '/api/account/login',
         method: 'post',
         data: params
     })
@@ -49,7 +49,7 @@ export function login(params) {
 //注册
 export function register(params) {
     return request({
-        url: runApi + '/api/account/register-by-phone',
+        url: '/api/account/register-by-phone',
         method: 'post',
         data: params
     })
