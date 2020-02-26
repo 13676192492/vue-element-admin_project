@@ -10,9 +10,9 @@
         end-placeholder="结束日期"
         style="margin-right:1%;"
       ></el-date-picker>
-      <el-select v-model="params.search.orderStatus" placeholder="请选择订单类型" style="margin-right:1%;">
+      <!-- <el-select v-model="params.search.orderStatus" placeholder="请选择订单类型" style="margin-right:1%;">
         <el-option label="Sip通话" value="1"></el-option>
-      </el-select>
+      </el-select> -->
       <el-select v-model="params.search.orderType" placeholder="请选择支付状态" style="margin-right:1%;">
         <el-option label="待支付" value="20"></el-option>
         <el-option label="成功" value="30"></el-option>
@@ -87,7 +87,7 @@ export default {
       loading:false,
       params:{
         search:{
-          orderStatus:null,
+          orderStatus:2,
           orderType:null,
           createdOnStart:null,
           createdOnEnd:null
@@ -104,7 +104,7 @@ export default {
     };
   },
   mounted(){
-    // this.getList();
+    this.getList();
   },
   methods: {
     handleSizeChange(val) {
@@ -147,16 +147,16 @@ export default {
 
       getOrderList(this.params).then(res=>{
         if(res.data.success){
-          for(let i of res.data.data.items){
-            i.createdOn = updateTime(i.createdOn);
-            i.paymentOn = updateTime(i.paymentOn);
-            i.orderStatus = this.changePayStatus(i.orderStatus)
-            if(i.orderType ==1){
-              i.orderType = 'Sip通话'
-            }
-          }
-          this.total = res.data.data.totalCount;
-          this.list = res.data.data.items
+          // for(let i of res.data.data.items){
+          //   i.createdOn = updateTime(i.createdOn);
+          //   i.paymentOn = updateTime(i.paymentOn);
+          //   i.orderStatus = this.changePayStatus(i.orderStatus)
+          //   if(i.orderType ==1){
+          //     i.orderType = 'Sip通话'
+          //   }
+          // }
+          // this.total = res.data.data.totalCount;
+          // this.list = res.data.data.items
         }
        this.loading = false;
       })

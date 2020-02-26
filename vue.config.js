@@ -28,7 +28,7 @@ module.exports = {
         },
     proxy: {
         "/runApi": {
-          target: "http://10.0.1.222:55200",
+          target: "http://10.0.1.112:8000",
           pathRewrite: {"^/runApi" : ""}
         }
       }
@@ -37,8 +37,8 @@ module.exports = {
         config
         // https://webpack.js.org/configuration/devtool/#development
             .when(process.env.NODE_ENV === 'development',
-            // config => config.devtool('source-map')
-            config => config.devtool('eval')
+            config => config.devtool('source-map')
+            // config => config.devtool('eval')
         )
     }
 
