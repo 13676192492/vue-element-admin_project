@@ -57,6 +57,11 @@
         style="width:100%;margin-bottom:30px;margin-left:0"
         @click.native.prevent="handleLogin"
       >{{ $t('login.logIn') }}</el-button>
+     
+      <el-button
+        type="text"
+        @click.native.prevent="forgetPwdDialog=true"
+      >忘记密码</el-button> 
     </el-form>
     <el-dialog
       width="28%"
@@ -111,12 +116,54 @@
         <el-button type="primary" @click="register('newUserForm')">确定</el-button>
       </div>
     </el-dialog>
+  <!-- 忘记密码 -->
+    <el-dialog
+      width="28%"
+      title="忘记密码"
+      :visible.sync="forgetPwdDialog"
+      :close-on-click-modal="false"
+      :append-to-body="true"
+    >
+      <el-form ref="forgetPwdForm" :model="forgetPwdForm" :rules="forgetPwdFormRules" label-width="100px">
+        
+
+        <el-form-item label="账号名:" prop="userName">
+          <el-input v-model="forgetPwdForm.userName" placeholder="请输入账户名" clearable />
+        </el-form-item>
+        
+        <el-button
+          :loading="loading"
+          type="primary"
+          class="getCode2"
+          :disabled="isGet2"
+          @click="getCode2()"
+        >{{time2}}</el-button>
+        <el-form-item label="验证码:" prop="code" ref="code" >
+          <el-input v-model="forgetPwdForm.code" placeholder="请输入验证码" clearable auto-complete="new-code"/>
+        </el-form-item>
+         <el-form-item label="新密码:" prop="password" ref="password" >
+          <el-input v-model="forgetPwdForm.password" show-password placeholder="请输入密码" clearable auto-complete="new-password"/>
+        </el-form-item>
+        <el-form-item label="确认密码:" prop="confirmPassword" ref="confirmPassword">
+          <el-input
+            v-model="forgetPwdForm.confirmPassword"
+            show-password
+            placeholder="请输入确认密码"
+            clearable
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="forgetPwdDialog = false">取消</el-button>
+        <el-button type="primary" @click="forgetPwd('forgetPwdForm')">确定</el-button>
+      </div>
+    </el-dialog>
     <particles></particles>
   </div>
 </template>
 
 <script>
-import { getCaptcha, register } from "@/api/login";
+import { getCaptcha, register, changePwd, getCaptcha2 } from "@/api/login";
 import { validUsername } from "@/utils/validate";
 import LangSelect from "@/components/LangSelect";
 import Particles from "@/components/Particles/index";
@@ -139,17 +186,28 @@ export default {
       }
     };
     var validate = (rule, value, callback) => {
-            if (value === '') {
-                callback(new Error('请再次输入密码'));
-            } else if (value !== this.newUser.password) {
-                callback(new Error('两次输入密码不一致!'));
-            } else {
-                callback();
-            }
-        };
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.newUser.password) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
+      }
+    };
+    var validate2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.forgetPwdForm.password) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
+      }
+    };
     return {
       time: "获取验证码",
+      time2: "获取验证码",
       isGet: false,
+      isGet2: false,
       loginForm: {
         account: null,
         password: null,
@@ -164,6 +222,14 @@ export default {
         ]
       },
       registerDialog: false,
+      forgetPwdDialog: false,
+      forgetPwdForm: {
+        userName: null,
+        code: null,
+        password: null,
+        confirmPassword: null
+      },
+
       newUser: {
         account: null,
         password: null,
@@ -179,16 +245,21 @@ export default {
         ],
         password: [
           { required: true, message: "必须填写密码", trigger: "change" },
-          { min: 6, max: 16, message: '密码必须设置在6到16位，且包含字母和数字', trigger: 'blur' },
+          {
+            min: 6,
+            max: 16,
+            message: "密码必须设置在6到16位，且包含字母和数字",
+            trigger: "blur"
+          },
           {
             pattern: /^(?=.*[A-z])(?=.*\d)[\d\D]*$/,
-            message: '密码设置在6到16位，且包含字母和数字',
-            trigger: 'blur'
+            message: "密码设置在6到16位，且包含字母和数字",
+            trigger: "blur"
           }
         ],
-        confirmPassword:[
+        confirmPassword: [
           { required: true, message: "必须填写确认密码", trigger: "change" },
-          { validator: validate, trigger: 'blur', required: true }
+          { validator: validate, trigger: "blur", required: true }
         ],
         company: [
           { required: true, message: "必须填写公司名", trigger: "change" }
@@ -198,6 +269,35 @@ export default {
         ],
         captcha: [
           { required: true, message: "必须填写验证码", trigger: "change" }
+        ]
+      },
+
+      forgetPwdFormRules: {
+        userName: [
+          {
+            required: true,
+            message: "必须填写需要修改密码的账号",
+            trigger: "blur"
+          }
+        ],
+        code: [{ required: true, message: "必须填写验证码", trigger: "blur" }],
+        password: [
+          { required: true, message: "必须填写密码", trigger: "blur" },
+          {
+            min: 6,
+            max: 16,
+            message: "密码必须设置在6到16位，且包含字母和数字",
+            trigger: "blur"
+          },
+          {
+            pattern: /^(?=.*[A-z])(?=.*\d)[\d\D]*$/,
+            message: "密码设置在6到16位，且包含字母和数字",
+            trigger: "blur"
+          }
+        ],
+        confirmPassword: [
+          { required: true, message: "必须填写确认密码", trigger: "blur" },
+          { validator: validate2, trigger: "blur", required: true }
         ]
       },
       passwordType: "password",
@@ -250,19 +350,35 @@ export default {
           phone: this.newUser.phone
         };
         getCaptcha(params).then(res => {
-          if(res.data.success){
+          if (res.data.success) {
             this.isGet = true;
             this.countDown(60);
-          }else{
+          } else {
             this.$notify({
               title: "失败",
               message: res.data.message,
               type: "error"
             });
           }
-         
         });
       }
+    },
+    getCode2() {
+      let params = {
+        userName: this.forgetPwdForm.userName
+      };
+      getCaptcha2(params).then(res => {
+        if (res.data.success) {
+          this.isGet2 = true;
+          this.countDown2(60);
+        } else {
+          this.$notify({
+            title: "失败",
+            message: res.data.message,
+            type: "error"
+          });
+        }
+      });
     },
     //倒计时
     countDown(time) {
@@ -276,6 +392,17 @@ export default {
         this.time = "重新获取验证码";
       }
     },
+    countDown2(time) {
+      this.time2 = time;
+      if (time > 0) {
+        setTimeout(() => {
+          this.countDown(time - 1);
+        }, 1000);
+      } else {
+        this.isGet2 = false;
+        this.time2 = "重新获取验证码";
+      }
+    },
     //注册
     register(formName) {
       this.$refs[formName].validate(valid => {
@@ -287,7 +414,50 @@ export default {
               message: "注册成功",
               type: "success"
             });
+            (this.newUser = {
+              account: null,
+              password: null,
+              confirmPassword: null,
+              company: null,
+              phone: null,
+              captcha: null,
+              email: null
+            }),
+              (this.time = "获取验证码");
+            this.isGet = false;
             this.registerDialog = false;
+          });
+        }
+      });
+    },
+    //忘记密码
+    forgetPwd(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          console.log(this.forgetPwdForm, "123");
+          changePwd(this.forgetPwdForm).then(res => {
+            if (res.data.success) {
+              this.$notify({
+                title: "成功",
+                message: "修改成功",
+                type: "success"
+              });
+              (this.forgetPwdForm = {
+                userName: null,
+                code: null,
+                password: null,
+                confirmPassword: null
+              }),
+                (this.time2 = "获取验证码");
+              this.isGet2 = false;
+              this.forgetPwdDialog = false;
+            } else {
+              this.$notify({
+                title: "失败",
+                message: res.data.message,
+                type: "error"
+              });
+            }
           });
         }
       });
@@ -417,6 +587,12 @@ $light_gray: #eee;
   width: 22%;
   position: absolute;
   top: 54%;
+  right: 6%;
+}
+.getCode2 {
+  width: 22%;
+  position: absolute;
+  top: 34.5%;
   right: 6%;
 }
 </style>
