@@ -22,7 +22,7 @@
       <el-button type="primary" icon="el-icon-search" @click="init">查询</el-button>
     </div>
 
-    <el-table :data="tableData" border style="width: 100%" v-loading='onFetching':header-cell-style="{background:'#eef1f6',color:'#606266'}">
+    <el-table :data="tableData" border style="width: 100%" v-loading='onFetching' :header-cell-style="{background:'#eef1f6',color:'#606266'}">
       <el-table-column label="序号" width="60" type="index" />
       <el-table-column prop="communityName" label="小区"></el-table-column>
       <el-table-column prop="sipType" label="呼叫类别"></el-table-column>
@@ -55,7 +55,7 @@ export default {
         beginTime: null,
         endTime: null,
         sipType: null,
-        pageSize: 5000,
+        pageSize: 10,
         lastId: null
       },
       tableData: []

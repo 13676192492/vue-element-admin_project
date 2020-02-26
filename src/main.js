@@ -15,7 +15,7 @@ import '@/styles/common.scss' // 通用样式
 import './icons' // icon
 import './errorLog' // error log
 import './permission' // permission control
-import './mock' // simulation data
+// import './mock' // simulation data
 
 
 Vue.use(Element, {

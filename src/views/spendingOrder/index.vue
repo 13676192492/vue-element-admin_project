@@ -10,9 +10,9 @@
         end-placeholder="结束日期"
         style="margin-right:1%;"
       ></el-date-picker>
-      <el-select v-model="params.search.orderStatus" placeholder="请选择订单类型" style="margin-right:1%;">
+      <!-- <el-select v-model="params.search.orderStatus" placeholder="请选择订单类型" style="margin-right:1%;">
         <el-option label="Sip通话" value="1"></el-option>
-      </el-select>
+      </el-select> -->
       <el-select v-model="params.search.orderType" placeholder="请选择支付状态" style="margin-right:1%;">
         <el-option label="待支付" value="20"></el-option>
         <el-option label="成功" value="30"></el-option>
@@ -87,7 +87,7 @@ export default {
       loading:false,
       params:{
         search:{
-          orderStatus:null,
+          orderStatus:1,
           orderType:null,
           createdOnStart:null,
           createdOnEnd:null
@@ -141,8 +141,10 @@ export default {
       this.loading = true;
       // console.log(this.changeTimeFormat(this.selectTime[0]))
       if(this.selectTime){
-        this.params.search.createdOnStart = this.changeTimeFormat(this.selectTime[0])
-        this.params.search.createdOnEnd = this.changeTimeFormat(this.selectTime[1])
+           this.params.search.createdOnStart = this.selectTime[0]
+        this.params.search.createdOnEnd = this.selectTime[1]
+        // this.params.search.createdOnStart = this.changeTimeFormat(this.selectTime[0])
+        // this.params.search.createdOnEnd = this.changeTimeFormat(this.selectTime[1])
       }
 
       getOrderList(this.params).then(res=>{
