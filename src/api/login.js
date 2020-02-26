@@ -68,10 +68,10 @@ export function getCaptcha2(params) {
     })
 }
 
-//修改密码
+//手机找回 - 重置密码
 export function changePwd(params) {
     return request({
-        url: runApi + '/api/account/change-password',
+        url: runApi + '/api/account/reset-password-phone',
         method: 'put',
         data: params
     })
