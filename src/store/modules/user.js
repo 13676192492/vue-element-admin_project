@@ -54,7 +54,6 @@ const user = {
       return new Promise((resolve, reject) => {
         login(userInfo).then(res => {
           if (res.data.success) {
-            console.log(res);
             // debugger
             // loginByUsername(account, userInfo.password).then(response => {
             //   const data = response.data

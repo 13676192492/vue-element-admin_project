@@ -332,7 +332,16 @@ export default {
             .dispatch("LoginByUsername", this.loginForm)
             .then(() => {
               this.loading = false;
-              this.$router.push({ path: this.redirect || "/" });
+              this.$store.dispatch('GetUserInfo').then(res => {
+                const roles = res.roles 
+                this.$store.dispatch('GenerateRoutes', { roles }).then(() => { // 根据roles权限生成可访问的路由表
+                this.$router.addRoutes(this.$store.getters.addRouters) // 动态添加可访问路由表
+                this.$router.push({ path: this.redirect || "/" });          
+                })
+              })
+              
+              // this.$router.addRoutes(this.$store.getters.addRouters) 
+                       
             })
             .catch(() => {
               this.loading = false;
