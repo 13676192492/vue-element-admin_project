@@ -39,7 +39,7 @@
 </template>
 <script>
 import { getPhoneBillList } from "@/api/phoneBill/index";
-import { updateTime } from '@/assets/publicScript/public'
+import { updateTime,changeTimeFormat } from '@/assets/publicScript/public'
 export default {
   data() {
     return {
@@ -80,8 +80,11 @@ export default {
     orderDetails() {
       this.onFetching = true;
       if (this.selectTime) {
-        this.params.createdOnStart = this.selectTime[0];
-        this.params.createdOnEnd = this.selectTime[1];
+        this.params.createdOnStart = changeTimeFormat(this.selectTime[0]);
+        this.params.createdOnEnd = changeTimeFormat(this.selectTime[1]);
+      }else{
+        this.params.search.createdOnStart = null
+        this.params.search.createdOnEnd = null
       }
 
       if(this.sipType)

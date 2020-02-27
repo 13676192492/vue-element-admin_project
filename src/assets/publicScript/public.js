@@ -34,3 +34,19 @@ function setDate(param) {
     if (param < 10) param = '0' + param
     return param
 }
+
+//修改时间格式
+export function changeTimeFormat(time) {
+    let date = new Date(time);
+    let year = date.getFullYear(),
+      month = date.getMonth() + 1,
+      day = date.getDate();
+    if (month < 10) {
+      month = "0" + month;
+    }
+    if (day < 10) {
+      day = "0" + day;
+    }
+
+    return `${year}-${month}-${day}`;
+  }

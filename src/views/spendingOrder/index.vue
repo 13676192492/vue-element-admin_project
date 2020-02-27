@@ -73,7 +73,7 @@
 <script>
 import {getOrderList} from '@/api/order/spendingOrder'
 import OrderDetails from "./components/OrderDetails";
-import { updateTime } from '@/assets/publicScript/public'
+import { updateTime,changeTimeFormat } from '@/assets/publicScript/public'
 export default {
   components: {
     OrderDetails
@@ -144,8 +144,8 @@ export default {
       this.loading = true;
       // console.log(this.changeTimeFormat(this.selectTime[0]))
       if(this.selectTime){
-        this.params.search.createdOnStart = this.changeTimeFormat(this.selectTime[0])
-        this.params.search.createdOnEnd = this.changeTimeFormat(this.selectTime[1])
+        this.params.search.createdOnStart = changeTimeFormat(this.selectTime[0])
+        this.params.search.createdOnEnd = changeTimeFormat(this.selectTime[1])
       }else{
         this.params.search.createdOnStart = null
         this.params.search.createdOnEnd = null
@@ -178,21 +178,7 @@ export default {
       this.param.data = params;
       this.$refs.getDetails.getList()
     },
-    //修改时间格式
-    changeTimeFormat(time) {
-      let date = new Date(time);
-      let year = date.getFullYear(),
-        month = date.getMonth() + 1,
-        day = date.getDate();
-      if (month < 10) {
-        month = "0" + month;
-      }
-      if (day < 10) {
-        day = "0" + day;
-      }
-
-      return `${year}-${month}-${day}`;
-    }
+   
   }
 };
 </script>

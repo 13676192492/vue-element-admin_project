@@ -71,7 +71,7 @@
 <script>
 import {getOrderList} from '@/api/order/spendingOrder'
 // import OrderDetails from "./components/OrderDetails";
-import { updateTime } from '@/assets/publicScript/public'
+import { updateTime,changeTimeFormat } from '@/assets/publicScript/public'
 export default {
   components: {
     // OrderDetails
@@ -140,16 +140,16 @@ export default {
     getList() {
       this.loading = true;
       if(this.selectTime){
-        this.params.search.createdOnStart = this.selectTime[0]
-        this.params.search.createdOnEnd = this.selectTime[1]
+        this.params.search.createdOnStart = changeTimeFormat(this.selectTime[0]);
+        this.params.search.createdOnEnd = changeTimeFormat(this.selectTime[1]);
       }else{
-        this.params.search.createdOnStart = null
-        this.params.search.createdOnEnd = null
+        this.params.search.createdOnStart = null;
+        this.params.search.createdOnEnd = null;
       }
       if(this.orderStatus)
-        this.params.search.orderStatus = +this.orderStatus
+        this.params.search.orderStatus = +this.orderStatus;
       else if(this.orderStatus == '')
-        this.params.search.orderStatus = null
+        this.params.search.orderStatus = null;
 
       getOrderList(this.params).then(res=>{
         if(res.data.success){
