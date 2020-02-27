@@ -68,7 +68,12 @@ export default {
                 if (valid) {
                     this.rechargeFormData.returnUrl = `${location.protocol}//${location.host}`;
                     payRecharge(this.rechargeFormData).then(res => {
-                        console.log(res.data);
+                        var div = document.createElement('div');
+                        div.innerHTML = res.data;
+                        // div.className = "pay-box";
+                        var bo = document.body;
+                        bo.insertBefore(div, bo.lastChild);
+                        document.forms['submit'].submit();
                     });
                 }
             });
@@ -81,7 +86,6 @@ export default {
                 returnUrl: undefined,
                 method: 2
             };
-
         },
     }
 };
