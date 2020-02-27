@@ -13,7 +13,7 @@
       <!-- <el-select v-model="params.search.orderStatus" placeholder="请选择订单类型" style="margin-right:1%;">
         <el-option label="Sip通话" value="1"></el-option>
       </el-select> -->
-      <el-select v-model="params.search.orderType" placeholder="请选择支付状态" style="margin-right:1%;">
+      <el-select v-model="orderStatus" placeholder="请选择支付状态" style="margin-right:1%;">
         <el-option label="待支付" value="20"></el-option>
         <el-option label="成功" value="30"></el-option>
       </el-select>
@@ -85,10 +85,11 @@ export default {
           }
       },
       loading:false,
+      orderStatus:null,
       params:{
         search:{
-          orderStatus:1,
-          orderType:null,
+          orderStatus:null,
+          orderType:2,
           createdOnStart:null,
           createdOnEnd:null
         },
@@ -118,14 +119,14 @@ export default {
     tableIndex(index) {
       return (this.params.page-1) * this.params.limit + index + 1;
     },
-    // changeOrderType(type){
-    //   if(type==1)
-    //   return 'Sip通话'
-    //   // switch(type){
-    //   //   case 1:return 'Sip通话';break;
-    //   //   default:return '';
-    //   // }
-    // },
+    changeOrderType(type){
+      if(type==2)
+        return 'Sip通话'
+      // switch(type){
+      //   case 1:return 'Sip通话';break;
+      //   default:return '';
+      // }
+    },
     changePayStatus(type){
       switch(type){
         case 20:return '待支付';break;
@@ -137,21 +138,26 @@ export default {
       this.param.isShow = res;
       this.getList();
     },
+    //获取数据
     getList() {
       this.loading = true;
       // console.log(this.changeTimeFormat(this.selectTime[0]))
       if(this.selectTime){
-           this.params.search.createdOnStart = this.selectTime[0]
+        this.params.search.createdOnStart = this.selectTime[0]
         this.params.search.createdOnEnd = this.selectTime[1]
-        // this.params.search.createdOnStart = this.changeTimeFormat(this.selectTime[0])
-        // this.params.search.createdOnEnd = this.changeTimeFormat(this.selectTime[1])
+      }else{
+        this.params.search.createdOnStart = null
+        this.params.search.createdOnEnd = null
       }
+      if(this.orderStatus)
+        this.params.search.orderStatus = +this.orderStatus
 
       getOrderList(this.params).then(res=>{
         if(res.data.success){
           for(let i of res.data.data.items){
             i.createdOn = updateTime(i.createdOn);
             i.paymentOn = updateTime(i.paymentOn);
+            i.orderType = this.changeOrderType(i.orderType)
             i.orderStatus = this.changePayStatus(i.orderStatus)
             if(i.orderType ==1){
               i.orderType = 'Sip通话'

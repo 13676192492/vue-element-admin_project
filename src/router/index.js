@@ -45,19 +45,6 @@ export const constantRouterMap = [
   //   ]
   // },
   {
-    path: '',
-    component: Layout,
-    redirect: '/property/index',
-    children: [
-        {
-            path: '/property/index',
-            component: () => import('@/views/property/index'),
-            name: '首页',
-            meta: { title: '首页', icon: 'guide', noCache: true }
-        }
-    ]
-},
-  {
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
@@ -80,7 +67,20 @@ export default new Router({
 })
 export const asyncRouterMap =
  [
-  
+  {
+    path: '',
+    component: Layout,
+    redirect: '/property/index',
+    meta: { title: '首页', icon: 'guide', noCache: true ,roles:['user','admin']},
+    children: [
+        {
+            path: '/property/index',
+            component: () => import('@/views/property/index'),
+            name: '首页',
+            meta: { title: '首页', icon: 'guide', noCache: true,roles:['user'] }
+        }
+    ]
+},
 {
     path: '/spendingOrder',
     component: Layout,
@@ -97,8 +97,8 @@ export const asyncRouterMap =
       {
         path: '/rechargeOrder/index',
         component: () => import('@/views/rechargeOrder/index'),
-        name: '充值订单',
-        meta: { title: '充值订单', icon: 'guide', noCache: true }
+        name: '充值记录',
+        meta: { title: '充值记录', icon: 'guide', noCache: true }
       }
     ]
   },
@@ -122,7 +122,7 @@ export const asyncRouterMap =
     component: Layout,
     redirect: '/account/index',
     name: '账号管理',
-    meta: { title: '账号管理', icon: 'guide', noCache: true },
+    meta: { title: '账号管理', icon: 'guide', noCache: true ,roles:['admin']},
     children: [
     {
       path: 'index',
@@ -136,6 +136,7 @@ export const asyncRouterMap =
     path: '/plotConsumption',
     component: Layout,
     redirect: '/plotConsumptionRank/index',
+    hidden: true,
     children: [
       {
         path: 'index',
@@ -151,6 +152,7 @@ export const asyncRouterMap =
      meta: {
        title: '发票管理',
        icon: 'invoice',
+       roles:['user']
      },
      children: [
        {
@@ -165,6 +167,11 @@ export const asyncRouterMap =
      path: '/ticket',
      component: Layout,
      redirect: '/ticket/index',
+     meta: {
+      title: '开票管理',
+      icon: 'ticket',
+      roles:['admin']
+    },
      children: [
        {
          path: 'index',

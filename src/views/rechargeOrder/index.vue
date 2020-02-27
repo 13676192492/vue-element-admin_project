@@ -13,7 +13,7 @@
       <!-- <el-select v-model="params.search.orderStatus" placeholder="请选择订单类型" style="margin-right:1%;">
         <el-option label="Sip通话" value="1"></el-option>
       </el-select> -->
-      <el-select v-model="params.search.orderType" placeholder="请选择支付状态" style="margin-right:1%;">
+      <el-select v-model="orderStatus" placeholder="请选择支付状态" style="margin-right:1%;">
         <el-option label="待支付" value="20"></el-option>
         <el-option label="成功" value="30"></el-option>
       </el-select>
@@ -31,19 +31,17 @@
       style="width: 100%;"
     >
       <el-table-column label="序号" width="60" type="index" :index="tableIndex" />
-      <el-table-column label="消费订单号"   prop="no"   >
+      <el-table-column label="充值订单号"   prop="no"   >
       </el-table-column>
-      <el-table-column label="类型"  prop="orderType"   >
+      <el-table-column label="支付方式"  prop="paymentMethod"   >
       </el-table-column>
-      <el-table-column label="创建时间"  prop="createdOn" >
+      <el-table-column label="支付时间" prop="createdOn"  >
       </el-table-column>
-      <el-table-column label="支付时间" prop="paymentOn"  >
-      </el-table-column>
-      <el-table-column label="金额（元）"  prop="orderTotal" >
+      <el-table-column label="充值金额"  prop="orderTotal" >
       </el-table-column>
       <el-table-column label="支付状态" prop="orderStatus" >
       </el-table-column>
-      <el-table-column label="操作">
+      <!-- <el-table-column label="操作">
         <template slot-scope="scope">
           <div class="btnGroup">
             <el-tag>
@@ -51,7 +49,7 @@
             </el-tag>
           </div>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
 
 
@@ -85,10 +83,11 @@ export default {
           }
       },
       loading:false,
+      orderStatus:null,
       params:{
         search:{
-          orderStatus:2,
-          orderType:null,
+          orderStatus:null,
+          orderType:1,
           createdOnStart:null,
           createdOnEnd:null
         },
@@ -118,14 +117,14 @@ export default {
     tableIndex(index) {
       return (this.params.page-1) * this.params.limit + index + 1;
     },
-    // changeOrderType(type){
-    //   if(type==1)
-    //   return 'Sip通话'
-    //   // switch(type){
-    //   //   case 1:return 'Sip通话';break;
-    //   //   default:return '';
-    //   // }
-    // },
+    changePaymentMethod(type){
+      switch(type){
+        case 0:return '余额支付';break;
+        case 1:return '银行转账';break;
+        case 2:return '支付宝';break;
+        default:return '微信';
+      }
+    },
     changePayStatus(type){
       switch(type){
         case 20:return '待支付';break;
@@ -139,24 +138,26 @@ export default {
     },
     getList() {
       this.loading = true;
-      // console.log(this.changeTimeFormat(this.selectTime[0]))
       if(this.selectTime){
-        this.params.search.createdOnStart = this.changeTimeFormat(this.selectTime[0])
-        this.params.search.createdOnEnd = this.changeTimeFormat(this.selectTime[1])
+        this.params.search.createdOnStart = this.selectTime[0]
+        this.params.search.createdOnEnd = this.selectTime[1]
+      }else{
+        this.params.search.createdOnStart = null
+        this.params.search.createdOnEnd = null
       }
+      if(this.orderStatus)
+        this.params.search.orderStatus = +this.orderStatus
 
       getOrderList(this.params).then(res=>{
         if(res.data.success){
-          // for(let i of res.data.data.items){
-          //   i.createdOn = updateTime(i.createdOn);
-          //   i.paymentOn = updateTime(i.paymentOn);
-          //   i.orderStatus = this.changePayStatus(i.orderStatus)
-          //   if(i.orderType ==1){
-          //     i.orderType = 'Sip通话'
-          //   }
-          // }
-          // this.total = res.data.data.totalCount;
-          // this.list = res.data.data.items
+          for(let i of res.data.data.items){
+            i.createdOn = updateTime(i.createdOn);
+            i.paymentOn = updateTime(i.paymentOn);
+            i.orderStatus = this.changePayStatus(i.orderStatus)
+            i.paymentMethod = this.changePaymentMethod(i.paymentMethod)
+          }
+          this.total = res.data.data.totalCount;
+          this.list = res.data.data.items
         }
        this.loading = false;
       })
@@ -166,21 +167,6 @@ export default {
       this.param.data = params;
       this.$refs.getDetails.getList(this.params.no)
     },
-    //修改时间格式
-    changeTimeFormat(time) {
-      let date = new Date(time);
-      let year = date.getFullYear(),
-        month = date.getMonth() + 1,
-        day = date.getDate();
-      if (month < 10) {
-        month = "0" + month;
-      }
-      if (day < 10) {
-        day = "0" + day;
-      }
-
-      return `${year}-${month}-${day}`;
-    }
   }
 };
 </script>
