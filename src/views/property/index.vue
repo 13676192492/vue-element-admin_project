@@ -9,9 +9,9 @@
       </div>
       <div>
         <div class="tip-name">已关联社区</div>
-        <div v-if="communityData">
+        <div v-if="communityData.length">
           <div class="plot-content" v-for="(item, index) in communityData" :key="index">
-            <div class="plot-img"><img :src="item.logo?item.logo:'./icon/community.png'"></div>
+            <div class="plot-img"><img :src="item.logo"></div>
             <div class="plot-info" style="margin-top: .5%">
               <p class="plot-name">{{item.name}}</p>
               <!--<p><span style="margin-right: 10%;">累计消费：{{item.amount?item.amount:'无'}}</span><span>昨日消费：{{item.lastDayAmount?item.lastDayAmount:'无'}}</span></p>-->
@@ -28,8 +28,8 @@
           </div>
         </div>
         <div v-else class="none-tip">
-          <img class="none-img" src="./icon/none.png">
-          暂无关联社区
+          <img class="none-img" :src="noneImgShow">
+          <span>暂无关联社区</span>
         </div>
       </div>
     </div>
@@ -44,6 +44,8 @@
 import { getHomeId, getHomeData } from '@/api/property'
 import connectPlot from "./components/ConnectPlot";
 import recharge from "./components/Recharge";
+import communityImg from './icon/community.png'
+import noneImg from './icon/none.png'
 
 export default {
     name: 'Property',
@@ -53,10 +55,11 @@ export default {
             accountId: undefined,
             accountData: { account: undefined, amount: undefined },
             communityId: undefined,
-            communityData: undefined,
+            communityData: [],
             plotTable: false,
             rechargeTable: false,
-            currentRow: {}
+            currentRow: {},
+            noneImgShow: undefined
         }
     },
     created(){
@@ -82,7 +85,14 @@ export default {
                 }).catch(err => {console.log(err);});
             } else {
                 getHomeData(id).then(res => {
-                    this.communityData = res.data.data;
+                    // this.communityData = res.data.data;
+                    if(this.communityData.length > 0){
+                        for(let i in this.communityData){
+                            if(!this.communityData[i].logo) this.communityData[i].logo = communityImg;
+                        }
+                    } else {
+                        this.noneImgShow = noneImg;
+                    }
                 }).catch(err => {console.log(err);});
             }
         },
