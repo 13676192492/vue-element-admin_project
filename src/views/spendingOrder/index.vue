@@ -14,6 +14,7 @@
         <el-option label="Sip通话" value="1"></el-option>
       </el-select> -->
       <el-select v-model="orderStatus" placeholder="请选择支付状态" style="margin-right:1%;">
+        <el-option label="全部" value=""></el-option>
         <el-option label="待支付" value="20"></el-option>
         <el-option label="成功" value="30"></el-option>
       </el-select>
@@ -151,7 +152,10 @@ export default {
       }
       if(this.orderStatus)
         this.params.search.orderStatus = +this.orderStatus
+      else if(this.orderStatus == '')
+        this.params.search.orderStatus = null
 
+        
       getOrderList(this.params).then(res=>{
         if(res.data.success){
           for(let i of res.data.data.items){

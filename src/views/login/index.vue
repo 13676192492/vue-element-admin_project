@@ -53,7 +53,6 @@
         @click.native.prevent="handleLogin"
       >{{ $t('login.logIn') }}</el-button>
       <el-button
-        :loading="loading"
         type="text"
         @click.native.prevent="registerDialog=true"
       >注册</el-button>
@@ -347,6 +346,12 @@ export default {
             });
         } else {
           //   console.log('error submit!!')
+          Message({
+            message: '登录失败',
+            type: 'error',
+             duration: 5 * 1000
+          })
+          this.loading = false;
           return false;
         }
       });
