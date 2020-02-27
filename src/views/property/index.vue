@@ -82,7 +82,7 @@ export default {
                 }).catch(err => {console.log(err);});
             } else {
                 getHomeData(id).then(res => {
-                    // this.communityData = res.data.data;
+                    this.communityData = res.data.data;
                 }).catch(err => {console.log(err);});
             }
         },
