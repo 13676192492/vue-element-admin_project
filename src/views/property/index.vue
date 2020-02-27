@@ -3,38 +3,42 @@
     <div v-show="!plotTable&&!rechargeTable">
       <div class="title-box clearfix">
         <span class="title-name">余额：</span>
-        <span class="title-text"> {{ info.balance }}</span>
+        <span class="title-text" v-if="accountData.amount"> {{ accountData.amount }}</span>
         <el-button class="title-button" type="primary" plain @click="goRecharge">充值</el-button>
         <el-button class="title-button" style="margin-right: 30px;" type="primary" plain @click="goPlot">新增关联社区</el-button>
       </div>
       <div>
         <div class="tip-name">已关联社区</div>
-        <div class="plot-content" v-for="(item, index) in data" :key="index">
-          <div class="plot-img"><img :src="item.icon"></div>
-          <div class="plot-info">
-            <p class="plot-name">{{item.coName}}</p>
-            <p><span style="margin-right: 10%;">累计消费：{{item.amount}}</span><span>昨日消费：{{item.lastDayAmount}}</span></p>
-            <p style="margin: 0;"><span style="margin-right: 8%;">地址：{{item.address}}</span><span>电话：{{item.phone}}</span></p>
+        <div v-if="communityData">
+          <div class="plot-content" v-for="(item, index) in communityData" :key="index">
+            <div class="plot-img"><img :src="item.logo"></div>
+            <div class="plot-info" style="margin-top: .5%">
+              <p class="plot-name">{{item.name}}</p>
+              <!--<p><span style="margin-right: 10%;">累计消费：{{item.amount?item.amount:'无'}}</span><span>昨日消费：{{item.lastDayAmount?item.lastDayAmount:'无'}}</span></p>-->
+              <p><span style="margin-right: 8%;">地址：{{item.address?item.address:'无'}}</span><span>电话：{{item.tel?item.tel:'无'}}</span></p>
+            </div>
+            <!--<div class="plot-consume">
+              <p>本月消费</p>
+              <span>{{item.nowMonthAmount?item.nowMonthAmount:'无'}}</span>
+            </div>-->
+            <div class="plot-operate">
+              <!--<el-button class="btn-box">取消关联</el-button>-->
+              <p class="btn-txt">{{ item.sipEnable? 'sip通话已开启':'sip通话已关闭' }}</p>
+            </div>
           </div>
-          <div class="plot-consume">
-            <p>本月消费</p>
-            <span>{{item.nowMonthAmount}}</span>
-          </div>
-          <div class="plot-operate">
-            <el-button class="btn-box">取消关联</el-button>
-            <p class="btn-txt">{{ item.sipType? 'sip通话已开启':'sip通话已关闭' }}</p>
-          </div>
-        </div>  
+        </div>
+        <div v-else class="none-tip">暂无关联社区</div>
       </div>
     </div>
 
-    <connect-plot ref="plotChild" v-show="plotTable" :row="currentRow" @backPlot="backPlot"/>
+    <connect-plot ref="plotChild" v-show="plotTable" @backPlot="backPlot" @newList="newPlotData"/>
 
-    <recharge ref="rechargeChild" v-show="rechargeTable" :row="currentRow" @backRecharge="backRecharge"/>
+    <recharge ref="rechargeChild" v-show="rechargeTable" :row="currentRow" @backRecharge="backRecharge" @newList="newAccountData"/>
   </div>
 </template>
 
 <script>
+import { getHomeId, getHomeData } from '@/api/property'
 import connectPlot from "./components/ConnectPlot";
 import recharge from "./components/Recharge";
 
@@ -43,19 +47,42 @@ export default {
     components: { connectPlot, recharge },
     data() {
         return {
-            info: { id: 43463, account: 15015948432, connectPlot: '太川云社区', amount: 1000, count: 5, balance: 78 },
-            data: [
-                { id: 354168541, account: 15015948432, icon: 'http://a2.att.hudong.com/36/48/19300001357258133412489354717.jpg', coName:'发斯蒂芬', amount: 1000, sipType: 0, lastDayAmount: 79, nowMonthAmount: 11, address: '广东省珠海市香洲区梅华东路188号', phone: 15015946368 },
-                { id: 354168541, account: 15015948432, icon: 'http://a2.att.hudong.com/36/48/19300001357258133412489354717.jpg', coName:'手工费回电话', amount: 1200, sipType: 1, lastDayAmount: 133, nowMonthAmount: 50, address: '广东省珠海市香洲区梅华东路188号', phone: 15015946368 },
-                { id: 354168541, account: 15015948432, icon: 'http://a2.att.hudong.com/36/48/19300001357258133412489354717.jpg', coName:'哦幸福', amount: 1500, sipType: 0, lastDayAmount: 88, nowMonthAmount: 90, address: '广东省珠海市香洲区梅华东路188号', phone: 15015946368 },
-                { id: 354168541, account: 15015948432, icon: 'http://a2.att.hudong.com/36/48/19300001357258133412489354717.jpg', coName:'百色分公司', amount: 900, sipType: 1, lastDayAmount: 34, nowMonthAmount: 68, address: '广东省珠海市香洲区梅华东路188号', phone: 15015946368 },
-            ],
+            accountId: undefined,
+            accountData: { account: undefined, amount: undefined },
+            communityId: undefined,
+            communityData: undefined,
             plotTable: false,
             rechargeTable: false,
             currentRow: {}
         }
     },
+    created(){
+        this.getId();
+    },
     methods: {
+        //获取首页模块分类
+        getId(){
+            getHomeId().then(response => {
+                let arr = response.data.data.widgetInstances;
+                for(let i in arr){
+                    if(arr[i].viewComponentName === 'MyUserAccountWidget') this.accountId = arr[i].id;
+                    if(arr[i].viewComponentName === 'MyCommunityWidget') this.communityId = arr[i].id;
+                    this.getData(arr[i].id);
+                }
+            }).catch(err => {console.log(err);});
+        },
+        //获取首页各模块数据
+        getData(id){
+            if(id === this.accountId){
+                getHomeData(id).then(res => {
+                    this.accountData = res.data.data;
+                }).catch(err => {console.log(err);});
+            } else {
+                getHomeData(id).then(res => {
+                    this.communityData = res.data.data;
+                }).catch(err => {console.log(err);});
+            }
+        },
         //组件切换
         backPlot(a) {
             this.plotTable = a;
@@ -63,15 +90,21 @@ export default {
         backRecharge(b) {
             this.rechargeTable = b;
         },
+        //组件操作后刷新数据
+        newAccountData(){
+            this.getData(this.accountId);
+        },
+        newPlotData(){
+            this.getData(this.communityId);
+        },
         //跳转页面
         goPlot(){
             this.plotTable = true;
-            this.currentRow = this.info;
             this.$refs.plotChild.getPlotList();
         },
         goRecharge(){
             this.rechargeTable = true;
-            this.currentRow = this.info;
+            this.currentRow = this.accountData;
             this.$refs.rechargeChild.resetFormData();
         }
     }
@@ -195,5 +228,12 @@ export default {
     .btn-box{
       visibility: visible;
     }
+  }
+
+  .none-tip{
+    padding: 1% 0;
+    text-align: center;
+    font-size: 24px;
+    color: #999;
   }
 </style>
