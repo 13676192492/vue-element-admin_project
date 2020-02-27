@@ -4,11 +4,10 @@
       <span class="title-name">关联社区</span>
       <span class="title-text">（用户需要为关联小区sip通话缴费，请只关联自己的小区，如有异议，请联系售后）</span>
       <el-button class="title-button" type="primary" plain @click="goBack">返回</el-button>
-      <el-button class="title-button" type="primary" plain @click="">确定关联</el-button>
     </div>
 
     <div class="filter-container">
-      <el-input v-model="params.coName" placeholder="小区名称" style="width: 250px;margin-right: 10px;" class="filter-item" @keyup.enter.native="queryData" clearable/>
+      <el-input v-model="params.search.name" placeholder="小区名称" style="width: 250px;margin-right: 10px;" class="filter-item" @keyup.enter.native="queryData" clearable/>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="queryData">查询</el-button>
     </div>
 
@@ -20,11 +19,10 @@
             highlight-current-row
             style="width: 100%;"
     >
-      <el-table-column type="selection" width="40"></el-table-column>
       <el-table-column label="序号" width="60" type="index" :index="tableIndex"></el-table-column>
       <el-table-column label="社区名称" min-width="120">
         <template slot-scope="{ row }">
-          <span>{{ row.coName }}</span>
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column label="社区地址" min-width="180">
@@ -34,7 +32,7 @@
       </el-table-column>
       <el-table-column label="联系电话" min-width="100">
         <template slot-scope="{ row }">
-          <span>{{ row.phone }}</span>
+          <span>{{ row.tel }}</span>
         </template>
       </el-table-column>
       <el-table-column label="门口机" min-width="80">
@@ -42,64 +40,66 @@
           <span class="see-show" @click="openDoorCom">查看</span>
         </template>
       </el-table-column>
-      <el-table-column label="能否关联" min-width="80">
-        <template slot-scope="{ row }">
-          <span>{{ row.disabled===undefined? null:row.disabled? '能':'否' }}</span>
+      <el-table-column label="操作" width="140">
+        <template slot-scope="scope">
+          <div class="btnGroup">
+            <el-tag><el-button type="text" @click="connectSure(scope.row)">关联</el-button></el-tag>
+          </div>
         </template>
       </el-table-column>
     </el-table>
 
     <el-pagination
-      background
-      :current-page="params.pageIndex + 1"
-      :page-sizes="[10, 20, 30, 40]"
-      :page-size="params.pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
+            background
+            :current-page="params.page"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="params.limit"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
     />
 
     <el-dialog title="太川云社区门口机信息" :visible.sync="dialog" :close-on-click-modal="false" :append-to-body="true" width="50%">
       <el-table
-        :data="doorList"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        border fit
-        highlight-current-row
-        style="width: 100%;"
+              :data="doorList"
+              :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+              border fit
+              highlight-current-row
+              style="width: 100%;"
       >
         <el-table-column label="序号" width="60" type="index" :index="doorIndex"></el-table-column>
-        <el-table-column label="门口机名称" min-width="120">
-          <template slot-scope="{ row }">
-            <span>{{ row.name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="门口机地址" min-width="180">
-          <template slot-scope="{ row }">
-            <span class="text-show" :title="row.address">{{ row.address }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="门口机机身号" min-width="120">
+        <el-table-column label="机身码" min-width="120">
           <template slot-scope="{ row }">
             <span>{{ row.num }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="门口机类型" min-width="100">
+        <el-table-column label="设备型号" min-width="120">
           <template slot-scope="{ row }">
-            <span>{{ row.type }}</span>
+            <span>{{ row.model }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="设备地址" min-width="180">
+          <template slot-scope="{ row }">
+            <span class="text-show" :title="row.address">{{ row.address }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="社区名称" min-width="120">
+          <template slot-scope="{ row }">
+            <span>{{ row.communityName }}</span>
           </template>
         </el-table-column>
       </el-table>
 
       <el-pagination
-        background
-        :current-page="doorParams.pageIndex + 1"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="doorParams.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="doorTotal"
-        @size-change="handleDoorSizeChange"
-        @current-change="handleDoorCurrentChange"
+              background
+              :current-page="doorParams.page"
+              :page-sizes="[10, 20, 30, 40]"
+              :page-size="doorParams.limit"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="doorTotal"
+              @size-change="handleDoorSizeChange"
+              @current-change="handleDoorCurrentChange"
       />
 
       <div slot="footer" class="dialog-footer">
@@ -110,60 +110,25 @@
 </template>
 
 <script>
+import { searchUnrelated, bindPlot, searchDevice } from '@/api/property'
+
 export default {
     name: 'ConnectPlot',
-    props: {
-        row: { type: Object, required: true }
-    },
     data() {
         return {
-            data: [
-                { id: 6846, phone: 15015948432, coName: '太川云社区', address: '十大歌手', doorId: 245245, disabled: 0 },
-                { id: 6846, phone: 15015948122, coName: '太川社区', address: '俺的沙发', doorId: 452542, disabled: 1 },
-                { id: 6846, phone: 15015788432, coName: '太川云社区', address: '功夫', doorId: 93453, disabled: 1 },
-                { id: 6846, phone: 15015942332, coName: '太川社区', address: '个梵蒂冈不能', doorId: 45371, disabled: 0 },
-                { id: 6846, phone: 15015788432, coName: '太川云社区', address: '公司认购', doorId: 33643, disabled: 1 },
-                { id: 6846, phone: 10159453432, coName: '太川云社区', address: '白癜风搞不懂', doorId: 44444, disabled: 0 },
-                { id: 6846, phone: 15015956432, coName: '太川社区', address: '敢怒敢言', doorId: 664537, disabled: 0 },
-                { id: 6846, phone: 15995948432, coName: '太川云社区', address: '部分好听好听好听', doorId: 87877, disabled: 0 },
-                { id: 6846, phone: 15015748432, coName: '太川云社区', address: '有人让它', doorId: 523054, disabled: 1 },
-                { id: 6846, phone: 15465484832, coName: '太川云社区', address: '你你你', doorId: 94545, disabled: 0 },
-                { id: 6846, phone: 15013131432, coName: '太川社区', address: '如果同意', doorId: 2777, disabled: 1 },
-                { id: 6846, phone: 15015258432, coName: '太川云社区', address: 'uatifg1sd1', doorId: 6607, disabled: 1 },
-                { id: 6846, phone: 15054314302, coName: '太川社区', address: '脏', doorId: 46466, disabled: 0 },
-                { id: 6846, phone: 15013878312, coName: '太川社区', address: '是根深蒂固', doorId: 478787, disabled: 1 },
-                { id: 6846, phone: 15015245842, coName: '太川云社区', address: '十暖暖的法国人手', doorId: 3456545, disabled: 0 }
-            ],
-            doorData: [
-                { id: 6846, phone: 15015948432, name: '太川云社区', address: '十大歌手', num: 245245, type: 0 },
-                { id: 6846, phone: 15015948122, name: '太川社区', address: '俺的沙发', num: 452542, type: 1 },
-                { id: 6846, phone: 15015788432, name: '太川云社区', address: '功夫', num: 93453, type: 1 },
-                { id: 6846, phone: 15015942332, name: '太川社区', address: '个梵蒂冈不能', num: 45371, type: 0 },
-                { id: 6846, phone: 15015788432, name: '太川云社区', address: '公司认购', num: 33643, type: 1 },
-                { id: 6846, phone: 10159453432, name: '太川云社区', address: '白癜风搞不懂', num: 44444, type: 0 },
-                { id: 6846, phone: 15015956432, name: '太川社区', address: '敢怒敢言', num: 664537, type: 0 },
-                { id: 6846, phone: 15995948432, name: '太川云社区', address: '部分好听好听好听', num: 87877, type: 0 },
-                { id: 6846, phone: 15015748432, name: '太川云社区', address: '有人让它', num: 523054, type: 1 },
-                { id: 6846, phone: 15465484832, name: '太川云社区', address: '你你你', num: 94545, type: 0 },
-                { id: 6846, phone: 15013131432, name: '太川社区', address: '如果同意', num: 2777, type: 1 },
-                { id: 6846, phone: 15015258432, name: '太川云社区', address: 'uatifg1sd1', num: 6607, type: 1 },
-                { id: 6846, phone: 15054314302, name: '太川社区', address: '脏', num: 46466, type: 0 },
-                { id: 6846, phone: 15013878312, name: '太川社区', address: '是根深蒂固', num: 478787, type: 1 },
-                { id: 6846, phone: 15015245842, name: '太川云社区', address: '十暖暖的法国人手', num: 3456545, type: 0 }
-            ],
             list: null,
             total: 0,
             doorList: null,
             doorTotal: 0,
             loading: true,
             params: {
-                pageIndex: 0,
-                pageSize: 10,
-                coName: undefined,
+                page: 1,
+                limit: 10,
+                search: { name: undefined }
             },
             doorParams: {
-                pageIndex: 0,
-                pageSize: 10,
+                page: 1,
+                limit: 10,
             },
             dialog:false
         }
@@ -175,73 +140,91 @@ export default {
         },
         //返回序号
         tableIndex(index) {
-            return this.params.pageIndex * this.params.pageSize + index + 1;
+            return (this.params.page - 1) * this.params.limit + index + 1;
         },
         doorIndex(index) {
-            return this.doorParams.pageIndex * this.doorParams.pageSize + index + 1;
+            return (this.doorParams.page - 1) * this.doorParams.limit + index + 1;
         },
         // 查询条数变更
         handleSizeChange: function(val) {
-            this.params.pageSize = val;
+            this.params.limit = val;
             this.getPlotList();
         },
         handleDoorSizeChange: function(val) {
-            this.doorParams.pageSize = val;
+            this.doorParams.limit = val;
             this.getDoorList();
         },
         // 查询页码变更
         handleCurrentChange: function(val) {
-            this.params.pageIndex = val - 1;
+            this.params.page = val;
             this.getPlotList();
         },
         handleDoorCurrentChange: function(val) {
-            this.doorParams.pageIndex = val - 1;
+            this.doorParams.page = val;
             this.getDoorList();
         },
         //获取关联社区列表
         getPlotList() {
-            // this.loading = true;
-            // housesDevice(this.params, machineId).then(response => {
-            //     this.list = response.data.dataArray;
-            //     this.total = response.data.totalCount;
-            //     this.loading = false;
-            // }).catch(() => {
-            //     this.loading = false;
-            // });
-            this.list = [];
-            let index = this.params.pageIndex * this.params.pageSize;
-            for(let i = 0; i < this.params.pageSize; i++){
-                if(this.data[index+i]) this.list.push(this.data[index+i]);
-            }
-            this.total = this.data.length;
+            this.loading = true;
+            let params = {};
+            let name = this.params.search.name;
+            if(name === undefined || name === '') params = { page: this.params.page, limit: this.params.limit };
+            else params = this.params;
+            searchUnrelated(params).then(response => {
+                this.list = response.data.data.items;
+                this.total = response.data.data.totalCount;
+                this.loading = false;
+            }).catch(() => {
+                this.loading = false;
+            });
         },
         //获取门口机列表
         getDoorList() {
-            this.doorList = [];
-            let index = this.doorParams.pageIndex * this.doorParams.pageSize;
-            for(let i = 0; i < this.doorParams.pageSize; i++){
-                if(this.doorData[index+i]) this.doorList.push(this.doorData[index+i]);
-            }
-            this.doorTotal = this.doorData.length;
+            this.loading = true;
+            searchDevice(this.doorParams).then(response => {
+                this.doorList = response.data.data.items;
+                this.doorTotal = response.data.data.totalCount;
+                this.loading = false;
+            }).catch(() => {
+                this.loading = false;
+            });
         },
         //查询列表
         queryData() {
-            if(this.params.coName === ''||this.params.coName === undefined){
-                this.params.pageIndex = 0;
-                this.getPlotList();
-            } else {
-                this.list = [];
-                for(let j in this.data){
-                    if(this.data[j].coName.indexOf(this.params.coName) !== -1) this.list.push(this.data[j]);
-                }
-                this.total = this.list.length;
-            }
+            this.params.page = 1;
+            this.getPlotList();
         },
         //打开查看门口机弹框
         openDoorCom(){
-            this.doorParams.pageIndex = 0;
+            this.doorParams.page = 1;
             this.dialog = true;
             this.getDoorList();
+        },
+        //确定关联
+        connectSure(row){
+            this.$confirm(`确定要关联“${ row.name }”小区吗？`, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                    lock: true,
+                    text: "请求操作中，请稍候",
+                    spinner: "el-icon-loading",
+                    background: "rgba(255, 255, 255, 0.4)"
+                });
+                bindPlot(row.id).then(()=>{
+                    loading.close();
+                    this.getPlotList();
+                    this.$emit("newList");
+                    this.$notify({
+                        title: '成功',
+                        message: '关联成功',
+                        type: 'success',
+                        duration: 2000
+                    });
+                }).catch(() => { loading.close(); });
+            }).catch(() => {});
         }
     }
 };

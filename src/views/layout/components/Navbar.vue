@@ -94,7 +94,7 @@ export default {
 .nameDiy {
   color: #fff;
   position: absolute;
-  right: 2%;
+  right: 34px;
 }
 .navbar {
   height: 50px;
