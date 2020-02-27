@@ -43,7 +43,7 @@
       </el-table-column>
       <el-table-column label="支付状态" prop="orderStatus" >
       </el-table-column>
-      <el-table-column label="操作" width="220">
+      <el-table-column label="操作" >
         <template slot-scope="scope">
           <div class="btnGroup">
             <el-tag>
@@ -168,21 +168,21 @@ export default {
       this.param.data = params;
       this.$refs.getDetails.getList(this.params.no)
     },
-    //修改时间格式
-    changeTimeFormat(time) {
-      let date = new Date(time);
-      let year = date.getFullYear(),
-        month = date.getMonth() + 1,
-        day = date.getDate();
-      if (month < 10) {
-        month = "0" + month;
-      }
-      if (day < 10) {
-        day = "0" + day;
-      }
+    // //修改时间格式
+    // changeTimeFormat(time) {
+    //   let date = new Date(time);
+    //   let year = date.getFullYear(),
+    //     month = date.getMonth() + 1,
+    //     day = date.getDate();
+    //   if (month < 10) {
+    //     month = "0" + month;
+    //   }
+    //   if (day < 10) {
+    //     day = "0" + day;
+    //   }
 
-      return `${year}-${month}-${day}`;
-    }
+    //   return `${year}-${month}-${day}`;
+    // }
   }
 };
 </script>
