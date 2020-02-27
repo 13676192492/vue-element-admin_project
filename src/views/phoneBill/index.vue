@@ -15,7 +15,8 @@
         end-placeholder="结束日期"
         style="margin-right:1%;"
       ></el-date-picker>
-      <el-select v-model="params.sipType" placeholder="请选择呼叫类型" style="margin-right:1%;">
+      <el-select v-model="sipType" placeholder="请选择呼叫类型" style="margin-right:1%;">
+        <el-option label="全部" value=""></el-option>
         <el-option label="Sip通话" value="0"></el-option>
         <el-option label="视频通话" value="1"></el-option>
       </el-select>
@@ -51,6 +52,7 @@ export default {
       },
       selectTime: null,
       onFetching: false,
+      sipType:null,
       params: {
         communityName: null,
         beginTime: null,
@@ -81,6 +83,12 @@ export default {
         this.params.createdOnStart = this.selectTime[0];
         this.params.createdOnEnd = this.selectTime[1];
       }
+
+      if(this.sipType)
+        this.params.sipType = +this.sipType;
+      else if(this.sipType == '')
+        this.params.sipType = null;
+
       getPhoneBillList(this.params).then(res => {
         if (res.data.success) {
           if(res.data.data.items.length>0){
