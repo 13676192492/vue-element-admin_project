@@ -59,7 +59,7 @@ export function register(params) {
 //忘记密码获取验证码
 export function getCaptcha2(params) {
     return request({
-        url: runApi + '/api/account/forgot-password-phone',
+        url: '/api/account/forgot-password-phone',
         method: 'post',
         data: params
     })
@@ -68,7 +68,7 @@ export function getCaptcha2(params) {
 //手机找回 - 重置密码
 export function changePwd(params) {
     return request({
-        url: runApi + '/api/account/reset-password-phone',
+        url: '/api/account/reset-password-phone',
         method: 'put',
         data: params
     })
