@@ -11,7 +11,7 @@
         <div class="tip-name">已关联社区</div>
         <div v-if="communityData">
           <div class="plot-content" v-for="(item, index) in communityData" :key="index">
-            <div class="plot-img"><img :src="item.logo"></div>
+            <div class="plot-img"><img :src="item.logo?item.logo:'http://pic9.nipic.com/20100922/5252423_100202127584_2.jpg'"></div>
             <div class="plot-info" style="margin-top: .5%">
               <p class="plot-name">{{item.name}}</p>
               <!--<p><span style="margin-right: 10%;">累计消费：{{item.amount?item.amount:'无'}}</span><span>昨日消费：{{item.lastDayAmount?item.lastDayAmount:'无'}}</span></p>-->
