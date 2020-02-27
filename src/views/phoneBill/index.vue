@@ -56,7 +56,7 @@ export default {
         beginTime: null,
         endTime: null,
         sipType: null,
-        pageSize: 10,
+        pageSize: 15,
         lastId: null
       },
       tableData: []
