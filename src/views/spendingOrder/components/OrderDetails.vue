@@ -24,25 +24,21 @@
           style="width: 96%;margin-left:2%"
         >
           <el-table-column label="序号" width="60" type="index" :index="tableIndex" />
-          <el-table-column label="小区" min-width="120" prop="communityName" >
+          <el-table-column label="小区"  prop="communityName" >
           </el-table-column>
-          <el-table-column label="呼叫类别" min-width="80" prop="sipType">
+          <el-table-column label="呼叫类别" prop="sipType">
           </el-table-column>
-          <el-table-column label="起始时间" min-width="110"  prop="beginTime">
+          <el-table-column label="起始时间"  prop="beginTime">
           </el-table-column>
-          <el-table-column label="结束时间" min-width="110" prop="endTime" >
+          <el-table-column label="结束时间" prop="endTime" >
           </el-table-column>
-          <el-table-column label="主叫" min-width="120" prop="caller" >
+          <el-table-column label="主叫"  prop="caller" >
           </el-table-column>
-          <el-table-column label="被叫" min-width="80" prop="answer" >
+          <el-table-column label="被叫" prop="answer" >
           </el-table-column>
-          <el-table-column label="通话时长" min-width="110" prop="duration" >
+          <el-table-column label="通话时长"  prop="duration" >
           </el-table-column>
-          <el-table-column label="费用（元）
-" min-width="120" sortable>
-            <template slot-scope="{row}">
-              <span>{{row.amount }}</span>
-            </template>
+          <el-table-column label="费用（元）" prop="amount">
           </el-table-column>
         </el-table>
 
@@ -68,16 +64,24 @@ export default {
   props: ["param"],
   data() {
     return {
-      list: {},
+      list: [],
       loading: null,
       page: 1,
       limit: 10,
-      total:0
+      total:0    
     };
   },
   methods: {
     tableIndex(index) {
       return (this.page - 1) * this.limit + index + 1;
+    },
+    handleSizeChange(val) {
+      this.limit = val;
+      this.getList();
+    },
+    handleCurrentChange(val) {
+      this.page = val;
+      this.getList();
     },
     getList(no){
       let data = {
@@ -86,10 +90,10 @@ export default {
       }
       getOrderDetails(no,data).then(res=>{
         if(res.data.success){
-for(let i of res.data.data.items){
-   i.beginTime = updateTime(i.beginTime);
+          for(let i of res.data.data.items){
+            i.beginTime = updateTime(i.beginTime);
             i.endTime = updateTime(i.endTime);
-}
+          }
         this.total = res.data.data.totalCount;
         this.list = res.data.data.items
         }
