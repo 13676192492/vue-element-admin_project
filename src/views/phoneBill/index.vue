@@ -83,8 +83,8 @@ export default {
         this.params.beginTime = changeTimeFormat(this.selectTime[0]);
         this.params.endTime = changeTimeFormat(this.selectTime[1]);
       }else{
-        this.params.search.beginTime = null
-        this.params.search.endTime = null
+        this.params.beginTime = null
+        this.params.endTime = null
       }
 
       if(this.sipType)
