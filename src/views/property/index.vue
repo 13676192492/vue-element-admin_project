@@ -11,7 +11,7 @@
         <div class="tip-name">已关联社区</div>
         <div v-if="communityData">
           <div class="plot-content" v-for="(item, index) in communityData" :key="index">
-            <div class="plot-img"><img :src="item.logo?item.logo:'http://pic9.nipic.com/20100922/5252423_100202127584_2.jpg'"></div>
+            <div class="plot-img"><img :src="item.logo?item.logo:'./community.png'"></div>
             <div class="plot-info" style="margin-top: .5%">
               <p class="plot-name">{{item.name}}</p>
               <!--<p><span style="margin-right: 10%;">累计消费：{{item.amount?item.amount:'无'}}</span><span>昨日消费：{{item.lastDayAmount?item.lastDayAmount:'无'}}</span></p>-->
@@ -27,7 +27,10 @@
             </div>
           </div>
         </div>
-        <div v-else class="none-tip">暂无关联社区</div>
+        <div v-else class="none-tip">
+          <img class="none-img" src="./icon/none.png">
+          暂无关联社区
+        </div>
       </div>
     </div>
 
@@ -235,5 +238,10 @@ export default {
     text-align: center;
     font-size: 24px;
     color: #999;
+
+    .none-img{
+      display: block;
+      margin: 0 auto;
+    }
   }
 </style>
