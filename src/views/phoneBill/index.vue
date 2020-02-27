@@ -80,11 +80,11 @@ export default {
     orderDetails() {
       this.onFetching = true;
       if (this.selectTime) {
-        this.params.createdOnStart = changeTimeFormat(this.selectTime[0]);
-        this.params.createdOnEnd = changeTimeFormat(this.selectTime[1]);
+        this.params.beginTime = changeTimeFormat(this.selectTime[0]);
+        this.params.endTime = changeTimeFormat(this.selectTime[1]);
       }else{
-        this.params.search.createdOnStart = null
-        this.params.search.createdOnEnd = null
+        this.params.search.beginTime = null
+        this.params.search.endTime = null
       }
 
       if(this.sipType)
