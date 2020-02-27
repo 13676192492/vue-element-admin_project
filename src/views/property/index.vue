@@ -85,7 +85,7 @@ export default {
                 }).catch(err => {console.log(err);});
             } else {
                 getHomeData(id).then(res => {
-                    // this.communityData = res.data.data;
+                    this.communityData = res.data.data;
                     if(this.communityData.length > 0){
                         for(let i in this.communityData){
                             if(!this.communityData[i].logo) this.communityData[i].logo = communityImg;
