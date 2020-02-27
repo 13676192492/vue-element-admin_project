@@ -17,7 +17,7 @@ export function updateTime(data) {
         let hours = time.getHours()
         let min = time.getMinutes()
 
-        console.log(hours)
+        // console.log(hours)
 
         month = setDate(month)
         day = setDate(day)
