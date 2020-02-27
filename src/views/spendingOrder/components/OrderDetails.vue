@@ -1,5 +1,5 @@
-<template>
-  <div class="body" v-show="param.isShow">
+<template >
+  <div class="body" v-if="param.isShow" >
     <div class="box">
       <div class="top">
         <p>订单详情</p>
@@ -68,7 +68,8 @@ export default {
       loading: null,
       page: 1,
       limit: 10,
-      total:0    
+      total:0,
+      no:null    
     };
   },
   methods: {
@@ -83,12 +84,12 @@ export default {
       this.page = val;
       this.getList();
     },
-    getList(no){
+    getList(){
       let data = {
         page:this.page,
         limit:this.limit
       }
-      getOrderDetails(no,data).then(res=>{
+      getOrderDetails(this.param.data.no,data).then(res=>{
         if(res.data.success){
           for(let i of res.data.data.items){
             i.beginTime = updateTime(i.beginTime);

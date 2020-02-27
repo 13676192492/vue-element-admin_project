@@ -172,7 +172,7 @@ export default {
     orderDetails(params) {
       this.param.isShow = true;
       this.param.data = params;
-      this.$refs.getDetails.getList(this.params.no)
+      this.$refs.getDetails.getList()
     },
     // //修改时间格式
     // changeTimeFormat(time) {
