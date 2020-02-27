@@ -13,7 +13,7 @@
       <!-- <el-select v-model="params.search.orderStatus" placeholder="请选择订单类型" style="margin-right:1%;">
         <el-option label="Sip通话" value="1"></el-option>
       </el-select> -->
-      <el-select v-model="params.search.orderStatus" placeholder="请选择支付状态" style="margin-right:1%;">
+      <el-select v-model="orderStatus" placeholder="请选择支付状态" style="margin-right:1%;">
         <el-option label="待支付" value="20"></el-option>
         <el-option label="成功" value="30"></el-option>
       </el-select>
@@ -85,6 +85,7 @@ export default {
           }
       },
       loading:false,
+      orderStatus:null,
       params:{
         search:{
           orderStatus:null,
@@ -148,6 +149,8 @@ export default {
         this.params.search.createdOnStart = null
         this.params.search.createdOnEnd = null
       }
+      if(this.orderStatus)
+        this.params.search.orderStatus = +this.orderStatus
 
       getOrderList(this.params).then(res=>{
         if(res.data.success){
