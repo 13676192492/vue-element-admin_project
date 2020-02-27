@@ -38,6 +38,7 @@
 </template>
 <script>
 import { getPhoneBillList } from "@/api/phoneBill/index";
+import { updateTime } from '@/assets/publicScript/public'
 export default {
   data() {
     return {
@@ -77,12 +78,21 @@ export default {
     orderDetails() {
       this.onFetching = true;
       if (this.selectTime) {
-        this.params.createdOnStart = this.changeTimeFormat(this.selectTime[0]);
-        this.params.createdOnEnd = this.changeTimeFormat(this.selectTime[1]);
+        this.params.createdOnStart = this.selectTime[0];
+        this.params.createdOnEnd = this.selectTime[1];
       }
       getPhoneBillList(this.params).then(res => {
         if (res.data.success) {
           if(res.data.data.items.length>0){
+            for(let i of res.data.data.items){
+              i.beginTime = updateTime(i.beginTime);
+              i.endTime = updateTime(i.endTime);
+              if(i.sipType==0){
+                i.sipType = 'Sip通话'
+              }else{
+                i.sipType = '视频通话'
+              }
+            }
             this.tableData.push(...res.data.data.items);
             this.params.lastId = res.data.data.items[res.data.data.items.length-1].id
           }

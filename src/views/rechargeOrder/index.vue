@@ -43,7 +43,7 @@
       </el-table-column>
       <el-table-column label="支付状态" prop="orderStatus" >
       </el-table-column>
-      <el-table-column label="操作" width="220">
+      <el-table-column label="操作">
         <template slot-scope="scope">
           <div class="btnGroup">
             <el-tag>
