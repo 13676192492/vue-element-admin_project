@@ -25,8 +25,8 @@
     data() {
       return {
         title: '费用管理平台',
-        logo: `${location.protocol}//${location.host}/public/logo.png`,
-        // logo: 'http://10.0.1.222/public/logo.png',
+        // logo: `${location.protocol}//${location.host}/public/logo.png`,
+        logo: null,
         // logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png',
         path:`${location.protocol}//${location.host}/`
       }
