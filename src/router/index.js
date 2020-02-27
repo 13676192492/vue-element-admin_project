@@ -97,8 +97,8 @@ export const asyncRouterMap =
       {
         path: '/rechargeOrder/index',
         component: () => import('@/views/rechargeOrder/index'),
-        name: '充值订单',
-        meta: { title: '充值订单', icon: 'guide', noCache: true }
+        name: '充值记录',
+        meta: { title: '充值记录', icon: 'guide', noCache: true }
       }
     ]
   },
