@@ -9,13 +9,15 @@
 export function updateTime(data) {
     // let test =  new Date(data).getTime();
     if (data) {
-        const time = new Date(data.substring(0, 19));
-
+        const time = new Date(data);
+        
 
         let month = time.getMonth() + 1
         let day = time.getDate()
         let hours = time.getHours()
         let min = time.getMinutes()
+
+        console.log(hours)
 
         month = setDate(month)
         day = setDate(day)
