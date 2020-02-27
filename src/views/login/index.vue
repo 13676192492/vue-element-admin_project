@@ -45,19 +45,18 @@
       <!-- <el-form-item prop="btn"> -->
       <!-- <p class="registerBtn" @click="registerDialog=true">注册</p> -->
       <!-- </el-form-item> -->
+     
       <el-button
         :loading="loading"
         type="primary"
-        style="width:100%;margin:30px 0;"
-        @click.native.prevent="registerDialog=true"
-      >注册</el-button>
-      <el-button
-        :loading="loading"
-        type="primary"
-        style="width:100%;margin-bottom:30px;margin-left:0"
+        style="width:100%;margin-bottom:30px;margin-top:16px;margin-left:0"
         @click.native.prevent="handleLogin"
       >{{ $t('login.logIn') }}</el-button>
-     
+      <el-button
+        :loading="loading"
+        type="text"
+        @click.native.prevent="registerDialog=true"
+      >注册</el-button>
       <el-button
         type="text"
         @click.native.prevent="forgetPwdDialog=true"
@@ -332,16 +331,16 @@ export default {
             .dispatch("LoginByUsername", this.loginForm)
             .then(() => {
               this.loading = false;
-              this.$store.dispatch('GetUserInfo').then(res => {
-                const roles = res.roles 
-                this.$store.dispatch('GenerateRoutes', { roles }).then(() => { // 根据roles权限生成可访问的路由表
-                this.$router.addRoutes(this.$store.getters.addRouters) // 动态添加可访问路由表
-                this.$router.push({ path: this.redirect || "/" });          
-                })
-              })
-              
-              // this.$router.addRoutes(this.$store.getters.addRouters) 
-                       
+              this.$store.dispatch("GetUserInfo").then(res => {
+                const roles = res.roles;
+                this.$store.dispatch("GenerateRoutes", { roles }).then(() => {
+                  // 根据roles权限生成可访问的路由表
+                  this.$router.addRoutes(this.$store.getters.addRouters); // 动态添加可访问路由表
+                  this.$router.push({ path: this.redirect || "/" });
+                });
+              });
+
+              // this.$router.addRoutes(this.$store.getters.addRouters)
             })
             .catch(() => {
               this.loading = false;
