@@ -1,9 +1,9 @@
 <template >
-  <div class="body" v-if="param.isShow" >
+  <div class="body" v-if="param.isShow">
     <div class="box">
       <div class="top">
         <p>订单详情</p>
-        <el-button  type="primary" @click="close">返回</el-button>
+        <el-button type="primary" @click="close">返回</el-button>
       </div>
       <ul class="center">
         <li>消费订单号：{{param.data.no}}</li>
@@ -24,25 +24,22 @@
           style="width: 96%;margin-left:2%"
         >
           <el-table-column label="序号" width="60" type="index" :index="tableIndex" />
-          <el-table-column label="小区"  prop="communityName" >
-          </el-table-column>
-          <el-table-column label="呼叫类别" >
+          <el-table-column label="小区" prop="communityName"></el-table-column>
+          <el-table-column label="呼叫类别">
             <template slot-scope="{ row }">
               <span>{{ row.sipType | filter }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="起始时间"  prop="beginTime">
+          <el-table-column label="主叫" prop="caller"></el-table-column>
+          <el-table-column label="被叫" prop="answer"></el-table-column>
+          <el-table-column prop="createdOn" label="创建时间"></el-table-column>
+          <el-table-column prop="sayTime" label="通话时间"></el-table-column>
+          <el-table-column label="通话时长">
+            <template slot-scope="{ row }">
+              <span>{{ row.duration | duration }}</span>
+            </template>
           </el-table-column>
-          <el-table-column label="结束时间" prop="endTime" >
-          </el-table-column>
-          <el-table-column label="主叫"  prop="caller" >
-          </el-table-column>
-          <el-table-column label="被叫" prop="answer" >
-          </el-table-column>
-          <el-table-column label="通话时长"  prop="duration" >
-          </el-table-column>
-          <el-table-column label="费用（元）" prop="amount">
-          </el-table-column>
+          <el-table-column label="费用（元）" prop="amount"></el-table-column>
         </el-table>
 
         <el-pagination
@@ -61,7 +58,7 @@
 </template>
 
 <script>
-import { updateTime } from '@/assets/publicScript/public'
+import { updateTime,changeTimeFormat } from "@/assets/publicScript/public";
 import { getOrderDetails } from "@/api/order/spendingOrder";
 export default {
   props: ["param"],
@@ -71,16 +68,23 @@ export default {
       loading: null,
       page: 1,
       limit: 10,
-      total:0,
-      no:null    
+      total: 0,
+      no: null
     };
   },
-  filters:{
-    filter(val){
-      if(val == 0)
-        return 'sip通话';
-      else
-        return '视频通话'
+  filters: {
+    filter(val) {
+      if (val == 0) return "sip通话";
+      else return "视频通话";
+    },
+    duration(val){
+      let min = parseInt(val/60);
+      let sec = val%60;
+      if(!!min){
+        return `${min}分${sec}秒`
+      }else{
+        return `${sec}秒`
+      }
     }
   },
   methods: {
@@ -95,22 +99,26 @@ export default {
       this.page = val;
       this.getList();
     },
-    getList(){
+    getList() {
       let data = {
-        page:this.page,
-        limit:this.limit
-      }
-      getOrderDetails(this.param.data.no,data).then(res=>{
-        if(res.data.success){
-          for(let i of res.data.data.items){
-            i.beginTime = updateTime(i.beginTime,0);
-            i.endTime = updateTime(i.endTime,0);
+        page: this.page,
+        limit: this.limit
+      };
+      getOrderDetails(this.param.data.no, data).then(res => {
+        if (res.data.success) {
+          for (let i of res.data.data.items) {
+            i.createdOn = changeTimeFormat(i.createdOn);
+              i.sayTime = updateTime(i.beginTime,1)+' 至 '+ updateTime(i.endTime,1)
+              if(i.sipType==0){
+                i.sipType = 'Sip通话'
+              }else{
+                i.sipType = '视频通话'
+              }
           }
-        this.total = res.data.data.totalCount;
-        this.list = res.data.data.items
+          this.total = res.data.data.totalCount;
+          this.list = res.data.data.items;
         }
-        
-      })
+      });
     },
     close() {
       this.$emit("closeMask", false);

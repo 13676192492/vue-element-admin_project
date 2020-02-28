@@ -114,9 +114,7 @@ export default {
         if (res.data.success) {
           if(res.data.data.items.length>0){
             for(let i of res.data.data.items){
-              i.createdOn = updateTime(i.createdOn,0);
-              // i.beginTime = updateTime(i.beginTime,1);
-              // i.endTime = updateTime(i.endTime,1);
+              i.createdOn = changeTimeFormat(i.createdOn);
               i.sayTime = updateTime(i.beginTime,1)+' 至 '+ updateTime(i.endTime,1)
               if(i.sipType==0){
                 i.sipType = 'Sip通话'
