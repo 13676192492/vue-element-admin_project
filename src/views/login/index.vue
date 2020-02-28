@@ -110,7 +110,7 @@
         >{{time}}</el-button>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="registerDialog = false">取消</el-button>
+        <el-button @click="resetForm('newUserForm')">取消</el-button>
         <el-button type="primary" @click="register('newUserForm')">确定</el-button>
       </div>
     </el-dialog>
@@ -152,7 +152,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="forgetPwdDialog = false">取消</el-button>
+        <el-button @click="resetForm('forgetPwdForm')">取消</el-button>
         <el-button type="primary" @click="forgetPwd('forgetPwdForm')">确定</el-button>
       </div>
     </el-dialog>
@@ -346,6 +346,12 @@ export default {
             });
         } else {
           //   console.log('error submit!!')
+          Message({
+            message: '登录失败',
+            type: 'error',
+             duration: 5 * 1000
+          })
+          this.loading = false;
           return false;
         }
       });
@@ -421,21 +427,18 @@ export default {
               message: "注册成功",
               type: "success"
             });
-            (this.newUser = {
-              account: null,
-              password: null,
-              confirmPassword: null,
-              company: null,
-              phone: null,
-              captcha: null,
-              email: null
-            }),
-              (this.time = "获取验证码");
+            this.resetForm(formName);
+            this.time = "获取验证码";
             this.isGet = false;
-            this.registerDialog = false;
+            // this.registerDialog = false;
           });
         }
       });
+    },
+    resetForm(formName){
+      this.registerDialog = false;
+      this.forgetPwdDialog = false;
+      this.$refs[formName].resetFields();
     },
     //忘记密码
     forgetPwd(formName) {
@@ -449,13 +452,8 @@ export default {
                 message: "修改成功",
                 type: "success"
               });
-              (this.forgetPwdForm = {
-                userName: null,
-                code: null,
-                password: null,
-                confirmPassword: null
-              }),
-                (this.time2 = "获取验证码");
+              this.resetForm(formName);
+              this.time2 = "获取验证码";
               this.isGet2 = false;
               this.forgetPwdDialog = false;
             } else {

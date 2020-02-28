@@ -14,6 +14,7 @@
         <el-option label="Sip通话" value="1"></el-option>
       </el-select> -->
       <el-select v-model="orderStatus" placeholder="请选择支付状态" style="margin-right:1%;">
+        <el-option label="全部" value=""></el-option>
         <el-option label="待支付" value="20"></el-option>
         <el-option label="成功" value="30"></el-option>
       </el-select>
@@ -35,7 +36,7 @@
       </el-table-column>
       <el-table-column label="支付方式"  prop="paymentMethod"   >
       </el-table-column>
-      <el-table-column label="支付时间" prop="createdOn"  >
+      <el-table-column label="支付时间" prop="paymentOn"  >
       </el-table-column>
       <el-table-column label="充值金额"  prop="orderTotal" >
       </el-table-column>
@@ -70,7 +71,7 @@
 <script>
 import {getOrderList} from '@/api/order/spendingOrder'
 // import OrderDetails from "./components/OrderDetails";
-import { updateTime } from '@/assets/publicScript/public'
+import { updateTime,changeTimeFormat } from '@/assets/publicScript/public'
 export default {
   components: {
     // OrderDetails
@@ -139,20 +140,22 @@ export default {
     getList() {
       this.loading = true;
       if(this.selectTime){
-        this.params.search.createdOnStart = this.selectTime[0]
-        this.params.search.createdOnEnd = this.selectTime[1]
+        this.params.search.createdOnStart = changeTimeFormat(this.selectTime[0]);
+        this.params.search.createdOnEnd = changeTimeFormat(this.selectTime[1]);
       }else{
-        this.params.search.createdOnStart = null
-        this.params.search.createdOnEnd = null
+        this.params.search.createdOnStart = null;
+        this.params.search.createdOnEnd = null;
       }
       if(this.orderStatus)
-        this.params.search.orderStatus = +this.orderStatus
+        this.params.search.orderStatus = +this.orderStatus;
+      else if(this.orderStatus == '')
+        this.params.search.orderStatus = null;
 
       getOrderList(this.params).then(res=>{
         if(res.data.success){
           for(let i of res.data.data.items){
-            i.createdOn = updateTime(i.createdOn);
-            i.paymentOn = updateTime(i.paymentOn);
+            i.createdOn = updateTime(i.createdOn,0);
+            i.paymentOn = updateTime(i.paymentOn,0);
             i.orderStatus = this.changePayStatus(i.orderStatus)
             i.paymentMethod = this.changePaymentMethod(i.paymentMethod)
           }

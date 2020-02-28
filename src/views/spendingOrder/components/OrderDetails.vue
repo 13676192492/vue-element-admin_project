@@ -1,5 +1,5 @@
-<template>
-  <div class="body" v-show="param.isShow">
+<template >
+  <div class="body" v-if="param.isShow" >
     <div class="box">
       <div class="top">
         <p>订单详情</p>
@@ -26,7 +26,10 @@
           <el-table-column label="序号" width="60" type="index" :index="tableIndex" />
           <el-table-column label="小区"  prop="communityName" >
           </el-table-column>
-          <el-table-column label="呼叫类别" prop="sipType">
+          <el-table-column label="呼叫类别" >
+            <template slot-scope="{ row }">
+              <span>{{ row.sipType | filter }}</span>
+            </template>
           </el-table-column>
           <el-table-column label="起始时间"  prop="beginTime">
           </el-table-column>
@@ -68,8 +71,17 @@ export default {
       loading: null,
       page: 1,
       limit: 10,
-      total:0    
+      total:0,
+      no:null    
     };
+  },
+  filters:{
+    filter(val){
+      if(val == 0)
+        return 'sip通话';
+      else
+        return '视频通话'
+    }
   },
   methods: {
     tableIndex(index) {
@@ -83,16 +95,16 @@ export default {
       this.page = val;
       this.getList();
     },
-    getList(no){
+    getList(){
       let data = {
         page:this.page,
         limit:this.limit
       }
-      getOrderDetails(no,data).then(res=>{
+      getOrderDetails(this.param.data.no,data).then(res=>{
         if(res.data.success){
           for(let i of res.data.data.items){
-            i.beginTime = updateTime(i.beginTime);
-            i.endTime = updateTime(i.endTime);
+            i.beginTime = updateTime(i.beginTime,0);
+            i.endTime = updateTime(i.endTime,0);
           }
         this.total = res.data.data.totalCount;
         this.list = res.data.data.items

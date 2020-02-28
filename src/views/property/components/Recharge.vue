@@ -5,17 +5,17 @@
       <el-form ref="dataForm" :model="rechargeFormData" :rules="rechargeRules">
         <div style="margin-bottom: 3rem;">
           <span style="margin-right: 15%">当前账号：{{ row.account }}</span>
-          <span>账户余额：{{ row.balance }}</span>
+          <span>账户余额：{{ row.amount }}</span>
         </div>
-        <el-form-item prop="money">
+        <el-form-item prop="total_amount">
           <span class="txt-class">充值金额：</span>
-          <el-input class="input-class" v-model="rechargeFormData.money" placeholder="请输入充值金额" clearable/>
+          <el-input class="input-class" v-model="rechargeFormData.total_amount" placeholder="请输入充值金额" clearable/>
           <span class="txt-class" style="margin-left: 2%">元</span>
         </el-form-item>
-        <el-form-item prop="way">
+        <el-form-item prop="method">
           <span class="txt-class">支付方式：</span>
-          <el-button class="btns" :class="!rechargeFormData.way?'btns-click':''" style="margin-left: 4rem" @click="selectWay(0)"><i></i>支付宝</el-button>
-          <el-button class="btns" :class="rechargeFormData.way?'btns-click':''" style="margin-left: 2rem" @click="selectWay(1)"><i></i>微信</el-button>
+          <el-button class="btns" :class="rechargeFormData.method===2?'btns-click':''" @click="selectWay(2)"><i></i>支付宝</el-button>
+          <!--<el-button class="btns" :class="rechargeFormData.method?'btns-click':''" style="margin-left: 2rem" @click="selectWay(1)"><i></i>微信</el-button>-->
         </el-form-item>
       </el-form>
       <div class="btn-box">
@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import { payRecharge } from '@/api/property'
+
 export default {
     name: 'Recharge',
     props: {
@@ -38,13 +40,14 @@ export default {
     data() {
         return {
             rechargeFormData: {
-                money: undefined,
-                way: 0
+                total_amount: undefined,
+                returnUrl: undefined,
+                method: 2
             },
             rechargeRules: {
-                money: [
+                total_amount: [
                     { required: true, message: "请输入充值金额", trigger: "change" },
-                    { pattern: /([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])/, message: "充值金额必须大于0", trigger: "blur" },
+                    { pattern: /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/, message: "输入的充值金额格式错误", trigger: "blur" },
                 ]
             }
         }
@@ -57,24 +60,33 @@ export default {
         },
         //选择支付方式
         selectWay(index){
-            this.rechargeFormData.way = index;
+            this.rechargeFormData.method = index;
         },
         //立即充值
         rechargeSure(){
             this.$refs["dataForm"].validate(valid => {
                 if (valid) {
-                    console.log(this.rechargeFormData);
+                    this.rechargeFormData.returnUrl = `${location.protocol}//${location.host}`;
+                    payRecharge(this.rechargeFormData).then(res => {
+                        window.open(`${location.protocol}//${location.host}?data=${res.data}`)
+                        // var div = document.createElement('div');
+                        // div.innerHTML = res.data;
+                        // // div.className = "pay-box";
+                        // var bo = document.body;
+                        // bo.insertBefore(div, bo.lastChild);
+                        // document.forms['submit'].submit();
+                    });
                 }
             });
         },
         //重置表单
         resetFormData() {
-            this.$refs["dataForm"].resetFields();
+            this.$refs["dataForm"].clearValidate();
             this.rechargeFormData = {
-                money: undefined,
-                way: 0
+                total_amount: undefined,
+                returnUrl: undefined,
+                method: 2
             };
-
         },
     }
 };

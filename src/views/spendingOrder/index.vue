@@ -14,6 +14,7 @@
         <el-option label="Sip通话" value="1"></el-option>
       </el-select> -->
       <el-select v-model="orderStatus" placeholder="请选择支付状态" style="margin-right:1%;">
+        <el-option label="全部" value=""></el-option>
         <el-option label="待支付" value="20"></el-option>
         <el-option label="成功" value="30"></el-option>
       </el-select>
@@ -72,7 +73,7 @@
 <script>
 import {getOrderList} from '@/api/order/spendingOrder'
 import OrderDetails from "./components/OrderDetails";
-import { updateTime } from '@/assets/publicScript/public'
+import { updateTime,changeTimeFormat } from '@/assets/publicScript/public'
 export default {
   components: {
     OrderDetails
@@ -143,20 +144,23 @@ export default {
       this.loading = true;
       // console.log(this.changeTimeFormat(this.selectTime[0]))
       if(this.selectTime){
-        this.params.search.createdOnStart = this.selectTime[0]
-        this.params.search.createdOnEnd = this.selectTime[1]
+        this.params.search.createdOnStart = changeTimeFormat(this.selectTime[0])
+        this.params.search.createdOnEnd = changeTimeFormat(this.selectTime[1])
       }else{
         this.params.search.createdOnStart = null
         this.params.search.createdOnEnd = null
       }
       if(this.orderStatus)
         this.params.search.orderStatus = +this.orderStatus
+      else if(this.orderStatus == '')
+        this.params.search.orderStatus = null
+
 
       getOrderList(this.params).then(res=>{
         if(res.data.success){
           for(let i of res.data.data.items){
-            i.createdOn = updateTime(i.createdOn);
-            i.paymentOn = updateTime(i.paymentOn);
+            i.createdOn = updateTime(i.createdOn,0);
+            i.paymentOn = updateTime(i.paymentOn,0);
             i.orderType = this.changeOrderType(i.orderType)
             i.orderStatus = this.changePayStatus(i.orderStatus)
             if(i.orderType ==1){
@@ -172,23 +176,9 @@ export default {
     orderDetails(params) {
       this.param.isShow = true;
       this.param.data = params;
-      this.$refs.getDetails.getList(this.params.no)
+      this.$refs.getDetails.getList()
     },
-    // //修改时间格式
-    // changeTimeFormat(time) {
-    //   let date = new Date(time);
-    //   let year = date.getFullYear(),
-    //     month = date.getMonth() + 1,
-    //     day = date.getDate();
-    //   if (month < 10) {
-    //     month = "0" + month;
-    //   }
-    //   if (day < 10) {
-    //     day = "0" + day;
-    //   }
-
-    //   return `${year}-${month}-${day}`;
-    // }
+   
   }
 };
 </script>
