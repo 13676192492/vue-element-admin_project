@@ -74,7 +74,7 @@ export default {
   },
   filters: {
     filter(val) {
-      if (val == 0) return "sip通话";
+      if (val == '0') return "sip通话";
       else return "视频通话";
     },
     duration(val){
@@ -108,12 +108,7 @@ export default {
         if (res.data.success) {
           for (let i of res.data.data.items) {
             i.createdOn = changeTimeFormat(i.createdOn);
-              i.sayTime = updateTime(i.beginTime,1)+' 至 '+ updateTime(i.endTime,1)
-              if(i.sipType==0){
-                i.sipType = 'Sip通话'
-              }else{
-                i.sipType = '视频通话'
-              }
+            i.sayTime = updateTime(i.beginTime,1)+' 至 '+ updateTime(i.endTime,1)
           }
           this.total = res.data.data.totalCount;
           this.list = res.data.data.items;
