@@ -347,10 +347,10 @@ export default {
         } else {
           //   console.log('error submit!!')
           Message({
-            message: '登录失败',
-            type: 'error',
-             duration: 5 * 1000
-          })
+            message: "登录失败",
+            type: "error",
+            duration: 5 * 1000
+          });
           this.loading = false;
           return false;
         }
@@ -406,10 +406,11 @@ export default {
       }
     },
     countDown2(time) {
+      console.log(time);
       this.time2 = time;
       if (time > 0) {
         setTimeout(() => {
-          this.countDown(time - 1);
+          this.countDown2(time - 1);
         }, 1000);
       } else {
         this.isGet2 = false;
@@ -435,7 +436,7 @@ export default {
         }
       });
     },
-    resetForm(formName){
+    resetForm(formName) {
       this.registerDialog = false;
       this.forgetPwdDialog = false;
       this.$refs[formName].resetFields();
