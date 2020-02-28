@@ -23,7 +23,7 @@
       <el-button type="primary" icon="el-icon-search" @click="init">查询</el-button>
     </div>
 
-    <el-table :data="tableData" border style="width: 100%" v-loading='onFetching' :header-cell-style="{background:'#eef1f6',color:'#606266'}">
+    <el-table :data="tableData" border style="width: 100%" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
       <el-table-column label="序号" width="60" type="index" />
       <el-table-column prop="orderNo" label="消费订单号"></el-table-column>
       <el-table-column prop="communityName" label="小区"></el-table-column>
@@ -40,6 +40,7 @@
       <el-table-column prop ='amount' label="费用（元）"></el-table-column>
 
     </el-table>
+    <p class="loading" v-show="onFetching">加载中。。</p>
   </div>
 </template>
 <script>
@@ -151,3 +152,14 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.loading {
+  text-align: center;
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  color: #bebebe;
+  font-size: 18px;
+}
+</style>
