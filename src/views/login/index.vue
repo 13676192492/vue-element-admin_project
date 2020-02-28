@@ -53,7 +53,6 @@
         @click.native.prevent="handleLogin"
       >{{ $t('login.logIn') }}</el-button>
       <el-button
-        :loading="loading"
         type="text"
         @click.native.prevent="registerDialog=true"
       >注册</el-button>
