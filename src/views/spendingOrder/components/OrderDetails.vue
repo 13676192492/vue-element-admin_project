@@ -14,6 +14,9 @@
         <li>支付时间：{{param.data.paymentOn}}</li>
       </ul>
       <div class="detailsTable">
+        <div class="tips">
+          <p>订单信息（sip通话）</p>
+        </div>
         <el-table
           v-loading="loading"
           :data="list"
@@ -58,7 +61,7 @@
 </template>
 
 <script>
-import { updateTime,changeTimeFormat } from "@/assets/publicScript/public";
+import { updateTime, changeTimeFormat } from "@/assets/publicScript/public";
 import { getOrderDetails } from "@/api/order/spendingOrder";
 export default {
   props: ["param"],
@@ -74,16 +77,16 @@ export default {
   },
   filters: {
     filter(val) {
-      if (val == '0') return "sip通话";
+      if (val == "0") return "sip通话";
       else return "视频通话";
     },
-    duration(val){
-      let min = parseInt(val/60);
-      let sec = val%60;
-      if(!!min){
-        return `${min}分${sec}秒`
-      }else{
-        return `${sec}秒`
+    duration(val) {
+      let min = parseInt(val / 60);
+      let sec = val % 60;
+      if (!!min) {
+        return `${min}分${sec}秒`;
+      } else {
+        return `${sec}秒`;
       }
     }
   },
@@ -108,7 +111,8 @@ export default {
         if (res.data.success) {
           for (let i of res.data.data.items) {
             i.createdOn = changeTimeFormat(i.createdOn);
-            i.sayTime = updateTime(i.beginTime,1)+' 至 '+ updateTime(i.endTime,1)
+            i.sayTime =
+              updateTime(i.beginTime, 1) + " 至 " + updateTime(i.endTime, 1);
           }
           this.total = res.data.data.totalCount;
           this.list = res.data.data.items;
@@ -150,14 +154,20 @@ export default {
       // flex-direction: column;
       align-items: center;
       justify-content: space-between;
+
+      p {
+        padding-left: 1%;
+        border-left: 3px solid #11a983;
+      }
     }
   }
 
   .center {
+    margin: 0;
     list-style: none;
     width: 100%;
     height: 40%;
-    border-bottom: 1px solid #eee;
+    // border-bottom: 1px solid #eee;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -172,6 +182,23 @@ export default {
   .detailsTable {
     width: 100%;
     height: calc(60%-60px);
+
+    .tips {
+      width: 100%;
+      padding: 0 2%;
+      height: 60px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      margin-bottom: 2%;
+      color: #666;
+
+      p {
+        padding-left: 1%;
+        border-left: 3px solid #11a983;
+      }
+    }
   }
 }
 </style>
