@@ -63,6 +63,18 @@ export default {
         }
     },
     created(){
+        if(window.location.search) {
+            let str = window.location.search;
+            let data = str.slice(str.indexOf('=')+1);
+            data = decodeURIComponent(data);
+            console.log(data);
+            var div = document.createElement('div');
+            div.innerHTML = data;
+            // div.className = "pay-box";
+            var bo = document.body;
+            bo.insertBefore(div, bo.lastChild);
+            document.forms['submit'].submit();
+        }
         this.getId();
     },
     methods: {
