@@ -6,25 +6,28 @@
 
 
 // 时间格式转换
-export function updateTime(data) {
+export function updateTime(data,type) {
     // let test =  new Date(data).getTime();
     if (data) {
         const time = new Date(data);
         
-
-        let month = time.getMonth() + 1
-        let day = time.getDate()
-        let hours = time.getHours()
-        let min = time.getMinutes()
+        let month = time.getMonth() + 1;
+        let day = time.getDate();
+        let hours = time.getHours();
+        let min = time.getMinutes();
+        let seconds = time.getSeconds();
 
         // console.log(hours)
 
-        month = setDate(month)
-        day = setDate(day)
-        min = setDate(min)
-        hours = setDate(hours)
-
-        return `${time.getFullYear()}-${month}-${day} ${hours}:${min}`
+        month = setDate(month);
+        day = setDate(day);
+        min = setDate(min);
+        hours = setDate(hours);
+        seconds = setDate(seconds);
+        if(type==0)
+          return `${time.getFullYear()}-${month}-${day} ${hours}:${min}:${seconds}`
+        else if(type == 1)
+          return `${hours}:${min}:${seconds}`
     }
 
 }

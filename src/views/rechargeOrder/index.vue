@@ -36,7 +36,7 @@
       </el-table-column>
       <el-table-column label="支付方式"  prop="paymentMethod"   >
       </el-table-column>
-      <el-table-column label="支付时间" prop="createdOn"  >
+      <el-table-column label="支付时间" prop="paymentOn"  >
       </el-table-column>
       <el-table-column label="充值金额"  prop="orderTotal" >
       </el-table-column>
@@ -154,8 +154,8 @@ export default {
       getOrderList(this.params).then(res=>{
         if(res.data.success){
           for(let i of res.data.data.items){
-            i.createdOn = updateTime(i.createdOn);
-            i.paymentOn = updateTime(i.paymentOn);
+            i.createdOn = updateTime(i.createdOn,0);
+            i.paymentOn = updateTime(i.paymentOn,0);
             i.orderStatus = this.changePayStatus(i.orderStatus)
             i.paymentMethod = this.changePaymentMethod(i.paymentMethod)
           }

@@ -159,8 +159,8 @@ export default {
       getOrderList(this.params).then(res=>{
         if(res.data.success){
           for(let i of res.data.data.items){
-            i.createdOn = updateTime(i.createdOn);
-            i.paymentOn = updateTime(i.paymentOn);
+            i.createdOn = updateTime(i.createdOn,0);
+            i.paymentOn = updateTime(i.paymentOn,0);
             i.orderType = this.changeOrderType(i.orderType)
             i.orderStatus = this.changePayStatus(i.orderStatus)
             if(i.orderType ==1){

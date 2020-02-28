@@ -25,15 +25,20 @@
 
     <el-table :data="tableData" border style="width: 100%" v-loading='onFetching' :header-cell-style="{background:'#eef1f6',color:'#606266'}">
       <el-table-column label="序号" width="60" type="index" />
+      <el-table-column prop="orderNo" label="消费订单号"></el-table-column>
       <el-table-column prop="communityName" label="小区"></el-table-column>
       <el-table-column prop="sipType" label="呼叫类别"></el-table-column>
-      <el-table-column prop="beginTime" label="起始时间"></el-table-column>
-      <el-table-column prop="endTime" label="结束时间"></el-table-column>
       <el-table-column prop="caller" label="主叫"></el-table-column>
       <el-table-column prop="answer" label="被叫"></el-table-column>
-      <el-table-column prop="duration" label="通话时长"></el-table-column>
-      <el-table-column prop="amount" label="费用（元）"></el-table-column>
-      <el-table-column prop="orderNo" label="消费订单号"></el-table-column>
+      <el-table-column prop="createdOn" label="创建时间"></el-table-column>
+      <el-table-column prop="sayTime" label="通话时间"></el-table-column>      
+      <el-table-column label="通话时长">
+        <template slot-scope="{ row }">
+          <span>{{ row.duration | filter }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop ='amount' label="费用（元）"></el-table-column>
+
     </el-table>
   </div>
 </template>
@@ -58,15 +63,25 @@ export default {
         beginTime: null,
         endTime: null,
         sipType: null,
-        pageSize: 15,
+        pageSize: 20,
         lastId: null
       },
       tableData: []
     };
   },
+  filters:{
+    filter(val){
+      let min = parseInt(val/60);
+      let sec = val%60;
+      if(!!min){
+        return `${min}分${sec}秒`
+      }else{
+        return `${sec}秒`
+      }
+    }
+  },
   mounted() {
     this.init();
-
     document
       .getElementsByClassName("main-container")[0]
       .addEventListener("scroll", this.scrollLoad, true);
@@ -75,9 +90,11 @@ export default {
     init() {
       this.params.lastId = null;
       this.tableData = [];
-      this.orderDetails();
+      this.orderDetails(0);
     },
-    orderDetails() {
+    orderDetails(num) {
+      if (!this.onFetching) {
+           
       this.onFetching = true;
       if (this.selectTime) {
         this.params.beginTime = changeTimeFormat(this.selectTime[0]);
@@ -96,8 +113,10 @@ export default {
         if (res.data.success) {
           if(res.data.data.items.length>0){
             for(let i of res.data.data.items){
-              i.beginTime = updateTime(i.beginTime);
-              i.endTime = updateTime(i.endTime);
+              i.createdOn = updateTime(i.createdOn,0);
+              // i.beginTime = updateTime(i.beginTime,1);
+              // i.endTime = updateTime(i.endTime,1);
+              i.sayTime = updateTime(i.beginTime,1)+' 至 '+ updateTime(i.endTime,1)
               if(i.sipType==0){
                 i.sipType = 'Sip通话'
               }else{
@@ -105,22 +124,29 @@ export default {
               }
             }
             this.tableData.push(...res.data.data.items);
-            this.params.lastId = res.data.data.items[res.data.data.items.length-1].id
+            this.params.lastId = res.data.data.items[res.data.data.items.length-1].id;
+            
+             
           }
 
         }
+        // console.log(num)
+        this.setscroll(num)
         this.onFetching = false;
       });
+       }
+     
+      
     },
-    scrollLoad() {
-      if (!this.onFetching) {
-        let dom = document.getElementsByClassName("app-main")[0];
-        if (dom.scrollHeight - dom.clientHeight - dom.scrollTop <= 0) {
-          setTimeout(() => {
-            this.orderDetails(); //加载列表的请求方法
-          }, 500);
+    setscroll(num){
+        document.getElementsByClassName("app-main")[0].scrollTop = num-30
+    },
+    scrollLoad() { 
+      let dom = document.getElementsByClassName("app-main")[0];  
+        if (dom.scrollHeight - dom.clientHeight - dom.scrollTop <= 0) {         
+            this.orderDetails(dom.scrollTop); //加载列表的请求方法    
         }
-      }
+      
     }
   }
 };
