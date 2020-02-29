@@ -242,7 +242,7 @@ export default {
           { required: true, message: "必须填写账号", trigger: "change" },
           {
             pattern: /^[0-9a-zA-Z]+$/,
-            message: "账号名必须包含字母和数字",
+            message: "账号名只能包含字母和数字",
             trigger: "blur"
           }
         ],
@@ -396,6 +396,15 @@ export default {
       }
     },
     getCode2() {
+      if (this.forgetPwdForm.userName) {
+        if(!(/^[0-9a-zA-Z]+$/.test(this.forgetPwdForm.userName))){ 
+          this.$notify({
+                title: "失败",
+                message: "请输入正确账号",
+                type: "error"
+              });  
+          return false; 
+        } 
       let params = {
         userName: this.forgetPwdForm.userName
       };
@@ -411,6 +420,7 @@ export default {
           });
         }
       });
+      }
     },
     //倒计时
     countDown(time) {
