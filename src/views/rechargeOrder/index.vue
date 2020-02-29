@@ -38,7 +38,7 @@
       </el-table-column>
       <el-table-column label="支付时间" prop="paymentOn"  >
       </el-table-column>
-      <el-table-column label="充值金额"  prop="orderTotal" >
+      <el-table-column label="充值金额（元）"  prop="orderTotal" >
       </el-table-column>
       <el-table-column label="支付状态" prop="orderStatus" >
       </el-table-column>

@@ -5,6 +5,7 @@
         v-model="params.communityName"
         style="width:200px;margin-right:1%"
         placeholder="请输入小区名称"
+        clearable
       ></el-input>
       <el-date-picker
         v-model="selectTime"
@@ -112,22 +113,25 @@ export default {
 
       getPhoneBillList(this.params).then(res => {
         if (res.data.success) {
-          if(res.data.data.items.length>0){
-            for(let i of res.data.data.items){
-              i.createdOn = changeTimeFormat(i.createdOn);
-              i.sayTime = updateTime(i.beginTime,1)+' 至 '+ updateTime(i.endTime,1)
-              if(i.sipType==0){
-                i.sipType = 'Sip通话'
-              }else{
-                i.sipType = '视频通话'
+          if(res.data.data){
+            if(res.data.data.items.length>0){
+              for(let i of res.data.data.items){
+                i.createdOn = changeTimeFormat(i.createdOn);
+                i.sayTime = updateTime(i.beginTime,1)+' 至 '+ updateTime(i.endTime,1)
+                if(i.sipType==0){
+                  i.sipType = 'Sip通话'
+                }else{
+                  i.sipType = '视频通话'
+                }
               }
-            }
             this.tableData.push(...res.data.data.items);
             this.params.lastId = res.data.data.items[res.data.data.items.length-1].id;
             
              
           }
 
+          }
+  
         }
         // console.log(num)
         this.setscroll(num)
