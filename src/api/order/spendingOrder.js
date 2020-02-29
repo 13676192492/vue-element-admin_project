@@ -20,7 +20,7 @@ export function getOrderDetails(no,params) {
 
 export function payRecharge(params) {
     return request({
-        url: '/api/orders/pay/anewRecharge/'+ params.no,
+        url: '/api/orders/pay/recharge/'+ params.no,
         method: 'post',
         params: params
     })

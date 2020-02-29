@@ -180,7 +180,7 @@ export default {
       payRecharge(params).then(res=>{
         if(res.data.success){
           var div = document.createElement('div');
-          div.innerHTML = res.data.data;
+          div.innerHTML = res.data.data.data;
           var bo = document.body;
           bo.insertBefore(div, bo.lastChild);
           document.forms['submit'].submit();
