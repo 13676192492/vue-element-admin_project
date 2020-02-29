@@ -423,6 +423,7 @@ export default {
         // console.log(this.form)
         if (valid) {
           register(this.newUser).then(res => {
+            if (res.data.success) {
             this.$notify({
               title: "成功",
               message: "注册成功",
@@ -432,6 +433,13 @@ export default {
             this.time = "获取验证码";
             this.isGet = false;
             // this.registerDialog = false;
+            }else{
+               this.$notify({
+                title: "失败",
+                message: res.data.message,
+                type: "error"
+              });
+            }
           });
         }
       });
