@@ -68,16 +68,16 @@ export default new Router({
 export const asyncRouterMap =
  [
   {
-    path: '',
+    path: '/',
     component: Layout,
-    redirect: '/property/index',
-    meta: { title: '首页', icon: 'guide', noCache: true ,roles:['user','admin']},
+    // redirect: '/property/index',
+    meta: { title: '首页', icon: 'guide', noCache: true,roles:['USER'] },
     children: [
         {
             path: '/property/index',
             component: () => import('@/views/property/index'),
             name: '首页',
-            meta: { title: '首页', icon: 'guide', noCache: true,roles:['user'] }
+            meta: { title: '首页', icon: 'guide', noCache: true,roles:['USER'] }
         }
     ]
 },
@@ -86,7 +86,7 @@ export const asyncRouterMap =
     component: Layout,
     redirect: '/spendingOrder/index',
     name: '订单管理',
-    meta: { title: '订单管理', icon: 'guide', noCache: true ,roles:['user']},
+    meta: { title: '订单管理', icon: 'guide', noCache: true ,roles:['USER']},
     children: [
       {
         path: '/spendingOrder/index',
@@ -106,7 +106,7 @@ export const asyncRouterMap =
     path: '/phoneBill',
     component: Layout,
     redirect: '/phoneBill/index',
-    meta: { title: '话单记录', icon: 'guide', noCache: true ,roles:['user']},
+    meta: { title: '话单记录', icon: 'guide', noCache: true ,roles:['USER']},
     children: [
       {
         path: 'index',
@@ -122,7 +122,7 @@ export const asyncRouterMap =
     component: Layout,
     redirect: '/account/index',
     name: '账号管理',
-    meta: { title: '账号管理', icon: 'guide', noCache: true ,roles:['admin']},
+    meta: { title: '账号管理', icon: 'guide', noCache: true ,roles:['ADMIN']},
     children: [
     {
       path: 'index',
@@ -152,7 +152,7 @@ export const asyncRouterMap =
      meta: {
        title: '发票管理',
        icon: 'invoice',
-       roles:['user']
+       roles:['USER']
      },
      children: [
        {
@@ -170,7 +170,7 @@ export const asyncRouterMap =
      meta: {
       title: '开票管理',
       icon: 'ticket',
-      roles:['admin']
+      roles:['ADMIN']
     },
      children: [
        {

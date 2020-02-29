@@ -77,6 +77,9 @@ const user = {
                         //   const data = response.data
                         // commit('SET_TOKEN', data.token)
                         // setToken(response.data.token)
+                        for(let i in res.data.data.roles){
+                            res.data.data.roles[i] = res.data.data.roles[i].toUpperCase()
+                        }
                         commit('SET_ROLES', res.data.data.roles)
                         commit('SET_TOKEN', res.data.data.access_token)
                         setToken(res.data.data.access_token)
@@ -168,6 +171,7 @@ const user = {
         }) {
             return new Promise(resolve => {
                 commit('SET_TOKEN', '')
+                commit('SET_ROLES', [])
                     // removeToken()
                     // removeRoles()
                 removeAll()
