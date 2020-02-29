@@ -166,7 +166,7 @@
                         </el-form>
                         <div slot="footer" class="dialog-footer">
                             <el-button @click="addUpdateDialog1 = false">取消</el-button>
-                            <el-button type="primary" @click="dialogStatus1 === 'create' ? addData() : updateData()">确定</el-button>
+                            <el-button type="primary" @click="dialogStatus1 === 'create' ? addData1() : updateData1()">确定</el-button>
                         </div>
                     </el-dialog>
                 </div>
