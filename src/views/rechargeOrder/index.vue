@@ -40,17 +40,16 @@
       </el-table-column>
       <el-table-column label="充值金额（元）"  prop="orderTotal" >
       </el-table-column>
-      <el-table-column label="支付状态" prop="orderStatus" >
-      </el-table-column>
-      <!-- <el-table-column label="操作">
-        <template slot-scope="scope">
-          <div class="btnGroup">
-            <el-tag>
-              <el-button type="text" @click="orderDetails(scope.row)">详情</el-button>
-            </el-tag>
-          </div>
+      <el-table-column label="支付状态"  >
+        <template slot-scope="{ row }">
+          <span>{{ row.orderStatus | status }}</span>
         </template>
-      </el-table-column> -->
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="{ row }" v-if="row.orderStatus==20">
+          <el-button type="text" @click="recharge(row.no)">去充值</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
 
@@ -69,7 +68,7 @@
   </div>
 </template>
 <script>
-import {getOrderList} from '@/api/order/spendingOrder'
+import {getOrderList,payRecharge} from '@/api/order/spendingOrder'
 // import OrderDetails from "./components/OrderDetails";
 import { updateTime,changeTimeFormat } from '@/assets/publicScript/public'
 export default {
@@ -103,6 +102,14 @@ export default {
       list: []
     };
   },
+  filters:{
+    status(val){
+      switch(val){
+        case 20:return '待支付';break;
+        default:return '成功';
+      }
+    }
+  },
   mounted(){
     this.getList();
   },
@@ -124,12 +131,6 @@ export default {
         case 1:return '银行转账';break;
         case 2:return '支付宝';break;
         default:return '微信';
-      }
-    },
-    changePayStatus(type){
-      switch(type){
-        case 20:return '待支付';break;
-        default:return '成功';
       }
     },
     //关闭新增遮罩层
@@ -156,13 +157,41 @@ export default {
           for(let i of res.data.data.items){
             i.createdOn = updateTime(i.createdOn,0);
             i.paymentOn = updateTime(i.paymentOn,0);
-            i.orderStatus = this.changePayStatus(i.orderStatus)
             i.paymentMethod = this.changePaymentMethod(i.paymentMethod)
           }
           this.total = res.data.data.totalCount;
           this.list = res.data.data.items
-        }
+        } else {
+              this.$notify({
+                title: "失败",
+                message: res.data.message,
+                type: "error"
+              });
+            }
        this.loading = false;
+      })
+    },
+    //充值
+    recharge(no){
+      let params = {
+        no,
+        returnUrl:window.location.href
+      }
+      payRecharge(params).then(res=>{
+        if(res.data.success){
+          var div = document.createElement('div');
+          div.innerHTML = res.data.data;
+          var bo = document.body;
+          bo.insertBefore(div, bo.lastChild);
+          document.forms['submit'].submit();
+        } else {
+              this.$notify({
+                title: "失败",
+                message: res.data.message,
+                type: "error"
+              });
+            }
+        
       })
     },
     orderDetails(params) {
