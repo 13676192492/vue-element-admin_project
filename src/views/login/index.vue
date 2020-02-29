@@ -239,7 +239,12 @@ export default {
       },
       newUserRules: {
         account: [
-          { required: true, message: "必须填写账号", trigger: "change" }
+          { required: true, message: "必须填写账号", trigger: "change" },
+          {
+            pattern: /^[0-9a-zA-Z]+$/,
+            message: "账号名必须包含字母和数字",
+            trigger: "blur"
+          }
         ],
         password: [
           { required: true, message: "必须填写密码", trigger: "change" },
@@ -263,7 +268,13 @@ export default {
           { required: true, message: "必须填写公司名", trigger: "change" }
         ],
         phone: [
-          { required: true, message: "必须填写手机号码", trigger: "change" }
+          { required: true, message: "必须填写手机号码", trigger: "change" },
+          {
+            pattern: /^1[3456789]\d{9}$/,
+            message: "手机号格式错误",
+            trigger: "blur"
+          }
+          
         ],
         captcha: [
           { required: true, message: "必须填写验证码", trigger: "change" }
@@ -359,6 +370,14 @@ export default {
     //获取验证码
     getCode() {
       if (this.newUser.phone) {
+        if(!(/^1[3456789]\d{9}$/.test(this.newUser.phone))){ 
+          this.$notify({
+                title: "失败",
+                message: "手机号格式错误",
+                type: "error"
+              });  
+          return false; 
+        } 
         let params = {
           phone: this.newUser.phone
         };
@@ -396,25 +415,29 @@ export default {
     //倒计时
     countDown(time) {
       this.time = time;
-      if (time > 0) {
-        setTimeout(() => {
-          this.countDown(time - 1);
-        }, 1000);
-      } else {
-        this.isGet = false;
-        this.time = "重新获取验证码";
+      if(this.isGet){
+        if (time > 0) {
+          setTimeout(() => {
+            this.countDown(time - 1);
+          }, 1000);
+        } else {
+          this.isGet = false;
+          this.time = "重新获取验证码";
+        }
       }
+      
     },
     countDown2(time) {
-      console.log(time);
       this.time2 = time;
-      if (time > 0) {
-        setTimeout(() => {
-          this.countDown2(time - 1);
-        }, 1000);
-      } else {
-        this.isGet2 = false;
-        this.time2 = "重新获取验证码";
+      if(this.isGet2){
+        if (time > 0) {
+          setTimeout(() => {
+            this.countDown2(time - 1);
+          }, 1000);
+        } else {
+          this.isGet2 = false;
+          this.time2 = "重新获取验证码";
+        }
       }
     },
     //注册
@@ -445,6 +468,10 @@ export default {
       });
     },
     resetForm(formName) {
+      this.isGet = false;
+      this.isGet2 = false;
+      this.time = "获取验证码";
+      this.time2 = "获取验证码";
       this.registerDialog = false;
       this.forgetPwdDialog = false;
       this.$refs[formName].resetFields();
