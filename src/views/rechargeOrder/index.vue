@@ -105,10 +105,11 @@ export default {
       }
     }
   },
-  mounted() {
-    if (window.location.search) {
+  created() {
+    if (window.location.search|| window.location.hash.split("=")[1]) {
       let str = window.location.search;
-      let data = str.slice(str.indexOf("=") + 1);
+      let data = str.slice(str.indexOf('=')+1) || window.location.hash.split("=")[1];;
+  
       data = decodeURIComponent(data);
       if (data.substring(1, 5) === "form") {
         var div = document.createElement("div");
@@ -195,7 +196,7 @@ export default {
       payRecharge(params).then(res => {
         if (res.data.success) {
           window.open(
-            `${location.protocol}//${location.host}/rechargeOrder/index?data=${res.data.data.data}`
+            `${location.protocol}//${location.host}/#/rechargeOrder/index?data=${res.data.data.data}`
           );
           const h = this.$createElement;
           this.$msgbox({
