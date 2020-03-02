@@ -67,13 +67,14 @@ export default {
             let str = window.location.search;
             let data = str.slice(str.indexOf('=')+1);
             data = decodeURIComponent(data);
-            console.log(data);
-            var div = document.createElement('div');
-            div.innerHTML = data;
-            // div.className = "pay-box";
-            var bo = document.body;
-            bo.insertBefore(div, bo.lastChild);
-            document.forms['submit'].submit();
+            if(data.substring(1,5) === 'form'){
+                var div = document.createElement('div');
+                div.innerHTML = data;
+                // div.className = "pay-box";
+                var bo = document.body;
+                bo.insertBefore(div, bo.lastChild);
+                document.forms['submit'].submit();
+            }
         }
         this.getId();
     },
@@ -117,9 +118,11 @@ export default {
         },
         //组件操作后刷新数据
         newAccountData(){
+            this.rechargeTable = false;
             this.getData(this.accountId);
         },
         newPlotData(){
+            this.plotTable = false;
             this.getData(this.communityId);
         },
         //跳转页面

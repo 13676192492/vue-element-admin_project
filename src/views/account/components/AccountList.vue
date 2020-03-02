@@ -11,7 +11,7 @@
         <div class="info-box">
           <p>
             <span class="id-class">账号ID：{{ row.id }}</span>
-            <span class="del-class" @click="">删除账号</span>
+            <!--<span class="del-class" @click="">删除账号</span>-->
           </p>
           <span class="other-class">账号：{{ row.account }}</span>
           <span class="other-class">手机号码：{{ row.phone? row.phone:'无' }}</span>
@@ -20,7 +20,7 @@
         </div>
         <div class="balance-box">
           <p class="balance-title">余额</p>
-          <span class="balance-content">{{ row.balance }}</span>
+          <span class="balance-content">{{ row.balance }} 元</span>
         </div>
       </div>
 
@@ -39,12 +39,12 @@
                 style="width: 100%;"
         >
           <el-table-column label="序号" width="60" type="index"></el-table-column>
-          <el-table-column label="社区名称" min-width="100">
+          <el-table-column label="社区名称" min-width="110">
             <template slot-scope="{ row }">
               <span>{{ row.coName }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="社区地址" min-width="120">
+          <el-table-column label="社区地址" min-width="130">
             <template slot-scope="{ row }">
               <span>{{ row.address }}</span>
             </template>
@@ -54,12 +54,12 @@
               <span>{{ row.phone }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="关联日期" min-width="100">
+          <el-table-column label="关联日期" min-width="110">
             <template slot-scope="{ row }">
               <span>{{ row.associatedDate }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="社区累计消耗" min-width="120">
+          <el-table-column label="社区累计消耗（元）" min-width="160">
             <template slot-scope="{ row }">
               <span>{{ row.consume }}</span>
             </template>
@@ -77,8 +77,8 @@
       <div class="table-box">
         <div class="table-title-box clearfix">
           <span class="title-name">充值订单</span>
-          <span class="title-text">订单成功总金额：{{ row.amount }}</span>
-          <el-button class="title-button" type="primary" @click="">导出</el-button>
+          <span class="title-text">订单成功总金额：{{ row.amount }} 元</span>
+          <!--<el-button class="title-button" type="primary" @click="">导出</el-button>-->
         </div>
 
         <el-table
@@ -96,22 +96,22 @@
               <span>{{ row.num }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="账号" min-width="100">
+          <el-table-column label="账号" min-width="120">
             <template slot-scope="{ row }">
               <span>{{ row.account }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="交易金额" min-width="120">
+          <el-table-column label="交易金额（元）" min-width="130">
             <template slot-scope="{ row }">
               <span>{{ row.payAmount }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="支付方式" min-width="120">
+          <el-table-column label="支付方式" min-width="110">
             <template slot-scope="{ row }">
               <span>{{ row.payWay }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="支付状态" min-width="120">
+          <el-table-column label="支付状态" min-width="100">
             <template slot-scope="{ row }">
               <span>{{ row.payStatus }}</span>
             </template>

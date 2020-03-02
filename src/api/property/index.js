@@ -52,3 +52,18 @@ export function payRecharge(query) {
         params: query
     })
 }
+
+export function payRechargeAgain(id, query) {
+    return request({
+        url: '/api/orders/pay/recharge/' + id,
+        method: 'post',
+        params: query
+    })
+}
+
+export function payState(id) {
+    return request({
+        url: '/api/orders/pay/recharge/'+ id +'/status',
+        method: 'get'
+    })
+}
