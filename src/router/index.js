@@ -71,13 +71,19 @@ export const asyncRouterMap =
     path: '/',
     component: Layout,
     // redirect: '/property/index',
-    meta: { title: '首页', icon: 'guide', noCache: true,roles:['USER'] },
+    meta: { title: '首页', icon: 'guide', noCache: true,roles:['USER','ADMIN'] },
     children: [
         {
             path: '/property/index',
             component: () => import('@/views/property/index'),
             name: '首页',
             meta: { title: '首页', icon: 'guide', noCache: true,roles:['USER'] }
+        },
+        {
+            path: '/manage/index',
+            component: () => import('@/views/manage/index'),
+            name: '首页',
+            meta: { title: '首页', icon: 'guide', noCache: true,roles:['ADMIN'] }
         }
     ]
 },
@@ -122,30 +128,30 @@ export const asyncRouterMap =
     component: Layout,
     redirect: '/account/index',
     name: '账号管理',
-    meta: { title: '账号管理', icon: 'guide', noCache: true ,roles:['ADMIN']},
+    meta: { noCache: true ,roles:['ADMIN']},
     children: [
     {
       path: 'index',
       component: () => import('@/views/account/index'),
-      name: '账号详情',
-      meta: { title: '账号详情', icon: 'guide', noCache: true }
+      name: '账号管理',
+      meta: { title: '账号管理', icon: 'guide', noCache: true }
     }
     ]
   },
-  {
-    path: '/plotConsumption',
-    component: Layout,
-    redirect: '/plotConsumptionRank/index',
-    hidden: true,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/plotConsumptionRank/index'),
-        name: '小区消费排名',
-        meta: { title: '小区消费排名', icon: 'guide', noCache: true }
-      }
-    ]
-  },
+  // {
+  //   path: '/plotConsumption',
+  //   component: Layout,
+  //   redirect: '/plotConsumptionRank/index',
+  //   hidden: true,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/plotConsumptionRank/index'),
+  //       name: '小区消费排名',
+  //       meta: { title: '小区消费排名', icon: 'guide', noCache: true }
+  //     }
+  //   ]
+  // },
    {
      path: '/invoice',
      component: Layout,

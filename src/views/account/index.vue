@@ -22,35 +22,24 @@
               fit
               highlight-current-row
               style="width: 100%;"
-              @sort-change="sortChange"
       >
         <el-table-column label="序号" width="60" type="index" :index="tableIndex"></el-table-column>
-        <el-table-column label="账号ID" min-width="100" sortable prop="id">
+        <el-table-column label="账号ID" min-width="100">
           <template slot-scope="{ row }">
             <span>{{ row.id }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="账号" min-width="100" sortable prop="account">
+        <el-table-column label="账号" min-width="100">
           <template slot-scope="{ row }">
             <span>{{ row.account }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="充值总金额" min-width="120" sortable prop="amount">
+        <el-table-column label="公司" min-width="120">
           <template slot-scope="{ row }">
-            <span>{{ row.amount }}</span>
+            <span>{{ row.connectPlot }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="充值次数" min-width="110" sortable prop="count">
-          <template slot-scope="{ row }">
-            <span>{{ row.count }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="关联的社区" min-width="140">
-          <template slot-scope="{ row }">
-            <span class="text-show" :title="row.connectPlot">{{ row.connectPlot }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="余额" min-width="100" sortable prop="balance">
+        <el-table-column label="余额（元）" min-width="120">
           <template slot-scope="{ row }">
             <span>{{ row.balance }}</span>
           </template>
@@ -121,7 +110,7 @@
 
 <script>
 import accountList from "./components/AccountList";
-import recharge from "@/views/property/components/Recharge";
+import recharge from "./components/Recharge";
 
 export default {
     name: 'Account',
@@ -193,17 +182,6 @@ export default {
         handleCurrentChange: function(val) {
             this.params.pageIndex = val - 1;
             this.getList();
-        },
-        //排序查询
-        sortChange(data) {
-            if (data.order === "ascending") {
-                this.params.orderBy = data.prop + " asc";
-            } else if (data.order === "descending") {
-                this.params.orderBy = data.prop + " desc";
-            } else {
-                this.params.orderBy = undefined;
-            }
-            this.queryData();
         },
         //获取列表
         getList() {
@@ -284,16 +262,3 @@ export default {
     }
 }
 </script>
-
-<style lang="scss" scoped>
-  .text-show {
-    display: block;
-    max-height: 30px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    /*display: -webkit-box;*/
-    /*-webkit-line-clamp: 2;*/
-    /*-webkit-box-orient: vertical;*/
-  }
-</style>
