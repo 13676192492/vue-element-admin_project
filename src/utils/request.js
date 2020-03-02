@@ -23,8 +23,6 @@ const service = axios.create({
 })
 
 service.defaults.headers = {
-  // "Authorization" :'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjFDNjJEMzZBMjBGRjYxNzI3OUI3M0RDN0Q2Njc1QTc4MDI3QTdERjUiLCJ0eXAiOiJhdCtqd3QiLCJ4NXQiOiJIR0xUYWlEX1lYSjV0ejNIMW1kYWVBSjZmZlUifQ.eyJuYmYiOjE1NzQ5ODk5MTIsImV4cCI6MTU3NDk5MzUxMiwiaXNzIjoiaHR0cDovLzEwLjAuMS4yMjIvb2F1dGgiLCJhdWQiOiJ1aG9tZSIsImNsaWVudF9pZCI6InVob21lLndlYiIsInN1YiI6IjEwMDAwIiwiYXV0aF90aW1lIjoxNTc0OTg4NDk5LCJpZHAiOiJsb2NhbCIsInJvbGUiOiJBRE1JTiIsIm5hbWUiOiJhZG1pbiIsInRlbmFudF9pZCI6IjEwMDAwIiwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsInVob21lLm8ybyIsInVob21lLnJrZSJdLCJhbXIiOlsicHdkIl19.pu8CBbdPuIw9CJiowsNuR-ertiFHsTVCFsEspZZyJv2kR_emDGeWw9MU9mKfS-R6SF1OrmDfkbDObZFa6eB0xCEYMgnLErHi-OWyBRExgCNIlV_1lbNcqRaj-MMAhRUF3wFzZ5xe8oPWbEGUGBO-dMC7xQtRo5-jT3fy8Y_niKaUveBH4OWYcKTMMjr36vfTjnaar7n856ueLfkQfZtb9rDNMbbjlis5dBhg6CDLArgLerSbrwdso8OF7A47wFcbQryOpORyeui975bTT6Lv8V-vcjJuE_przkh_xSPAZNHEoxkCf_VxRKgkramm20gNM8iW2D8lPyLoBIiPULO68w',
-  // "Authorization": 'Bearer ' + SS,
   "Content-Type": 'application/json',
   'Cache-Control': 'no-cache',
   'Pragma': 'no-cache',

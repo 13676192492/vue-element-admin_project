@@ -18,29 +18,28 @@
       border fit
       highlight-current-row
       style="width: 100%;"
-      @sort-change="sortChange"
     >
-      <el-table-column label="排名" width="100" sortable prop="ranking">
+      <el-table-column label="排名" width="100">
         <template slot-scope="{ row }">
           <span>{{ row.ranking }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="所属账号" min-width="120" sortable prop="account">
+      <el-table-column label="所属账号" min-width="120">
         <template slot-scope="{ row }">
           <span>{{ row.account }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="小区" min-width="120" sortable prop="coName">
+      <el-table-column label="小区" min-width="120">
         <template slot-scope="{ row }">
           <span>{{ row.coName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="门口机数量" min-width="120" sortable prop="emCount">
+      <el-table-column label="门口机数量" min-width="120">
         <template slot-scope="{ row }">
           <span>{{ row.emCount }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="消费" min-width="100" sortable prop="consume">
+      <el-table-column label="消费" min-width="100">
         <template slot-scope="{ row }">
           <span>{{ row.consume }}</span>
         </template>
@@ -112,17 +111,6 @@ export default {
         handleCurrentChange: function(val) {
             this.params.pageIndex = val - 1;
             this.getList();
-        },
-        //排序查询
-        sortChange(data) {
-            if (data.order === "ascending") {
-                this.params.orderBy = data.prop + " asc";
-            } else if (data.order === "descending") {
-                this.params.orderBy = data.prop + " desc";
-            } else {
-                this.params.orderBy = undefined;
-            }
-            this.queryData();
         },
         //获取列表
         getList() {

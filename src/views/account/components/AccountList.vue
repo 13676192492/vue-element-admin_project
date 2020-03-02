@@ -13,14 +13,15 @@
             <span class="id-class">账号ID：{{ row.id }}</span>
             <!--<span class="del-class" @click="">删除账号</span>-->
           </p>
-          <span class="other-class">账号：{{ row.account }}</span>
-          <span class="other-class">手机号码：{{ row.phone? row.phone:'无' }}</span>
-          <span class="other-class">公司：{{ row.company? row.company:'太川云科技有限公司' }}</span>
-          <span class="other-class">创建日期：{{ row.createTime? row.createTime:'2020-2-21' }}</span>
+          <span class="other-class">账号：{{ row.userName }}</span>
+          <span class="other-class">手机号码：{{ row.phoneNumber? row.phoneNumber:'无' }}</span>
+          <span class="other-class">邮箱：{{ row.email? row.email:'无' }}</span>
+          <span class="other-class">创建日期：{{ row.createTime? row.createTime:'--' }}</span>
+          <span class="other-class">最后上线时间：{{ row.lastLoginOn? row.lastLoginOn:'--' }}</span>
         </div>
         <div class="balance-box">
           <p class="balance-title">余额</p>
-          <span class="balance-content">{{ row.balance }} 元</span>
+          <span class="balance-content">{{ row.userAccount? row.userAccount:0 }} 元</span>
         </div>
       </div>
 
@@ -31,6 +32,7 @@
         </div>
 
         <el-table
+                v-loading="loading"
                 :data="plotList"
                 ref="plotTable"
                 :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
@@ -41,7 +43,7 @@
           <el-table-column label="序号" width="60" type="index"></el-table-column>
           <el-table-column label="社区名称" min-width="110">
             <template slot-scope="{ row }">
-              <span>{{ row.coName }}</span>
+              <span>{{ row.name }}</span>
             </template>
           </el-table-column>
           <el-table-column label="社区地址" min-width="130">
@@ -51,23 +53,13 @@
           </el-table-column>
           <el-table-column label="社区电话" min-width="120">
             <template slot-scope="{ row }">
-              <span>{{ row.phone }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="关联日期" min-width="110">
-            <template slot-scope="{ row }">
-              <span>{{ row.associatedDate }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="社区累计消耗（元）" min-width="160">
-            <template slot-scope="{ row }">
-              <span>{{ row.consume }}</span>
+              <span>{{ row.tel }}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="100">
             <template slot-scope="scope">
               <div class="btnGroup">
-                <el-tag><el-button type="text" @click="">取消关联</el-button></el-tag>
+                <el-tag><el-button type="text" @click="connectCancel(scope.row)">取消关联</el-button></el-tag>
               </div>
             </template>
           </el-table-column>
@@ -77,11 +69,12 @@
       <div class="table-box">
         <div class="table-title-box clearfix">
           <span class="title-name">充值订单</span>
-          <span class="title-text">订单成功总金额：{{ row.amount }} 元</span>
+          <!--<span class="title-text">订单成功总金额：{{ row.amount }} 元</span>-->
           <!--<el-button class="title-button" type="primary" @click="">导出</el-button>-->
         </div>
 
         <el-table
+                v-loading="rechargeLoading"
                 :data="rechargeList"
                 ref="rechargTable"
                 :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
@@ -132,9 +125,9 @@
 
         <el-pagination
           background
-          :current-page="params.pageIndex + 1"
+          :current-page="params.page"
           :page-sizes="[5, 10, 20, 50]"
-          :page-size="params.pageSize"
+          :page-size="params.limit"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
           @size-change="handleSizeChange"
@@ -143,15 +136,16 @@
       </div>
     </div>
 
-    <connect-plot ref="plotChild" v-show="plotTable" :row="currentRow" @backPlot="backPlot"/>
+    <connect-plot ref="plotChild" v-show="plotTable" :row="currentRow" @backPlot="backPlot" @newList="newPlotData"/>
 
-    <recharge ref="rechargeChild" v-show="rechargeTable" :row="currentRow" @backRecharge="backRecharge"/>
+    <recharge ref="rechargeChild" v-show="rechargeTable" :row="currentRow" @backRecharge="backRecharge" @newList="newAccountData"/>
   </div>
 </template>
 
 <script>
-import connectPlot from "@/views/property/components/ConnectPlot";
-import recharge from "@/views/property/components/Recharge";
+import { getCommunity, cancelBindCommunity, getOrders } from '@/api/manage/account'
+import connectPlot from "./ConnectPlot";
+import recharge from "./Recharge";
 
 export default {
     name: 'AccountList',
@@ -161,30 +155,15 @@ export default {
     },
     data() {
         return {
-            plotList: [
-                { id: 123456, coName: '太川云社区', address: '广东省珠海市香洲区', phone: '0756-1253698', associatedDate: '2020-2-21', consume: 125 },
-                { id: 123456, coName: '太川云社区', address: '广东省珠海市香洲区', phone: '0756-1253698', associatedDate: '2020-2-21', consume: 125 },
-                { id: 123456, coName: '太川云社区', address: '广东省珠海市香洲区', phone: '0756-1253698', associatedDate: '2020-2-21', consume: 125 }
-            ],
-            dataList: [
-                { id: 123456, num: '201911275369875', account: '15015948432', payAmount: 1000, payWay: '微信', payStatus: '成功', createTime: '2020-2-20 14:14:14' },
-                { id: 123456, num: '201911275369875', account: '15015948432', payAmount: 1000, payWay: '支付宝', payStatus: '失败', createTime: '2020-2-20 14:14:14' },
-                { id: 123456, num: '201911275369875', account: '15015948432', payAmount: 1000, payWay: '公司转账', payStatus: '成功', createTime: '2020-2-20 14:14:14' },
-                { id: 123456, num: '201911275369875', account: '15015948432', payAmount: 1000, payWay: '银行卡转账', payStatus: '成功', createTime: '2020-2-20 14:14:14' },
-                { id: 123456, num: '201911275369875', account: '15015948432', payAmount: 1000, payWay: '微信', payStatus: '待支付', createTime: '2020-2-20 14:14:14' },
-                { id: 123456, num: '201911275369875', account: '15015948432', payAmount: 1000, payWay: '支付宝', payStatus: '成功', createTime: '2020-2-20 14:14:14' },
-                { id: 123456, num: '201911275369875', account: '15015948432', payAmount: 1000, payWay: '公司转账', payStatus: '成功', createTime: '2020-2-20 14:14:14' },
-                { id: 123456, num: '201911275369875', account: '15015948432', payAmount: 1000, payWay: '微信', payStatus: '待支付', createTime: '2020-2-20 14:14:14' },
-                { id: 123456, num: '201911275369875', account: '15015948432', payAmount: 1000, payWay: '微信', payStatus: '成功', createTime: '2020-2-20 14:14:14' },
-                { id: 123456, num: '201911275369875', account: '15015948432', payAmount: 1000, payWay: '支付宝', payStatus: '成功', createTime: '2020-2-20 14:14:14' }
-            ],
+            accountData: null,
+            plotList: null,
             rechargeList: null,
             total: 0,
             loading: true,
+            rechargeLoading: true,
             params: {
-                pageIndex: 0,
-                pageSize: 5,
-                orderBy: undefined
+                page: 1,
+                limit: 5
             },
             plotTable: false,
             rechargeTable: false,
@@ -198,41 +177,68 @@ export default {
         },
         //返回序号
         tableIndex(index) {
-            return this.params.pageIndex * this.params.pageSize + index + 1;
+            return (this.params.page-1) * this.params.limit + index + 1;
         },
         // 查询条数变更
         handleSizeChange: function(val) {
-            this.params.pageSize = val;
+            this.params.limit = val;
             this.getRechargeList();
         },
         // 查询页码变更
         handleCurrentChange: function(val) {
-            this.params.pageIndex = val - 1;
-            this.getRechargeList();
-        },
-        //排序查询
-        sortChange(data) {
-            if (data.order === "ascending") {
-                this.params.orderBy = data.prop + " asc";
-            } else if (data.order === "descending") {
-                this.params.orderBy = data.prop + " desc";
-            } else {
-                this.params.orderBy = undefined;
-            }
+            this.params.page = val;
             this.getRechargeList();
         },
         //获取已关联社区列表
         getList() {
-
+            this.loading = true;
+            getCommunity(this.accountData.id).then(response => {
+                this.plotList = response.data.data;
+                this.loading = false;
+            }).catch(() => {
+                this.loading = false;
+            });
+        },
+        //获取数据
+        getRow(form){
+            this.accountData = form;
         },
         //获取充值订单列表
         getRechargeList() {
-            this.rechargeList = [];
-            let index = this.params.pageIndex * this.params.pageSize;
-            for(let i = 0; i < this.params.pageSize; i++){
-                if(this.dataList[index+i]) this.rechargeList.push(this.dataList[index+i]);
-            }
-            this.total = this.dataList.length;
+            this.rechargeLoading = true;
+            this.params.search = { userId: this.accountData.id };
+            getOrders(this.params).then(response => {
+                this.rechargeList = response.data.items;
+                this.total = response.data.totalCount;
+                this.rechargeLoading = false;
+            }).catch(() => {
+                this.rechargeLoading = false;
+            });
+        },
+        //取消关联
+        connectCancel(row){
+            this.$confirm(`确定要取消“${ row.name }”小区的绑定吗？`, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                    lock: true,
+                    text: "请求操作中，请稍候",
+                    spinner: "el-icon-loading",
+                    background: "rgba(255, 255, 255, 0.4)"
+                });
+                cancelBindCommunity(row.id).then(()=>{
+                    loading.close();
+                    this.getList();
+                    this.$notify({
+                        title: '成功',
+                        message: '解绑成功',
+                        type: 'success',
+                        duration: 2000
+                    });
+                }).catch(() => { loading.close(); });
+            }).catch(() => {});
         },
         //组件切换
         backPlot(a) {
@@ -244,13 +250,22 @@ export default {
         //跳转页面
         goPlot(){
             this.plotTable = true;
-            this.currentRow = this.row;
+            this.currentRow = this.accountData;
             this.$refs.plotChild.getPlotList();
         },
         goRecharge(){
             this.rechargeTable = true;
-            this.currentRow = this.row;
+            this.currentRow = this.accountData;
             this.$refs.rechargeChild.resetFormData();
+        },
+        //组件操作后刷新数据
+        newAccountData(){
+            this.rechargeTable = false;
+            this.getRechargeList();
+        },
+        newPlotData(){
+            this.plotTable = false;
+            this.getList();
         }
     }
 };
