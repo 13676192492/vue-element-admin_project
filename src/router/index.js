@@ -70,17 +70,17 @@ export const asyncRouterMap =
   {
     path: '/',
     component: Layout,
-    // redirect: '/property/index',
+    redirect: '/index',
     meta: { title: '首页', icon: 'guide', noCache: true,roles:['USER','ADMIN'] },
     children: [
         {
-            path: '/property/index',
+            path: '/index',
             component: () => import('@/views/property/index'),
             name: '首页',
             meta: { title: '首页', icon: 'guide', noCache: true,roles:['USER'] }
         },
         {
-            path: '/manage/index',
+            path: '/index',
             component: () => import('@/views/manage/index'),
             name: '首页',
             meta: { title: '首页', icon: 'guide', noCache: true,roles:['ADMIN'] }
