@@ -10,18 +10,18 @@
       <div class="account-box clearfix">
         <div class="info-box">
           <p>
-            <span class="id-class">账号ID：{{ row.id }}</span>
+            <span class="id-class">账号ID：{{ accountData.id }}</span>
             <!--<span class="del-class" @click="">删除账号</span>-->
           </p>
-          <span class="other-class">账号：{{ row.userName }}</span>
-          <span class="other-class">手机号码：{{ row.phoneNumber? row.phoneNumber:'无' }}</span>
-          <span class="other-class">邮箱：{{ row.email? row.email:'无' }}</span>
-          <span class="other-class">创建日期：{{ row.createTime? row.createTime:'--' }}</span>
-          <span class="other-class">最后上线时间：{{ row.lastLoginOn? row.lastLoginOn:'--' }}</span>
+          <span class="other-class">账号：{{ accountData.userName }}</span>
+          <span class="other-class">手机号码：{{ accountData.phoneNumber? accountData.phoneNumber:'无' }}</span>
+          <span class="other-class">邮箱：{{ accountData.email? accountData.email:'无' }}</span>
+          <span class="other-class">创建日期：{{ accountData.createTime? roaccountDataw.createTime:'--' }}</span>
+          <span class="other-class">最后上线时间：{{ accountData.lastLoginOn? accountData.lastLoginOn:'--' }}</span>
         </div>
         <div class="balance-box">
           <p class="balance-title">余额</p>
-          <span class="balance-content">{{ row.userAccount? row.userAccount:0 }} 元</span>
+          <span class="balance-content">{{ accountData.userAccount? accountData.userAccount.amount:0 }} 元</span>
         </div>
       </div>
 
@@ -69,7 +69,7 @@
       <div class="table-box">
         <div class="table-title-box clearfix">
           <span class="title-name">充值订单</span>
-          <!--<span class="title-text">订单成功总金额：{{ row.amount }} 元</span>-->
+          <!--<span class="title-text">订单成功总金额：{{ accountData.amount }} 元</span>-->
           <!--<el-button class="title-button" type="primary" @click="">导出</el-button>-->
         </div>
 
@@ -86,38 +86,38 @@
           <el-table-column label="序号" width="60" type="index" :index="tableIndex"></el-table-column>
           <el-table-column label="订单号" min-width="120">
             <template slot-scope="{ row }">
-              <span>{{ row.num }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="账号" min-width="120">
-            <template slot-scope="{ row }">
-              <span>{{ row.account }}</span>
+              <span>{{ row.no }}</span>
             </template>
           </el-table-column>
           <el-table-column label="交易金额（元）" min-width="130">
             <template slot-scope="{ row }">
-              <span>{{ row.payAmount }}</span>
+              <span>{{ row.orderTotal }}</span>
             </template>
           </el-table-column>
           <el-table-column label="支付方式" min-width="110">
             <template slot-scope="{ row }">
-              <span>{{ row.payWay }}</span>
+              <span>{{ row.paymentMethod===2? '支付宝':'其他' }}</span>
             </template>
           </el-table-column>
           <el-table-column label="支付状态" min-width="100">
             <template slot-scope="{ row }">
-              <span>{{ row.payStatus }}</span>
+              <span>{{ row.orderStatus===30? '支付成功':row.orderStatus===20? '待支付':row.orderStatus }}</span>
             </template>
           </el-table-column>
           <el-table-column label="创建时间" min-width="140">
             <template slot-scope="{ row }">
-              <span>{{ row.createTime }}</span>
+              <span>{{ row.createdOn }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="支付时间" min-width="140">
+            <template slot-scope="{ row }">
+              <span>{{ row.paymentOn? row.paymentOn:'--' }}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="100">
             <template slot-scope="scope">
               <div class="btnGroup">
-                <el-tag><el-button type="text" @click="">查看单号</el-button></el-tag>
+                <el-tag><el-button type="text" @click="seeOrder(scope.row)">查看详情</el-button></el-tag>
               </div>
             </template>
           </el-table-column>
@@ -136,26 +136,48 @@
       </div>
     </div>
 
+    <el-dialog title="订单详情" :visible.sync="dialog" :close-on-click-modal="false" :append-to-body="true" width="38%">
+      <div class="box">
+        <ul class="center">
+          <li>充值订单号：{{orderData.no}}</li>
+          <li>类型：{{orderData.orderType}}</li>
+          <li>金额：{{orderData.orderTotal}}</li>
+          <li>支付状态：{{orderData.orderStatus}}</li>
+          <li>创建时间：{{orderData.createdOn}}</li>
+          <li>支付时间：{{orderData.paymentOn}}</li>
+        </ul>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialog = false">关闭</el-button>
+      </div>
+    </el-dialog>
+
     <connect-plot ref="plotChild" v-show="plotTable" :row="currentRow" @backPlot="backPlot" @newList="newPlotData"/>
 
-    <recharge ref="rechargeChild" v-show="rechargeTable" :row="currentRow" @backRecharge="backRecharge" @newList="newAccountData"/>
+    <recharge ref="rechargeChild" v-show="rechargeTable" :type="1" @brushInfo="brushInfo" @backRecharge="backRecharge" @newList="newAccountData"/>
   </div>
 </template>
 
 <script>
-import { getCommunity, cancelBindCommunity, getOrders } from '@/api/manage/account'
+import { getAccount, getCommunity, cancelBindCommunity, getOrders } from '@/api/manage/account'
+import { updateTime } from '@/assets/publicScript/public'
 import connectPlot from "./ConnectPlot";
 import recharge from "./Recharge";
 
 export default {
     name: 'AccountList',
     components: { connectPlot, recharge },
-    props: {
-        row: { type: Object, required: true }
-    },
     data() {
         return {
-            accountData: null,
+            accountData: { id: undefined },
+            orderData: {
+                no: undefined,
+                orderType: undefined,
+                orderTotal: undefined,
+                orderStatus: undefined,
+                createdOn: undefined,
+                paymentOn: undefined,
+            },
             plotList: null,
             rechargeList: null,
             total: 0,
@@ -165,6 +187,7 @@ export default {
                 page: 1,
                 limit: 5
             },
+            dialog: false,
             plotTable: false,
             rechargeTable: false,
             currentRow: {}
@@ -206,10 +229,14 @@ export default {
         //获取充值订单列表
         getRechargeList() {
             this.rechargeLoading = true;
-            this.params.search = { userId: this.accountData.id };
+            this.params.search = { userId: this.accountData.id, orderType: 1 };
             getOrders(this.params).then(response => {
-                this.rechargeList = response.data.items;
-                this.total = response.data.totalCount;
+                this.rechargeList = response.data.data.items;
+                for(let i of this.rechargeList){
+                    i.createdOn = updateTime(i.createdOn, 0);
+                    if (i.paymentOn) i.paymentOn = updateTime(i.paymentOn, 0);
+                }
+                this.total = response.data.data.totalCount;
                 this.rechargeLoading = false;
             }).catch(() => {
                 this.rechargeLoading = false;
@@ -240,6 +267,19 @@ export default {
                 }).catch(() => { loading.close(); });
             }).catch(() => {});
         },
+        //查看订单
+        seeOrder(row){
+            this.dialog = true;
+            this.orderData = row;
+            this.orderData = {
+                no: row.no,
+                orderType: '充值订单',
+                orderTotal: row.orderTotal + ' 元',
+                orderStatus: row.orderStatus===30? '支付成功': row.orderStatus===20? '待支付': row.orderStatus,
+                createdOn: updateTime(row.createdOn, 0),
+                paymentOn: row.paymentOn? updateTime(row.paymentOn, 0):'暂未支付',
+            }
+        },
         //组件切换
         backPlot(a) {
             this.plotTable = a;
@@ -256,9 +296,16 @@ export default {
         goRecharge(){
             this.rechargeTable = true;
             this.currentRow = this.accountData;
+            this.$refs.rechargeChild.getRow(Object.assign({}, this.currentRow));
             this.$refs.rechargeChild.resetFormData();
         },
         //组件操作后刷新数据
+        brushInfo(){
+            getAccount(this.accountData.id).then(res => {
+                this.accountData = res.data.data;
+                this.getRechargeList();
+            }).catch(err => { console.log(err); });
+        },
         newAccountData(){
             this.rechargeTable = false;
             this.getRechargeList();
@@ -387,6 +434,31 @@ export default {
         color: #11A983 !important;
         background: #e7f6f3 !important;
         border-color: #a0ddcd !important;
+      }
+    }
+  }
+
+  .box {
+    width: 90%;
+    height: 90%;
+    overflow: auto;
+    margin: 2% 5%;
+    padding: 2%;
+    border: 1px solid #eee;
+    border-radius: 5px;
+
+    .center {
+      margin: 0;
+      list-style: none;
+      width: 100%;
+      height: 40%;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      color: #666;
+
+      li {
+        margin-bottom: 2%;
       }
     }
   }
