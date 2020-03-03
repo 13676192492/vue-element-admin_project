@@ -15,6 +15,14 @@ export function getAccount(id) {
     })
 }
 
+export function accountRecharge(query) {
+    return request({
+        url: '/api/admin/orders/pay/recharge',
+        method: 'post',
+        params: query
+    })
+}
+
 export function getCommunity(id) {
     return request({
         url: '/api/admin/community/user/' + id,

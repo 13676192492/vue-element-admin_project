@@ -37,7 +37,7 @@
       </el-table-column>
       <el-table-column label="门口机" min-width="80">
         <template slot-scope="{ row }">
-          <span class="see-show" @click="openDoorCom">查看</span>
+          <span class="see-show" @click="openDoorCom(row)">查看</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="140">
@@ -195,8 +195,9 @@ export default {
             this.getPlotList();
         },
         //打开查看门口机弹框
-        openDoorCom(){
+        openDoorCom(row){
             this.doorParams.page = 1;
+            this.doorParams.search = { communityId: row.id };
             this.dialog = true;
             this.getDoorList();
         },

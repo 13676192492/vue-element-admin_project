@@ -69,14 +69,15 @@
       />
     </div>
 
-    <recharge ref="rechargeChild" v-show="rechargeTable" :row="currentRow" @backRecharge="backRecharge"/>
+    <recharge ref="rechargeChild" v-show="rechargeTable" :type="0" @backRecharge="backRecharge"/>
 
-    <account-list ref="accountChild" v-show="accountTable" :row="currentRow" @backAccount="backAccount"/>
+    <account-list ref="accountChild" v-show="accountTable" @backAccount="backAccount"/>
   </div>
 </template>
 
 <script>
 import { searchAccount, getAccount } from '@/api/manage/account'
+import { updateTime } from '@/assets/publicScript/public'
 import accountList from "./components/AccountList";
 import recharge from "./components/Recharge";
 
@@ -95,7 +96,7 @@ export default {
             },
             accountTable: false,
             rechargeTable: false,
-            currentRow: {}
+            currentRow: {},
         }
     },
     created(){
@@ -125,6 +126,11 @@ export default {
             else params = this.params;
             searchAccount(params).then(response => {
                 this.accountList = response.data.data.items;
+                for(let i of this.accountList){
+                    i.createdOn = updateTime(i.createdOn, 0);
+                    if (i.updatedOn) i.updatedOn = updateTime(i.updatedOn, 0);
+                    if (i.lastLoginOn) i.lastLoginOn = updateTime(i.lastLoginOn, 0);
+                }
                 this.total = response.data.data.totalCount;
                 this.loading = false;
             }).catch(() => {
@@ -157,6 +163,7 @@ export default {
             this.rechargeTable = true;
             getAccount(row.id).then(res => {
                 this.currentRow = res.data.data;
+                this.$refs.rechargeChild.getRow(Object.assign({}, this.currentRow));
                 this.$refs.rechargeChild.resetFormData();
             }).catch(err => { console.log(err); });
         }
