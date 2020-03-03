@@ -33,9 +33,9 @@ npm run serve
 
 ## 项目截图
 
-![avatar](./public/screen1.png)
+<!-- ![avatar](./public/screen1.png)
 
-![avatar](./public/screen.png)
+![avatar](./public/screen.png) -->
 
 
 ## License

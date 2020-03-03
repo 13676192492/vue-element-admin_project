@@ -18,23 +18,24 @@ module.exports = {
             })
 
     },
-    // devServer: {
-    //     port: port,
-    //     open: true,
-    //     overlay: {
-    //         warnings: false,
-    //         errors: true
-    //     },
-    //     proxy: {
-    //         "/runApi": {
-    //             // target: "http://10.0.1.222:55200",
-    //             target: "http://10.0.1.112:8000",
-    //             pathRewrite: {
-    //                 "^/runApi": ""
-    //             }
-    //         }
-    //     }
-    // },
+    devServer: {
+        port: port,
+        open: true,
+        overlay: {
+            warnings: false,
+            errors: true
+        },
+        proxy: {
+            "/api": {
+                // target: "http://10.0.1.222:55200",
+                target: "http://10.0.1.127:55200",
+                pathRewrite: {
+                    "^/api": ""
+                },
+                changeOrigin:false
+            }
+        }
+    },
     chainWebpack(config) {
         config
         // https://webpack.js.org/configuration/devtool/#development

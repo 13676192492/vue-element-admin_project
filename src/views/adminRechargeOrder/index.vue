@@ -32,8 +32,9 @@
     >
       <el-table-column label="序号" width="60" type="index" :index="tableIndex" />
       <el-table-column label="充值订单号" prop="no"></el-table-column>
+      <el-table-column label="账号" prop="user"></el-table-column>
       <el-table-column label="支付方式" prop="paymentMethod"></el-table-column>
-      <el-table-column label="支付时间" prop="paymentOn"></el-table-column>
+      <el-table-column label="创建时间" prop="createdOn"></el-table-column>
       <el-table-column label="充值金额（元）" prop="orderTotal"></el-table-column>
       <el-table-column label="支付状态">
         <template slot-scope="{ row }">
@@ -60,7 +61,7 @@
   </div>
 </template>
 <script>
-import { getOrderList, payRecharge } from "@/api/order/spendingOrder";
+import { getAdminOrderList, payRecharge } from "@/api/order/spendingOrder";
 // import OrderDetails from "./components/OrderDetails";
 import { payState } from "@/api/property";
 import { updateTime, changeTimeFormat } from "@/assets/publicScript/public";
@@ -95,6 +96,7 @@ export default {
     };
   },
   filters: {
+      /* eslint-disable */
     status(val) {
       switch (val) {
         case 20:
@@ -108,7 +110,7 @@ export default {
   created() {
     if (window.location.search|| window.location.hash.split("=")[1]) {
       let str = window.location.search;
-      let data = str.slice(str.indexOf('=')+1) || window.location.hash.split("=")[1];;
+      let data = str.slice(str.indexOf('=')+1) || window.location.hash.split("=")[1];
   
       data = decodeURIComponent(data);
       if (data.substring(1, 5) === "form") {
@@ -134,6 +136,7 @@ export default {
     tableIndex(index) {
       return (this.params.page - 1) * this.params.limit + index + 1;
     },
+    /* eslint-disable */
     changePaymentMethod(type) {
       switch (type) {
         case 0:
@@ -168,7 +171,7 @@ export default {
       if (this.orderStatus) this.params.search.orderStatus = +this.orderStatus;
       else if (this.orderStatus == "") this.params.search.orderStatus = null;
 
-      getOrderList(this.params).then(res => {
+      getAdminOrderList(this.params).then(res => {
         if (res.data.success) {
           for (let i of res.data.data.items) {
             i.createdOn = updateTime(i.createdOn, 0);
