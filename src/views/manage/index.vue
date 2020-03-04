@@ -67,10 +67,10 @@ export default {
     },
     setOptions(data) {
       this.chart.setOption({
-        // title: {
-        //     text: '某地区蒸发量和降水量',
-        //     subtext: '纯属虚构'
-        // },
+        title: {
+            text: '年营收消费数据'
+            // subtext: '纯属虚构'
+        },
         tooltip: {
           trigger: "axis"
         },
@@ -149,8 +149,12 @@ export default {
 
 <style lang="scss" scoped>
 .chart {
+  border:1px solid #c5c5c5;
+  padding:2%;
   width: 100%;
   height: 500px;
+  background-color:#fff;
+  border-radius: 5px;
 }
 
 .top {
@@ -165,7 +169,7 @@ export default {
     margin: 0 2%;
     width: 22%;
     height: 100%;
-    border: 1px solid #eee;
+    border: 1px solid #c5c5c5;
     border-radius: 5px;
     display: flex;
     justify-content: center;
