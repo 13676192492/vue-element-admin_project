@@ -13,39 +13,56 @@
       <!-- <el-select v-model="params.search.orderStatus" placeholder="请选择订单类型" style="margin-right:1%;">
         <el-option label="Sip通话" value="1"></el-option>
       </el-select>-->
-      <el-select v-model="orderStatus" placeholder="请选择支付状态" style="margin-right:1%;">
+      <el-select
+        v-model="orderStatus"
+        placeholder="请选择支付状态"
+        style="margin-right:1%;"
+      >
         <el-option label="全部" value></el-option>
         <el-option label="待支付" value="20"></el-option>
         <el-option label="成功" value="30"></el-option>
       </el-select>
-      <el-button type="primary" icon="el-icon-search" @click="getList">查询</el-button>
+      <el-button type="primary" icon="el-icon-search" @click="getList"
+        >查询</el-button
+      >
     </div>
 
     <el-table
       v-loading="loading"
       :data="list"
-      :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       border
       fit
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="序号" width="60" type="index" :index="tableIndex" />
+      <el-table-column
+        label="序号"
+        width="60"
+        type="index"
+        :index="tableIndex"
+      />
       <el-table-column label="充值订单号" prop="no"></el-table-column>
-      <el-table-column label="账号" prop="user"></el-table-column>
+      <el-table-column label="账号" prop="user.userName"></el-table-column>
       <el-table-column label="支付方式" prop="paymentMethod"></el-table-column>
       <el-table-column label="创建时间" prop="createdOn"></el-table-column>
-      <el-table-column label="充值金额（元）" prop="orderTotal"></el-table-column>
+      <el-table-column
+        label="充值金额（元）"
+        prop="orderTotal"
+      ></el-table-column>
       <el-table-column label="支付状态">
         <template slot-scope="{ row }">
           <span>{{ row.orderStatus | status }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="操作">
-        <template slot-scope="{ row }" v-if="row.orderStatus==20">
+      <el-table-column label="操作">
+        <!-- <template slot-scope="{ row }" v-if="row.orderStatus==20">
           <el-button type="text" @click="recharge(row.no)">去充值</el-button>
+        </template> -->
+        <template slot-scope="{ row }">
+          <el-button type="text" @click="details(row.no)" v-if="row.orderStatus ==30">详情</el-button>
         </template>
-      </el-table-column> -->
+      </el-table-column>
     </el-table>
 
     <el-pagination
@@ -58,10 +75,32 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
+
+     <el-dialog title="订单详情" :visible.sync="dialog" :close-on-click-modal="false" :append-to-body="true" width="38%">
+      <div class="box">
+        <ul class="center">
+          <li>充值订单号：{{orderData.orderNo}}</li>
+          <!-- <li>类型：{{orderData.orderType}}</li> -->
+          <li>金额：{{orderData.amount}}</li>
+          <li>支付状态：{{orderData.paymentStatus|status}}</li>
+          <li>创建时间：{{orderData.createdOn|update}}</li>
+          <li>支付时间：{{orderData.paymentOn|update}}</li>
+          <li v-if="orderData.outTradeNo">支付宝订单号：{{orderData.outTradeNo}}</li>
+          <li v-if="orderData.note">银行转账凭证：{{orderData.note}}</li>
+        </ul>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialog = false">关闭</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { getAdminOrderList, payRecharge } from "@/api/order/spendingOrder";
+import {
+  getAdminOrderList,
+  payRecharge,
+  getRechargeDetials
+} from "@/api/order/spendingOrder";
 // import OrderDetails from "./components/OrderDetails";
 import { payState } from "@/api/property";
 import { updateTime, changeTimeFormat } from "@/assets/publicScript/public";
@@ -77,6 +116,8 @@ export default {
       },
       loading: false,
       orderStatus: null,
+      dialog:false,
+      orderData:{},
       params: {
         search: {
           orderStatus: null,
@@ -96,7 +137,7 @@ export default {
     };
   },
   filters: {
-      /* eslint-disable */
+    /* eslint-disable */
     status(val) {
       switch (val) {
         case 20:
@@ -105,13 +146,18 @@ export default {
         default:
           return "成功";
       }
+    },
+    update(val){
+      let time = updateTime(val,0);
+      return time;
     }
   },
   created() {
-    if (window.location.search|| window.location.hash.split("=")[1]) {
+    if (window.location.search || window.location.hash.split("=")[1]) {
       let str = window.location.search;
-      let data = str.slice(str.indexOf('=')+1) || window.location.hash.split("=")[1];
-  
+      let data =
+        str.slice(str.indexOf("=") + 1) || window.location.hash.split("=")[1];
+
       data = decodeURIComponent(data);
       if (data.substring(1, 5) === "form") {
         var div = document.createElement("div");
@@ -256,6 +302,14 @@ export default {
       this.param.isShow = true;
       this.param.data = params;
       this.$refs.getDetails.getList(this.params.no);
+    },
+    details(no) {
+      getRechargeDetials(no).then(res => {
+        if(res.data.success){
+          this.dialog =true;
+          this.orderData = res.data.data;
+        }
+      });
     }
   }
 };
@@ -268,5 +322,29 @@ export default {
 }
 /deep/ .el-table__header {
   width: 100% !important;
+}
+.box {
+    width: 90%;
+    height: 90%;
+    overflow: auto;
+    margin: 2% 5%;
+    padding: 2%;
+
+    .center {
+      margin: 0;
+      padding:0;
+      list-style: none;
+      width: 100%;
+      height: 40%;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      color: #666;
+
+      li {
+        margin-bottom: 5%;
+        font-size: 15px;
+      }
+    }
 }
 </style>

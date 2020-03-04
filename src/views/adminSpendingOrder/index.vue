@@ -34,7 +34,7 @@
       <el-table-column label="序号" width="60" type="index" :index="tableIndex" />
       <el-table-column label="消费订单号"   prop="no"   >
       </el-table-column>
-      <el-table-column label="客户账号"  prop="user"   />
+      <el-table-column label="客户账号"  prop="user.userName"   />
       <el-table-column label="类型"  prop="orderType"   >
       </el-table-column>
       <el-table-column label="创建时间"  prop="createdOn" >

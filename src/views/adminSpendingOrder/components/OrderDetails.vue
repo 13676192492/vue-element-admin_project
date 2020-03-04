@@ -7,7 +7,7 @@
       </div>
       <ul class="center">
         <li>消费订单号：{{param.data.no}}</li>
-        <li>客户账号：{{param.data.user}}</li>
+        <li>客户账号：{{param.data.user.userName}}</li>
         <li>类型：{{param.data.orderType}}</li>
         <li>创建时间：{{param.data.createdOn}}</li>
         <li>金额：{{param.data.orderTotal}}</li>

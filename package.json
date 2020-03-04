@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "driver.js": "^0.9.3",
+    "echarts": "^4.6.0",
     "element-ui": "^2.5.4",
     "fuse.js": "^3.4.2",
     "js-cookie": "^2.2.0",

@@ -45,11 +45,10 @@ export function getAdminOrderDetails(no,params) {
     })
 }
 
-// //获取物业支付状态
-// export function payRecharge(params) {
-//     return request({
-//         url: '/api/orders/pay/recharge/'+ params.no,
-//         method: 'post',
-//         params: params
-//     })
-// }
+//获取管理员充值订单详情
+export function getRechargeDetials(no) {
+    return request({
+        url: `/api/admin/orders/${no}/paymentRecord`,
+        method: 'get'
+    })
+}
