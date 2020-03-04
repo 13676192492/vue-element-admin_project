@@ -96,7 +96,7 @@
         <ul class="center">
           <li>充值订单号：{{ orderData.orderNo }}</li>
           <!-- <li>类型：{{orderData.orderType}}</li> -->
-          <li>金额：{{ orderData.amount }}</li>
+          <li>金额：{{ orderData.amount }}元</li>
           <li>支付状态：{{ orderData.paymentStatus | status }}</li>
           <li>创建时间：{{ orderData.createdOn | update }}</li>
           <li>支付时间：{{ orderData.paymentOn | update }}</li>
