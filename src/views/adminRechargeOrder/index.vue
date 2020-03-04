@@ -59,8 +59,17 @@
         <!-- <template slot-scope="{ row }" v-if="row.orderStatus==20">
           <el-button type="text" @click="recharge(row.no)">去充值</el-button>
         </template> -->
-        <template slot-scope="{ row }">
-          <el-button type="text" @click="details(row.no)" v-if="row.orderStatus ==30">详情</el-button>
+        <template slot-scope="{ row }" v-if="row.orderStatus == 30">
+          <div class="btnGroup">
+            <el-tag>
+              <el-button
+                type="text"
+                @click="details(row.no)"
+                
+                >详情</el-button
+              >
+            </el-tag>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -76,17 +85,25 @@
       @current-change="handleCurrentChange"
     />
 
-     <el-dialog title="订单详情" :visible.sync="dialog" :close-on-click-modal="false" :append-to-body="true" width="38%">
+    <el-dialog
+      title="订单详情"
+      :visible.sync="dialog"
+      :close-on-click-modal="false"
+      :append-to-body="true"
+      width="38%"
+    >
       <div class="box">
         <ul class="center">
-          <li>充值订单号：{{orderData.orderNo}}</li>
+          <li>充值订单号：{{ orderData.orderNo }}</li>
           <!-- <li>类型：{{orderData.orderType}}</li> -->
-          <li>金额：{{orderData.amount}}</li>
-          <li>支付状态：{{orderData.paymentStatus|status}}</li>
-          <li>创建时间：{{orderData.createdOn|update}}</li>
-          <li>支付时间：{{orderData.paymentOn|update}}</li>
-          <li v-if="orderData.outTradeNo">支付宝订单号：{{orderData.outTradeNo}}</li>
-          <li v-if="orderData.note">银行转账凭证：{{orderData.note}}</li>
+          <li>金额：{{ orderData.amount }}</li>
+          <li>支付状态：{{ orderData.paymentStatus | status }}</li>
+          <li>创建时间：{{ orderData.createdOn | update }}</li>
+          <li>支付时间：{{ orderData.paymentOn | update }}</li>
+          <li v-if="orderData.outTradeNo">
+            支付宝订单号：{{ orderData.outTradeNo }}
+          </li>
+          <li v-if="orderData.note">银行转账凭证：{{ orderData.note }}</li>
         </ul>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -116,8 +133,8 @@ export default {
       },
       loading: false,
       orderStatus: null,
-      dialog:false,
-      orderData:{},
+      dialog: false,
+      orderData: {},
       params: {
         search: {
           orderStatus: null,
@@ -147,8 +164,8 @@ export default {
           return "成功";
       }
     },
-    update(val){
-      let time = updateTime(val,0);
+    update(val) {
+      let time = updateTime(val, 0);
       return time;
     }
   },
@@ -305,8 +322,8 @@ export default {
     },
     details(no) {
       getRechargeDetials(no).then(res => {
-        if(res.data.success){
-          this.dialog =true;
+        if (res.data.success) {
+          this.dialog = true;
           this.orderData = res.data.data;
         }
       });
@@ -324,27 +341,27 @@ export default {
   width: 100% !important;
 }
 .box {
-    width: 90%;
-    height: 90%;
-    overflow: auto;
-    margin: 2% 5%;
-    padding: 2%;
+  width: 90%;
+  height: 90%;
+  overflow: auto;
+  margin: 2% 5%;
+  padding: 2%;
 
-    .center {
-      margin: 0;
-      padding:0;
-      list-style: none;
-      width: 100%;
-      height: 40%;
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-      color: #666;
+  .center {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+    height: 40%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    color: #666;
 
-      li {
-        margin-bottom: 5%;
-        font-size: 15px;
-      }
+    li {
+      margin-bottom: 5%;
+      font-size: 15px;
     }
+  }
 }
 </style>
