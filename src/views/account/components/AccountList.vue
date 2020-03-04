@@ -276,6 +276,21 @@ export default {
       currentRow: {}
     };
   },
+  /**esLint-disable */
+  filters:{
+    update(val){
+      return updateTime(val,0)
+    },
+    status(val) {
+      switch (val) {
+        case 20:
+          return "待支付";
+          break;
+        default:
+          return "成功";
+      }
+    }
+  },
   methods: {
     //重置表单并返回
     goBack() {
@@ -555,22 +570,22 @@ export default {
   overflow: auto;
   margin: 2% 5%;
   padding: 2%;
-  border: 1px solid #eee;
-  border-radius: 5px;
 
   .center {
-    margin: 0;
-    list-style: none;
-    width: 100%;
-    height: 40%;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    color: #666;
+      margin: 0;
+      padding:0;
+      list-style: none;
+      width: 100%;
+      height: 40%;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      color: #666;
 
-    li {
-      margin-bottom: 2%;
+      li {
+        margin-bottom: 5%;
+        font-size: 15px;
+      }
     }
-  }
 }
 </style>
