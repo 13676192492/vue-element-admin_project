@@ -6,7 +6,7 @@
         <p class="number">{{ topData.income | num }}</p>
       </li>
       <li>
-        <p class="tips">本月支付笔数</p>
+        <p class="tips">本月充值成功笔数</p>
         <p class="number">{{ topData.incomeCount | num }}</p>
       </li>
       <li>
