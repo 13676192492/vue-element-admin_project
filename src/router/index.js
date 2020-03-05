@@ -71,19 +71,19 @@ export const asyncRouterMap =
     path: '/',
     component: Layout,
     redirect: '/index',
-    meta: { title: '首页', icon: 'guide', noCache: true,roles:['USER','ADMIN'] },
+    meta: { title: '首页', icon: 'dashboard', noCache: true,roles:['USER','ADMIN'] },
     children: [
         {
             path: '/index',
             component: () => import('@/views/property/index'),
             name: '首页',
-            meta: { title: '首页', icon: 'guide', noCache: true,roles:['USER'] }
+            meta: { title: '首页', noCache: true,roles:['USER'] }
         },
         {
             path: '/index',
             component: () => import('@/views/manage/index'),
             name: '首页',
-            meta: { title: '首页', icon: 'guide', noCache: true,roles:['ADMIN'] }
+            meta: { title: '首页', noCache: true,roles:['ADMIN'] }
         }
     ]
 },
@@ -92,31 +92,31 @@ export const asyncRouterMap =
     component: Layout,
     redirect: '/spendingOrder/index',
     name: '订单管理',
-    meta: { title: '订单管理', icon: 'guide', noCache: true },
+    meta: { title: '订单管理', icon: 'chart', noCache: true },
     children: [
       {
         path: '/spendingOrder/index',
         component: () => import('@/views/spendingOrder/index'),
         name: '消费订单',
-        meta: { title: '消费订单', icon: 'guide', noCache: true ,roles:['USER']}
+        meta: { title: '消费订单', noCache: true ,roles:['USER']}
       },
       {
         path: '/rechargeOrder/index',
         component: () => import('@/views/rechargeOrder/index'),
         name: '充值记录',
-        meta: { title: '充值记录', icon: 'guide', noCache: true ,roles:['USER']}
+        meta: { title: '充值记录', noCache: true ,roles:['USER']}
       },
       {
         path: '/SpendingOrder/index',
         component: () => import('@/views/adminSpendingOrder/index'),
         name: '消费订单',
-        meta: { title: '消费订单', icon: 'guide', noCache: true ,roles:['ADMIN']}
+        meta: { title: '消费订单', noCache: true ,roles:['ADMIN']}
       },
       {
         path: '/RechargeOrder/index',
         component: () => import('@/views/adminRechargeOrder/index'),
         name: '充值记录',
-        meta: { title: '充值记录', icon: 'guide', noCache: true ,roles:['ADMIN']}
+        meta: { title: '充值记录', noCache: true ,roles:['ADMIN']}
       }
     ]
   },
@@ -124,19 +124,19 @@ export const asyncRouterMap =
     path: '/phoneBill',
     component: Layout,
     redirect: '/phoneBill/index',
-    meta: { title: '话单记录', icon: 'guide', noCache: true },
+    meta: { title: '话单记录', icon: 'record', noCache: true },
     children: [
       {
         path: '/phoneBill/index',
         component: () => import('@/views/phoneBill/index'),
         name: '话单记录',
-        meta: { title: '话单记录', icon: 'guide', noCache: true ,roles:['USER']}
+        meta: { title: '话单记录', noCache: true ,roles:['USER']}
       },
       {
         path: '/PhoneBill/index',
         component: () => import('@/views/adminPhoneBill/index'),
         name: '话单记录',
-        meta: { title: '话单记录', icon: 'guide', noCache: true ,roles:['ADMIN']}
+        meta: { title: '话单记录', noCache: true ,roles:['ADMIN']}
       }
     ]
   },
@@ -146,13 +146,13 @@ export const asyncRouterMap =
     component: Layout,
     redirect: '/account/index',
     name: '账号管理',
-    meta: { noCache: true ,roles:['ADMIN']},
+    meta: { noCache: true , icon: 'guide',roles:['ADMIN']},
     children: [
     {
       path: 'index',
       component: () => import('@/views/account/index'),
       name: '账号管理',
-      meta: { title: '账号管理', icon: 'guide', noCache: true }
+      meta: { title: '账号管理', noCache: true }
     }
     ]
   },
@@ -201,7 +201,7 @@ export const asyncRouterMap =
          path: 'index',
          component: () => import('@/views/ticket/index'),
          name: '开票管理',
-         meta: { title: '开票管理', icon: 'ticket', noCache: true }
+         meta: { title: '开票管理', noCache: true }
        }
      ]
    },

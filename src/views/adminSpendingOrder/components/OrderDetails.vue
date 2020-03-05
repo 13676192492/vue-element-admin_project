@@ -140,8 +140,7 @@ export default {
 
   .box {
     width: 90%;
-    height: 90%;
-    overflow: auto;
+    padding-bottom: 2%;
     margin: 2% 5%;
     border: 1px solid #eee;
     border-radius: 5px;
@@ -176,7 +175,7 @@ export default {
     //
 
     li {
-      margin-bottom: 2%;
+      margin: 1.5%;
     }
   }
 

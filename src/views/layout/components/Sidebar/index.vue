@@ -26,6 +26,10 @@
 .el-scrollbar{
   height:calc(100vh - 50px)
 }
+
+/deep/.is-active{
+  background-color: #e6f3f2 !important;
+}
 </style>
 <script>
 import { mapGetters } from "vuex";
