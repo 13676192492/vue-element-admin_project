@@ -10,7 +10,7 @@
         <li>客户账号：{{param.data.user.userName}}</li>
         <li>类型：{{param.data.orderType}}</li>
         <li>创建时间：{{param.data.createdOn}}</li>
-        <li>金额：{{param.data.orderTotal}}</li>
+        <li>金额：{{param.data.orderTotal}} 元</li>
         <li>支付状态：{{param.data.orderStatus}}</li>
         <li>支付时间：{{param.data.paymentOn}}</li>
       </ul>
