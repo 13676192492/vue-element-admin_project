@@ -10,7 +10,7 @@ export function updateTime(data,type) {
     // let test =  new Date(data).getTime();
     if (data) {
         const time = new Date(data);
-        
+
         let month = time.getMonth() + 1;
         let day = time.getDate();
         let hours = time.getHours();

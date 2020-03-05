@@ -31,16 +31,8 @@
           <span class="other-class"
             >邮箱：{{ accountData.email ? accountData.email : "无" }}</span
           >
-          <span class="other-class"
-            >创建日期：{{
-              accountData.createTime ? roaccountDataw.createTime : "--"
-            }}</span
-          >
-          <span class="other-class"
-            >最后上线时间：{{
-              accountData.lastLoginOn ? accountData.lastLoginOn : "--"
-            }}</span
-          >
+          <span class="other-class">创建日期：{{accountData.createTime ? roaccountDataw.createTime : "--"}}</span>
+          <span class="other-class">最后上线时间：{{accountData.lastLoginOn ? accountData.lastLoginOn : "--"}}</span>
         </div>
         <div class="balance-box">
           <p class="balance-title">余额</p>

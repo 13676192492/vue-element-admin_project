@@ -2,7 +2,7 @@
   <div class="app-container">
     <div v-show="!accountTable&&!rechargeTable">
       <div class="filter-container">
-        <el-input v-model="params.name" placeholder="账号" style="width: 250px;margin-right: 5px;" class="filter-item" @keyup.enter.native="queryData" clearable/>
+        <el-input v-model="params.search.name" placeholder="账号" style="width: 250px;margin-right: 5px;" class="filter-item" @keyup.enter.native="queryData" clearable/>
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="queryData">查询</el-button>
       </div>
 
@@ -139,7 +139,7 @@ export default {
         },
         //查询列表
         queryData() {
-            this.params.page = 0;
+            this.params.page = 1;
             this.getList();
         },
         //组件切换
