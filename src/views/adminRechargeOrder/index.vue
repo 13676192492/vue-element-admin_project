@@ -22,7 +22,7 @@
         <el-option label="待支付" value="20"></el-option>
         <el-option label="成功" value="30"></el-option>
       </el-select>
-      <el-button type="primary" icon="el-icon-search" @click="getList"
+      <el-button type="primary" icon="el-icon-search" @click="getData"
         >查询</el-button
       >
     </div>
@@ -188,6 +188,10 @@ export default {
     this.getList();
   },
   methods: {
+     getData(){
+      this.params.page = 1;
+      this.getList();
+    },
     handleSizeChange(val) {
       this.params.limit = val;
       this.getList();

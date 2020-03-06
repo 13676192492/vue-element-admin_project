@@ -178,6 +178,7 @@ export const asyncRouterMap =
        icon: 'invoice',
        roles:['USER']
      },
+     hidden:true,
      children: [
        {
          path: '/invoice/index',
@@ -191,6 +192,7 @@ export const asyncRouterMap =
      path: '/ticket',
      component: Layout,
      redirect: '/ticket/index',
+     hidden:true,
      meta: {
       title: '开票管理',
       icon: 'ticket',

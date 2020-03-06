@@ -9,7 +9,7 @@
       label-position="left"
     >
       <div class="title-container">
-        <h3 class="title">{{ $t('login.title') }}</h3>
+        <h3 class="title">{{ $t("login.title") }}</h3>
         <lang-select class="set-language" />
       </div>
 
@@ -39,27 +39,28 @@
           @keyup.enter.native="handleLogin"
         />
         <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          <svg-icon
+            :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+          />
         </span>
       </el-form-item>
       <!-- <el-form-item prop="btn"> -->
       <!-- <p class="registerBtn" @click="registerDialog=true">注册</p> -->
       <!-- </el-form-item> -->
-     
+
       <el-button
         :loading="loading"
         type="primary"
         style="width:100%;margin-bottom:30px;margin-top:16px;margin-left:0"
         @click.native.prevent="handleLogin"
-      >{{ $t('login.logIn') }}</el-button>
-      <el-button
-        type="text"
-        @click.native.prevent="registerDialog=true"
-      >注册</el-button>
-      <el-button
-        type="text"
-        @click.native.prevent="forgetPwdDialog=true"
-      >忘记密码</el-button> 
+        >{{ $t("login.logIn") }}</el-button
+      >
+      <el-button type="text" @click.native.prevent="registerDialog = true"
+        >注册</el-button
+      >
+      <el-button type="text" @click.native.prevent="openMask"
+        >忘记密码</el-button
+      >
     </el-form>
     <el-dialog
       width="28%"
@@ -68,14 +69,32 @@
       :close-on-click-modal="false"
       :append-to-body="true"
     >
-      <el-form ref="newUserForm" :model="newUser" :rules="newUserRules" label-width="100px">
+      <el-form
+        ref="newUserForm"
+        :model="newUser"
+        :rules="newUserRules"
+        label-width="100px"
+      >
         <el-form-item label="账号名:" prop="account">
-          <el-input v-model="newUser.account" placeholder="请输入账户名" clearable />
+          <el-input
+            v-model="newUser.account"
+            placeholder="请输入账户名"
+            clearable
+          />
         </el-form-item>
         <el-form-item label="密码:" prop="password" ref="password">
-          <el-input v-model="newUser.password" show-password placeholder="请输入密码" clearable />
+          <el-input
+            v-model="newUser.password"
+            show-password
+            placeholder="请输入密码"
+            clearable
+          />
         </el-form-item>
-        <el-form-item label="确认密码:" prop="confirmPassword" ref="confirmPassword">
+        <el-form-item
+          label="确认密码:"
+          prop="confirmPassword"
+          ref="confirmPassword"
+        >
           <el-input
             v-model="newUser.confirmPassword"
             show-password
@@ -84,7 +103,11 @@
           />
         </el-form-item>
         <el-form-item label="公司名:" prop="company">
-          <el-input v-model="newUser.company" placeholder="请输入公司名" clearable />
+          <el-input
+            v-model="newUser.company"
+            placeholder="请输入公司名"
+            clearable
+          />
         </el-form-item>
         <el-form-item label="手机号:" prop="phone" ref="phone">
           <el-input
@@ -96,10 +119,18 @@
           />
         </el-form-item>
         <el-form-item label="验证码:" prop="captcha">
-          <el-input v-model="newUser.captcha" placeholder="请输入验证码" clearable />
+          <el-input
+            v-model="newUser.captcha"
+            placeholder="请输入验证码"
+            clearable
+          />
         </el-form-item>
         <el-form-item label="邮箱:" prop="email">
-          <el-input v-model="newUser.email" placeholder="请输入邮箱" clearable />
+          <el-input
+            v-model="newUser.email"
+            placeholder="请输入邮箱"
+            clearable
+          />
         </el-form-item>
         <el-button
           :loading="loading"
@@ -107,14 +138,17 @@
           class="getCode"
           :disabled="isGet"
           @click.native.prevent="getCode"
-        >{{time}}</el-button>
+          >{{ time }}</el-button
+        >
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="resetForm('newUserForm')">取消</el-button>
-        <el-button type="primary" @click="register('newUserForm')">确定</el-button>
+        <el-button type="primary" @click="register('newUserForm')"
+          >确定</el-button
+        >
       </div>
     </el-dialog>
-  <!-- 忘记密码 -->
+    <!-- 忘记密码 -->
     <el-dialog
       width="28%"
       title="忘记密码"
@@ -122,27 +156,50 @@
       :close-on-click-modal="false"
       :append-to-body="true"
     >
-      <el-form ref="forgetPwdForm" :model="forgetPwdForm" :rules="forgetPwdFormRules" label-width="100px">
-        
-
+      <el-form
+        ref="forgetPwdForm"
+        :model="forgetPwdForm"
+        :rules="forgetPwdFormRules"
+        label-width="100px"
+      >
         <el-form-item label="账号名:" prop="userName">
-          <el-input v-model="forgetPwdForm.userName" placeholder="请输入账户名" clearable />
+          <el-input
+            v-model="forgetPwdForm.userName"
+            placeholder="请输入账户名"
+            clearable
+          />
         </el-form-item>
-        
+
         <el-button
           :loading="loading"
           type="primary"
           class="getCode2"
           :disabled="isGet2"
           @click="getCode2()"
-        >{{time2}}</el-button>
-        <el-form-item label="验证码:" prop="code" ref="code" >
-          <el-input v-model="forgetPwdForm.code" placeholder="请输入验证码" clearable auto-complete="new-code"/>
+          >{{ time2 }}</el-button
+        >
+        <el-form-item label="验证码:" prop="code" ref="code">
+          <el-input
+            v-model="forgetPwdForm.code"
+            placeholder="请输入验证码"
+            clearable
+            auto-complete="new-code"
+          />
         </el-form-item>
-         <el-form-item label="新密码:" prop="password" ref="password" >
-          <el-input v-model="forgetPwdForm.password" show-password placeholder="请输入密码" clearable auto-complete="new-password"/>
+        <el-form-item label="新密码:" prop="password" ref="password">
+          <el-input
+            v-model="forgetPwdForm.password"
+            show-password
+            placeholder="请输入密码"
+            clearable
+            auto-complete="new-password"
+          />
         </el-form-item>
-        <el-form-item label="确认密码:" prop="confirmPassword" ref="confirmPassword">
+        <el-form-item
+          label="确认密码:"
+          prop="confirmPassword"
+          ref="confirmPassword"
+        >
           <el-input
             v-model="forgetPwdForm.confirmPassword"
             show-password
@@ -153,7 +210,9 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="resetForm('forgetPwdForm')">取消</el-button>
-        <el-button type="primary" @click="forgetPwd('forgetPwdForm')">确定</el-button>
+        <el-button type="primary" @click="forgetPwd('forgetPwdForm')"
+          >确定</el-button
+        >
       </div>
     </el-dialog>
     <particles></particles>
@@ -274,7 +333,6 @@ export default {
             message: "手机号格式错误",
             trigger: "blur"
           }
-          
         ],
         captcha: [
           { required: true, message: "必须填写验证码", trigger: "change" }
@@ -370,14 +428,14 @@ export default {
     //获取验证码
     getCode() {
       if (this.newUser.phone) {
-        if(!(/^1[3456789]\d{9}$/.test(this.newUser.phone))){ 
+        if (!/^1[3456789]\d{9}$/.test(this.newUser.phone)) {
           this.$notify({
-                title: "失败",
-                message: "手机号格式错误",
-                type: "error"
-              });  
-          return false; 
-        } 
+            title: "失败",
+            message: "手机号格式错误",
+            type: "error"
+          });
+          return false;
+        }
         let params = {
           phone: this.newUser.phone
         };
@@ -397,35 +455,35 @@ export default {
     },
     getCode2() {
       if (this.forgetPwdForm.userName) {
-        if(!(/^[0-9a-zA-Z]+$/.test(this.forgetPwdForm.userName))){ 
-          this.$notify({
-                title: "失败",
-                message: "请输入正确账号",
-                type: "error"
-              });  
-          return false; 
-        } 
-      let params = {
-        userName: this.forgetPwdForm.userName
-      };
-      getCaptcha2(params).then(res => {
-        if (res.data.success) {
-          this.isGet2 = true;
-          this.countDown2(60);
-        } else {
+        if (!/^[0-9a-zA-Z]+$/.test(this.forgetPwdForm.userName)) {
           this.$notify({
             title: "失败",
-            message: res.data.message,
+            message: "请输入正确账号",
             type: "error"
           });
+          return false;
         }
-      });
+        let params = {
+          userName: this.forgetPwdForm.userName
+        };
+        getCaptcha2(params).then(res => {
+          if (res.data.success) {
+            this.isGet2 = true;
+            this.countDown2(60);
+          } else {
+            this.$notify({
+              title: "失败",
+              message: res.data.message,
+              type: "error"
+            });
+          }
+        });
       }
     },
     //倒计时
     countDown(time) {
       this.time = time;
-      if(this.isGet){
+      if (this.isGet) {
         if (time > 0) {
           setTimeout(() => {
             this.countDown(time - 1);
@@ -435,11 +493,10 @@ export default {
           this.time = "重新获取验证码";
         }
       }
-      
     },
     countDown2(time) {
       this.time2 = time;
-      if(this.isGet2){
+      if (this.isGet2) {
         if (time > 0) {
           setTimeout(() => {
             this.countDown2(time - 1);
@@ -457,17 +514,17 @@ export default {
         if (valid) {
           register(this.newUser).then(res => {
             if (res.data.success) {
-            this.$notify({
-              title: "成功",
-              message: "注册成功",
-              type: "success"
-            });
-            this.resetForm(formName);
-            this.time = "获取验证码";
-            this.isGet = false;
-            // this.registerDialog = false;
-            }else{
-               this.$notify({
+              this.$notify({
+                title: "成功",
+                message: "注册成功",
+                type: "success"
+              });
+              this.resetForm(formName);
+              this.time = "获取验证码";
+              this.isGet = false;
+              // this.registerDialog = false;
+            } else {
+              this.$notify({
                 title: "失败",
                 message: res.data.message,
                 type: "error"
@@ -486,6 +543,11 @@ export default {
       this.forgetPwdDialog = false;
       this.$refs[formName].resetFields();
     },
+    openMask() {
+      this.time2 = "获取验证码";
+      this.forgetPwdDialog = true;
+    },
+
     //忘记密码
     forgetPwd(formName) {
       this.$refs[formName].validate(valid => {
