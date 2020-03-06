@@ -25,8 +25,8 @@
           <span class="other-class">账号：{{ accountData.userName }}</span>
           <span class="other-class">手机号码：{{accountData.phoneNumber ? accountData.phoneNumber : "无"}}</span>
           <span class="other-class">邮箱：{{ accountData.email ? accountData.email : "无" }}</span>
-          <span class="other-class">创建日期：{{accountData.createdOn ? accountData.createdOn : "--" | update}}</span>
-          <span class="other-class">最后上线时间：{{accountData.updatedOn ? accountData.updatedOn : "--" | update }}</span>
+          <span class="other-class">创建日期：{{accountData.createdOn ? accountData.createdOn : "--" | changeTime }}</span>
+          <span class="other-class">最后上线时间：{{accountData.updatedOn ? accountData.updatedOn : "--" | changeTime }}</span>
         </div>
         <div class="balance-box">
           <p class="balance-title">余额</p>
@@ -224,7 +224,7 @@ import {
   getOrders
 } from "@/api/manage/account";
 import { getRechargeDetials } from "@/api/order/spendingOrder";
-import { updateTime } from "@/assets/publicScript/public";
+import { updateTime,changeTimeFormat } from "@/assets/publicScript/public";
 import connectPlot from "./ConnectPlot";
 import recharge from "./Recharge";
 
@@ -259,6 +259,9 @@ export default {
   },
   /**esLint-disable */
   filters:{
+    changeTime(val){
+      return changeTimeFormat(val)
+    },
     update(val){
       return updateTime(val,0)
     },
@@ -481,7 +484,7 @@ export default {
     }
 
     .other-class {
-      margin-right: 8%;
+      margin-right: 5%;
       font-size: 14px;
     }
   }
