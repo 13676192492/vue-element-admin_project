@@ -23,25 +23,14 @@
             <!--<span class="del-class" @click="">删除账号</span>-->
           </p>
           <span class="other-class">账号：{{ accountData.userName }}</span>
-          <span class="other-class"
-            >手机号码：{{
-              accountData.phoneNumber ? accountData.phoneNumber : "无"
-            }}</span
-          >
-          <span class="other-class"
-            >邮箱：{{ accountData.email ? accountData.email : "无" }}</span
-          >
-          <span class="other-class">创建日期：{{accountData.createTime ? roaccountDataw.createTime : "--"}}</span>
-          <span class="other-class">最后上线时间：{{accountData.lastLoginOn ? accountData.lastLoginOn : "--"}}</span>
+          <span class="other-class">手机号码：{{accountData.phoneNumber ? accountData.phoneNumber : "无"}}</span>
+          <span class="other-class">邮箱：{{ accountData.email ? accountData.email : "无" }}</span>
+          <span class="other-class">创建日期：{{accountData.createdOn ? accountData.createdOn : "--" | update}}</span>
+          <span class="other-class">最后上线时间：{{accountData.updatedOn ? accountData.updatedOn : "--" | update }}</span>
         </div>
         <div class="balance-box">
           <p class="balance-title">余额</p>
-          <span class="balance-content"
-            >{{
-              accountData.userAccount ? accountData.userAccount.amount : 0
-            }}
-            元</span
-          >
+          <span class="balance-content">{{            accountData.userAccount ? accountData.userAccount.amount : 0}}元</span>
         </div>
       </div>
 
@@ -317,6 +306,7 @@ export default {
     //获取数据
     getRow(form) {
       this.accountData = form;
+      console.log(this.accountData);
     },
     //获取充值订单列表
     getRechargeList() {
@@ -491,7 +481,7 @@ export default {
     }
 
     .other-class {
-      margin-right: 10%;
+      margin-right: 8%;
       font-size: 14px;
     }
   }
