@@ -25,12 +25,12 @@
           <span class="other-class">账号：{{ accountData.userName }}</span>
           <span class="other-class">手机号码：{{accountData.phoneNumber ? accountData.phoneNumber : "无"}}</span>
           <span class="other-class">邮箱：{{ accountData.email ? accountData.email : "无" }}</span>
-          <span class="other-class">创建日期：{{accountData.createdOn ? accountData.createdOn : "--" | changeTime }}</span>
-          <span class="other-class">最后上线时间：{{accountData.updatedOn ? accountData.updatedOn : "--" | changeTime }}</span>
+          <span class="other-class">创建日期：{{ accountData.createdOn }}</span>
+          <span class="other-class">最后上线时间：{{ accountData.lastLoginOn }}</span>
         </div>
         <div class="balance-box">
           <p class="balance-title">余额</p>
-          <span class="balance-content">{{            accountData.userAccount ? accountData.userAccount.amount : 0}}元</span>
+          <span class="balance-content">{{accountData.userAccount ? accountData.userAccount.amount : 0}}元</span>
         </div>
       </div>
 
@@ -309,7 +309,9 @@ export default {
     //获取数据
     getRow(form) {
       this.accountData = form;
-      console.log(this.accountData);
+      this.accountData.createdOn = this.accountData.createdOn? changeTimeFormat(this.accountData.createdOn):'--';
+      this.accountData.updatedOn = this.accountData.updatedOn? changeTimeFormat(this.accountData.updatedOn):'--';
+      this.accountData.lastLoginOn = this.accountData.lastLoginOn? changeTimeFormat(this.accountData.lastLoginOn):'--';
     },
     //获取充值订单列表
     getRechargeList() {
@@ -368,7 +370,6 @@ export default {
           this.orderData = res.data.data;
         }
       });
-
       // this.dialog = true;
       // this.orderData = row;
       // this.orderData = {

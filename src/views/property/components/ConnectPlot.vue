@@ -197,7 +197,7 @@ export default {
         //打开查看门口机弹框
         openDoorCom(row){
             this.doorParams.page = 1;
-            this.doorParams.search = { communityId: row.id };
+            this.doorParams.search = { communityId: row.communityId };
             this.dialog = true;
             this.getDoorList();
         },
