@@ -44,6 +44,7 @@ export default {
                 total_amount: [
                     { required: true, message: "请输入充值金额", trigger: "change" },
                     { pattern: /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/, message: "输入的充值金额格式错误", trigger: "blur" },
+                    { validator: this.checkAmount, trigger: "blur" }
                 ],
                 note: [{ required: true, message: "请输入转账凭据", trigger: "change" }]
             }
@@ -86,6 +87,11 @@ export default {
                     })
                 }
             });
+        },
+        //充值金额验证
+        checkAmount(rule, value, callback) {
+            if (value > 50000) callback(new Error("单次充值不能超过50000，请重新输入！"));
+            else callback();
         },
         //重置表单
         resetFormData() {
