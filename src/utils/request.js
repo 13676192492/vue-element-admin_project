@@ -115,11 +115,23 @@ service.interceptors.response.use(
   error => {
     // console.log('err' + error) // for debug
     if (getToken()) {
-      Message({
-        message: error.message,
-        type: 'error',
-        duration: 5 * 1000
-      })
+      // console.log(error.response.status);
+      if(error.response.status == 401){
+        MessageBox.alert('用户身份已失效，请重新登录！', '权限提示', {
+          confirmButtonText: '确定',
+          showClose: false,
+          type: 'warning'
+        }).then(() => {
+          window.location.href = `${location.protocol}//${location.host}`;
+        });
+      }else{
+        Message({
+          message: error.message,
+          type: 'error',
+          duration: 5 * 1000
+        })
+      }
+
     }
 
     return Promise.reject(error)
