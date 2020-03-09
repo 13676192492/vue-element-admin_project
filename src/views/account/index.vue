@@ -37,6 +37,11 @@
             <span>{{ row.email }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="公司" min-width="140">
+          <template slot-scope="{ row }">
+            <span>{{ row.extensionData? JSON.parse(row.extensionData).Settings.Company:'' }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="是否启用" min-width="90">
           <template slot-scope="{ row }">
             <span>{{ row.isActive? '已启用':'停用' }}</span>
