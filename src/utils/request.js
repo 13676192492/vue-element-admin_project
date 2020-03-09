@@ -53,7 +53,7 @@ service.interceptors.request.use(
     // }
     // else if(!getAccessToken()&&!isLogin){
     if (getToken()) {
-      config.headers["Authorization"] = 'Bearer ' + getToken() +1;
+      config.headers["Authorization"] = 'Bearer ' + getToken();
     } else if (!getToken() && !isLogin) {
 
 
