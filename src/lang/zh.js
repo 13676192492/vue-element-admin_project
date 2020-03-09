@@ -13,7 +13,7 @@ export default{
       directivePermission: '指令权限',
     },
     login:{
-        title: '费用管理系统',
+        title: '云对讲计费平台',
         logIn: '登录',
         username: '账号',
         password: '密码'

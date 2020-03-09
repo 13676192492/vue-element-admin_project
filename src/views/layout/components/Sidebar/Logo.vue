@@ -24,7 +24,7 @@
     },
     data() {
       return {
-        title: '费用管理平台',
+        title: '云对讲计费平台',
         // logo: `${location.protocol}//${location.host}/public/logo.png`,
         logo: null,
         // logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png',

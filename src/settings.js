@@ -1,5 +1,5 @@
 module.exports = {
-  title: "费用管理平台",
+  title: "云对讲计费平台",
 
   /**
    * @type {boolean} true | false
