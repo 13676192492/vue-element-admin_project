@@ -38,6 +38,7 @@
     >
       <el-table-column label="序号" width="60" type="index" />
       <el-table-column prop="orderNo" label="消费订单号"></el-table-column>
+      <el-table-column prop="num" label="设备机身号"></el-table-column>
       <el-table-column prop="communityName" label="小区"></el-table-column>
       <el-table-column prop="sipType" label="呼叫类别"></el-table-column>
       <el-table-column prop="caller" label="主叫"></el-table-column>
