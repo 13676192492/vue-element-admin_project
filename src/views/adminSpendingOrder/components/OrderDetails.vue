@@ -156,6 +156,7 @@ export default {
       justify-content: space-between;
 
       p {
+        width: 150px;
         padding-left: 1%;
         border-left: 3px solid #11a983;
       }
