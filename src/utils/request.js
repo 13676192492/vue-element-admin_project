@@ -1,7 +1,13 @@
 import axios from 'axios'
-import { Message, MessageBox } from 'element-ui'
+import {
+  Message,
+  MessageBox
+} from 'element-ui'
 import store from '@/store'
-import { getToken, getAccessToken } from '@/utils/auth'
+import {
+  getToken,
+  getAccessToken
+} from '@/utils/auth'
 // let base_url;
 // if (process.env.NODE_ENV === 'production') {
 //   base_url = process.env.VUE_APP_BASE_API
@@ -15,7 +21,7 @@ import { getToken, getAccessToken } from '@/utils/auth'
 
 // }
 //不提示身份信息失效
-const whiteUrl = ['/login','/register'];
+const whiteUrl = ['/login', '/register'];
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // api 的 base_url
@@ -35,21 +41,20 @@ service.interceptors.request.use(
     // Do something before request is sent
     // console.log(getAccessToken())
     const url = config.url.replace(config.baseURL, '');
-    
+
     // console.log(url);
     // console.log(url.indexOf(whiteUrl));
     // let isLogin = !!(url.indexOf(whiteUrl) + 1)
-    let isLogin = whiteUrl.some((i)=>{
+    let isLogin = whiteUrl.some((i) => {
       return i.indexOf(url)
-  })
+    })
     // if (getAccessToken()) {
     //   config.headers["Authorization"] = 'Bearer ' + getAccessToken();
     // }
     // else if(!getAccessToken()&&!isLogin){
     if (getToken()) {
-      config.headers["Authorization"] = 'Bearer ' + getToken();
-    }
-    else if (!getToken() && !isLogin) {
+      config.headers["Authorization"] = 'Bearer ' + getToken() +1;
+    } else if (!getToken() && !isLogin) {
 
 
       MessageBox.alert('用户身份已失效，请重新登录！', '权限提示', {
@@ -116,15 +121,17 @@ service.interceptors.response.use(
     // console.log('err' + error) // for debug
     if (getToken()) {
       // console.log(error.response.status);
-      if(error.response.status == 401){
+      if (error.response.status == 401) {
         MessageBox.alert('用户身份已失效，请重新登录！', '权限提示', {
           confirmButtonText: '确定',
           showClose: false,
           type: 'warning'
         }).then(() => {
-          window.location.href = `${location.protocol}//${location.host}`;
+          store.dispatch('FedLogOut').then(() => {
+            location.reload() // 为了重新实例化vue-router对象 避免bug
+          })
         });
-      }else{
+      } else {
         Message({
           message: error.message,
           type: 'error',
