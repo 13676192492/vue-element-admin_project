@@ -1,6 +1,12 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
+      <el-input
+        v-model="params.search.userName"
+        style="width:200px;margin-right:1%"
+        placeholder="请输入账号"
+        clearable
+      ></el-input>
       <el-date-picker
         v-model="selectTime"
         type="daterange"
