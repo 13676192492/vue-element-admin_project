@@ -2,6 +2,12 @@
   <div>
     <div class="app-container" v-show="!param.isShow">
       <div class="filter-container">
+        <el-input
+        v-model="params.search.userName"
+        style="width:200px;margin-right:1%"
+        placeholder="请输入账号"
+        clearable
+      ></el-input>
         <el-date-picker
           v-model="selectTime"
           type="daterange"
@@ -44,7 +50,7 @@
           :index="tableIndex"
         />
         <el-table-column label="消费订单号" prop="no"> </el-table-column>
-        <el-table-column label="客户账号" prop="user.userName" />
+        <el-table-column label="账号" prop="user.userName" />
         <el-table-column label="类型" prop="orderType"> </el-table-column>
         <el-table-column label="创建时间" prop="createdOn"> </el-table-column>
         <el-table-column label="支付时间" prop="paymentOn"> </el-table-column>
@@ -103,6 +109,7 @@ export default {
       orderStatus: null,
       params: {
         search: {
+          userName:null,
           orderStatus: null,
           orderType: 2,
           createdOnStart: null,
