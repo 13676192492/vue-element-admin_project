@@ -42,6 +42,11 @@
             <span>{{ row.extensionData? JSON.parse(row.extensionData).Settings.Company:'' }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="余额" min-width="100">
+          <template slot-scope="{ row }">
+            <span style="color: #ff4949">{{ row.userAccount? row.userAccount.amount:'' }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="是否启用" min-width="90">
           <template slot-scope="{ row }">
             <span>{{ row.isActive? '已启用':'停用' }}</span>

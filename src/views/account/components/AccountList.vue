@@ -72,6 +72,16 @@
               <span>{{ row.tel }}</span>
             </template>
           </el-table-column>
+          <el-table-column label="平台地址" min-width="120">
+            <template slot-scope="{ row }">
+              <span>{{ row.platformUrl }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="门口机" min-width="80">
+            <template slot-scope="{ row }">
+              <span class="see-show" @click="openDoorCom(row)">查看</span>
+            </template>
+          </el-table-column>
           <el-table-column label="操作" width="100">
             <template slot-scope="scope">
               <div class="btnGroup">
@@ -171,6 +181,53 @@
       </div>
     </div>
 
+    <el-dialog title="太川云社区门口机信息" :visible.sync="doorDialog" :close-on-click-modal="false" :append-to-body="true" width="50%">
+      <el-table
+              :data="doorList"
+              :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+              border fit
+              highlight-current-row
+              style="width: 100%;"
+      >
+        <el-table-column label="序号" width="60" type="index" :index="doorIndex"></el-table-column>
+        <el-table-column label="机身码" min-width="120">
+          <template slot-scope="{ row }">
+            <span>{{ row.num }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="设备型号" min-width="120">
+          <template slot-scope="{ row }">
+            <span>{{ row.model }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="设备地址" min-width="180">
+          <template slot-scope="{ row }">
+            <span class="text-show" :title="row.address">{{ row.address }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="社区名称" min-width="120">
+          <template slot-scope="{ row }">
+            <span>{{ row.communityName }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <el-pagination
+              background
+              :current-page="doorParams.page"
+              :page-sizes="[10, 20, 30, 40]"
+              :page-size="doorParams.limit"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="doorTotal"
+              @size-change="handleDoorSizeChange"
+              @current-change="handleDoorCurrentChange"
+      />
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="doorDialog = false">关闭</el-button>
+      </div>
+    </el-dialog>
+
     <el-dialog
       title="订单详情"
       :visible.sync="dialog"
@@ -217,12 +274,8 @@
 </template>
 
 <script>
-import {
-  getAccount,
-  getCommunity,
-  cancelBindCommunity,
-  getOrders
-} from "@/api/manage/account";
+import { getAccount, getCommunity, cancelBindCommunity, getOrders } from "@/api/manage/account";
+import { searchDevice } from '@/api/property'
 import { getRechargeDetials } from "@/api/order/spendingOrder";
 import { updateTime,changeTimeFormat } from "@/assets/publicScript/public";
 import connectPlot from "./ConnectPlot";
@@ -244,6 +297,8 @@ export default {
       },
       plotList: null,
       rechargeList: null,
+      doorList: null,
+      doorTotal: 0,
       total: 0,
       loading: true,
       rechargeLoading: true,
@@ -251,6 +306,11 @@ export default {
         page: 1,
         limit: 5
       },
+      doorParams: {
+          page: 1,
+          limit: 10,
+      },
+      doorDialog:false,
       dialog: false,
       plotTable: false,
       rechargeTable: false,
@@ -284,15 +344,26 @@ export default {
     tableIndex(index) {
       return (this.params.page - 1) * this.params.limit + index + 1;
     },
+    doorIndex(index) {
+        return (this.doorParams.page - 1) * this.doorParams.limit + index + 1;
+    },
     // 查询条数变更
     handleSizeChange: function(val) {
       this.params.limit = val;
       this.getRechargeList();
     },
+    handleDoorSizeChange: function(val) {
+        this.doorParams.limit = val;
+        this.getDoorList();
+    },
     // 查询页码变更
     handleCurrentChange: function(val) {
       this.params.page = val;
       this.getRechargeList();
+    },
+    handleDoorCurrentChange: function(val) {
+        this.doorParams.page = val;
+        this.getDoorList();
     },
     //获取已关联社区列表
     getList() {
@@ -304,6 +375,17 @@ export default {
         })
         .catch(() => {
           this.loading = false;
+        });
+    },
+    //获取门口机列表
+    getDoorList() {
+        this.loading = true;
+        searchDevice(this.doorParams).then(response => {
+            this.doorList = response.data.data.items;
+            this.doorTotal = response.data.data.totalCount;
+            this.loading = false;
+        }).catch(() => {
+            this.loading = false;
         });
     },
     //获取数据
@@ -330,6 +412,13 @@ export default {
         .catch(() => {
           this.rechargeLoading = false;
         });
+    },
+    //打开查看门口机弹框
+    openDoorCom(row){
+        this.doorParams.page = 1;
+        this.doorParams.search = { mixCommunityId: row.mixCommunityId };
+        this.doorDialog = true;
+        this.getDoorList();
     },
     //取消关联
     connectCancel(row) {
@@ -465,7 +554,7 @@ export default {
 
   .info-box {
     float: left;
-    width: 88%;
+    width: 80%;
 
     .id-class {
       margin-right: 12%;
@@ -493,7 +582,7 @@ export default {
   .balance-box {
     margin-right: 1.5%;
     float: right;
-    width: 10%;
+    width: 18%;
     text-align: right;
 
     .balance-title {

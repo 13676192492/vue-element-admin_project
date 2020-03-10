@@ -35,6 +35,11 @@
           <span>{{ row.tel }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="平台地址" min-width="120">
+        <template slot-scope="{ row }">
+          <span>{{ row.platformUrl }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="门口机" min-width="80">
         <template slot-scope="{ row }">
           <span class="see-show" @click="openDoorCom(row)">查看</span>
