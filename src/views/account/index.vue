@@ -42,9 +42,9 @@
             <span>{{ row.extensionData? JSON.parse(row.extensionData).Settings.Company:'' }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="余额" min-width="100">
+        <el-table-column label="余额（元）" min-width="100">
           <template slot-scope="{ row }">
-            <span style="color: #ff4949">{{ row.userAccount? row.userAccount.amount:'' }}</span>
+            <span>{{ row.userAccount? row.userAccount.amount:0 }}</span>
           </template>
         </el-table-column>
         <el-table-column label="是否启用" min-width="90">
