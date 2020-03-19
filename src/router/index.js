@@ -154,7 +154,7 @@ export const asyncRouterMap = [{
     redirect: '/applicationBill/index',
     meta: {
       title: '应用话单',
-      icon: 'record',
+      icon: 'table',
       noCache: true
     },
     children: [{
