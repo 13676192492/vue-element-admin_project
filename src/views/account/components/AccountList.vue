@@ -872,4 +872,12 @@ export default {
       }
     }
 }
+
+.see-show{
+  cursor: pointer;
+}
+
+.see-show:hover{
+  color: #11A983;
+}
 </style>
