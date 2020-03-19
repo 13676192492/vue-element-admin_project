@@ -45,6 +45,14 @@ export function searchDevice(data) {
     })
 }
 
+export function searchApp(data) {
+    return request({
+        url: '/api/application/search',
+        method: 'post',
+        data
+    })
+}
+
 export function payRecharge(query) {
     return request({
         url: '/api/orders/pay/recharge',

@@ -3,17 +3,8 @@
     <div v-show="!plotTable && !rechargeTable">
       <div class="title-box clearfix">
         <span class="title-name">账号详情</span>
-        <el-button class="title-button" type="primary" plain @click="goBack"
-          >返回</el-button
-        >
-        <el-button
-          class="title-button"
-          style="margin-right: 10px;"
-          type="primary"
-          plain
-          @click="goRecharge"
-          >充值</el-button
-        >
+        <el-button class="title-button" type="primary" plain @click="goBack">返回</el-button>
+        <el-button class="title-button" style="margin-right: 10px;" type="primary" plain @click="goRecharge">充值</el-button>
       </div>
 
       <div class="account-box clearfix">
@@ -36,13 +27,14 @@
 
       <div class="table-box">
         <div class="table-title-box clearfix">
-          <span class="title-name">已关联的社区</span>
-          <el-button class="title-button" type="primary" @click="goPlot"
-            >关联社区</el-button
-          >
+          <span class="title-name">{{ tabs? '已关联社区':'已关联应用' }}</span>
+          <span class="title-tip" @click="tabsChange">切换至{{ tabs? '已关联应用':'已关联社区' }}</span>
+          <el-button v-if="tabs" class="title-button" type="primary" @click="goPlot">关联社区</el-button>
+          <el-button v-else class="title-button" type="primary" @click="openAddCom">关联应用</el-button>
         </div>
 
         <el-table
+          v-if="tabs"
           v-loading="loading"
           :data="plotList"
           ref="plotTable"
@@ -86,10 +78,51 @@
             <template slot-scope="scope">
               <div class="btnGroup">
                 <el-tag
-                  ><el-button type="text" @click="connectCancel(scope.row)"
+                  ><el-button type="text" @click="communityCancel(scope.row)"
                     >取消关联</el-button
                   ></el-tag
                 >
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <el-table
+                v-else
+                v-loading="loading"
+                :data="appList"
+                ref="appTable"
+                :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+                border
+                fit
+                highlight-current-row
+                style="width: 100%;"
+        >
+          <el-table-column
+                  label="序号"
+                  width="60"
+                  type="index"
+          ></el-table-column>
+          <el-table-column label="应用名称" min-width="120">
+            <template slot-scope="{ row }">
+              <span>{{ row.iotName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="应用类型" min-width="120">
+            <template slot-scope="{ row }">
+              <span>{{ row.appType===1? '云之讯':'' }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="sip" min-width="80">
+            <template slot-scope="{ row }">
+              <span>{{ row.sipEnable? '已开启':'已关闭' }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="180">
+            <template slot-scope="scope">
+              <div class="btnGroup">
+                <el-tag><el-button type="text" @click="openUpdateCom(scope.row)">编辑</el-button></el-tag>
+                <el-tag><el-button type="text" @click="appCancel(scope.row)">取消关联</el-button></el-tag>
               </div>
             </template>
           </el-table-column>
@@ -180,6 +213,41 @@
         />
       </div>
     </div>
+
+    <el-dialog
+            :title="dialogStatus==='create'?'关联应用':'编辑应用'"
+            :visible.sync="appDialog"
+            :close-on-click-modal="false"
+            :append-to-body="true"
+    >
+      <el-form
+              ref="dataForm"
+              :rules="appRules"
+              :model="appData"
+              label-position="right"
+              label-width="90px"
+              style="width: 80% !important;"
+      >
+        <el-form-item label="iotId" prop="iotId">
+          <el-input v-model="appData.iotId" placeholder="请输入iotId" clearable/>
+        </el-form-item>
+        <el-form-item label="iotName" prop="iotName">
+          <el-input v-model="appData.iotName" placeholder="请输入iotName" clearable/>
+        </el-form-item>
+        <el-form-item label="appId" prop="appId">
+          <el-input v-model="appData.appId"placeholder="请输入appId" clearable/>
+        </el-form-item>
+        <el-form-item label="应用类型" prop="appType">
+          <el-select v-model="appData.appType" placeholder="请选择应用类型">
+            <el-option v-for="item in appType" :key="item.value" :label="item.label" :value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="appDialog = false">取消</el-button>
+        <el-button type="primary" @click="dialogStatus === 'create' ? addData() : updateData()">确定</el-button>
+      </div>
+    </el-dialog>
 
     <el-dialog title="太川云社区门口机信息" :visible.sync="doorDialog" :close-on-click-modal="false" :append-to-body="true" width="50%">
       <el-table
@@ -274,7 +342,7 @@
 </template>
 
 <script>
-import { getAccount, getCommunity, cancelBindCommunity, getOrders } from "@/api/manage/account";
+import { getAccount, getCommunity, cancelBindCommunity, getAppList, addBindApp, updateBindApp, cancelBindApp, getOrders } from "@/api/manage/account";
 import { searchDevice } from '@/api/property'
 import { getRechargeDetials } from "@/api/order/spendingOrder";
 import { updateTime,changeTimeFormat } from "@/assets/publicScript/public";
@@ -286,7 +354,16 @@ export default {
   components: { connectPlot, recharge },
   data() {
     return {
+      tabs: true,
       accountData: { id: undefined },
+      appData: {
+          userId: undefined,
+          iotId: undefined,
+          iotName: undefined,
+          appType: 1,
+          appId: undefined
+      },
+      appType: [{ value: 1, label: '云之讯' }],
       orderData: {
         no: undefined,
         orderType: undefined,
@@ -296,10 +373,11 @@ export default {
         paymentOn: undefined
       },
       plotList: null,
+      appList: null,
       rechargeList: null,
       doorList: null,
-      doorTotal: 0,
       total: 0,
+      doorTotal: 0,
       loading: true,
       rechargeLoading: true,
       params: {
@@ -310,11 +388,19 @@ export default {
           page: 1,
           limit: 10,
       },
+      dialog:false,
       doorDialog:false,
-      dialog: false,
+      appDialog: false,
       plotTable: false,
       rechargeTable: false,
-      currentRow: {}
+      dialogStatus: 'create',
+      currentRow: {},
+      appRules: {
+          iotId: [{ required: true, message: "请输入iotId", trigger: "change" }],
+          iotName: [{ required: true, message: "请输入iotName", trigger: "change" }],
+          appType: [{ required: true, message: "请选择应用类型", trigger: "change" }],
+          appId: [{ required: true, message: "请输入appId", trigger: "change" }]
+      }
     };
   },
   /**esLint-disable */
@@ -365,6 +451,23 @@ export default {
         this.doorParams.page = val;
         this.getDoorList();
     },
+    //社区应用切换
+    tabsChange(){
+        if(this.tabs){
+            this.tabs = false;
+            this.getAppList();
+        } else {
+            this.tabs = true;
+            this.getList();
+        }
+    },
+    //获取用户数据
+    getRow(form) {
+      this.accountData = form;
+      this.accountData.createdOn = this.accountData.createdOn? changeTimeFormat(this.accountData.createdOn):'--';
+      this.accountData.updatedOn = this.accountData.updatedOn? changeTimeFormat(this.accountData.updatedOn):'--';
+      this.accountData.lastLoginOn = this.accountData.lastLoginOn? changeTimeFormat(this.accountData.lastLoginOn):'--';
+    },
     //获取已关联社区列表
     getList() {
       this.loading = true;
@@ -388,12 +491,15 @@ export default {
             this.loading = false;
         });
     },
-    //获取数据
-    getRow(form) {
-      this.accountData = form;
-      this.accountData.createdOn = this.accountData.createdOn? changeTimeFormat(this.accountData.createdOn):'--';
-      this.accountData.updatedOn = this.accountData.updatedOn? changeTimeFormat(this.accountData.updatedOn):'--';
-      this.accountData.lastLoginOn = this.accountData.lastLoginOn? changeTimeFormat(this.accountData.lastLoginOn):'--';
+    //获取已关联应用列表
+    getAppList(){
+        this.loading = true;
+        getAppList(this.accountData.id).then(response => {
+            this.appList = response.data.data;
+            this.loading = false;
+        }).catch(() => {
+            this.loading = false;
+        });
     },
     //获取充值订单列表
     getRechargeList() {
@@ -420,8 +526,85 @@ export default {
         this.doorDialog = true;
         this.getDoorList();
     },
+    //打开绑定应用弹框
+    openAddCom() {
+        this.resetFormData();
+        this.appData.userId = this.accountData.id;
+        this.dialogStatus = "create";
+        this.appDialog = true;
+        this.$nextTick(() => {
+            this.$refs["dataForm"].clearValidate();
+        });
+    },
+    //绑定应用
+    addData() {
+        this.$refs["dataForm"].validate(valid => {
+            if (valid) {
+                const loading = this.$loading({
+                    lock: true,
+                    text: "请求操作中，请稍候",
+                    spinner: "el-icon-loading",
+                    background: "rgba(255, 255, 255, 0.4)"
+                });
+                addBindApp(this.appData).then(() => {
+                    loading.close();
+                    this.getAppList();
+                    this.appDialog = false;
+                    this.$notify({
+                        title: "成功",
+                        message: "绑定成功",
+                        type: "success",
+                        duration: 2000
+                    });
+                }).catch(() => {
+                    loading.close();
+                });
+            }
+        });
+    },
+    //打开修改应用弹框
+    openUpdateCom(row) {
+        this.appData = Object.assign({}, row);
+        this.dialogStatus = "update";
+        this.appDialog = true;
+        this.$nextTick(() => {
+            this.$refs["dataForm"].clearValidate();
+        });
+    },
+    //修改应用
+    updateData() {
+        this.$refs["dataForm"].validate(valid => {
+            if (valid) {
+                let params = {
+                    iotId: this.appData.iotId,
+                    iotName: this.appData.iotName,
+                    appType: this.appData.appType,
+                    appId: this.appData.appId
+                };
+                const loading = this.$loading({
+                    lock: true,
+                    text: "请求操作中，请稍候",
+                    spinner: "el-icon-loading",
+                    background: "rgba(255, 255, 255, 0.4)"
+                });
+                updateBindApp(this.appData.id, params).then(() => {
+                    loading.close();
+                    this.getAppList();
+                    this.appDialog = false;
+                    this.$notify({
+                        title: "成功",
+                        message: "更新成功",
+                        type: "success",
+                        duration: 2000
+                    });
+                }).catch(() => {
+                    loading.close();
+                });
+            }
+        });
+    },
     //取消关联
-    connectCancel(row) {
+    communityCancel(row) {
       this.$confirm(`确定要取消“${row.name}”小区的绑定吗？`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -451,6 +634,30 @@ export default {
         })
         .catch(() => {});
     },
+    appCancel(row) {
+        this.$confirm(`确定要取消“${row.iotName}”应用的绑定吗？`, "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+        }).then(() => {
+            const loading = this.$loading({
+                lock: true,
+                text: "请求操作中，请稍候",
+                spinner: "el-icon-loading",
+                background: "rgba(255, 255, 255, 0.4)"
+            });
+            cancelBindApp(row.id).then(() => {
+                loading.close();
+                this.getAppList();
+                this.$notify({
+                    title: "成功",
+                    message: "解绑成功",
+                    type: "success",
+                    duration: 2000
+                });
+            }).catch(() => {loading.close();});
+        }).catch(() => {});
+      },
     //查看订单
     seeOrder(row) {
       getRechargeDetials(row.no).then(res => {
@@ -459,21 +666,6 @@ export default {
           this.orderData = res.data.data;
         }
       });
-      // this.dialog = true;
-      // this.orderData = row;
-      // this.orderData = {
-      //   no: row.no,
-      //   orderType: "充值订单",
-      //   orderTotal: row.orderTotal + " 元",
-      //   orderStatus:
-      //     row.orderStatus === 30
-      //       ? "支付成功"
-      //       : row.orderStatus === 20
-      //       ? "待支付"
-      //       : row.orderStatus,
-      //   createdOn: updateTime(row.createdOn, 0),
-      //   paymentOn: row.paymentOn ? updateTime(row.paymentOn, 0) : "暂未支付"
-      // };
     },
     //组件切换
     backPlot(a) {
@@ -512,6 +704,16 @@ export default {
     newPlotData() {
       this.plotTable = false;
       this.getList();
+    },
+    //重置表单数据
+    resetFormData() {
+      this.appData = {
+        userId: undefined,
+        iotId: undefined,
+        iotName: undefined,
+        appType: 1,
+        appId: undefined
+      }
     }
   }
 };
@@ -620,6 +822,13 @@ export default {
     .title-text {
       margin-left: 10%;
       font-size: 12px;
+    }
+
+    .title-tip{
+      margin-left: 2%;
+      font-size: 14px;
+      color: #11A983;
+      cursor: pointer;
     }
 
     .title-button {
