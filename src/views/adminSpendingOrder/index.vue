@@ -3,11 +3,11 @@
     <div class="app-container" v-show="!param.isShow">
       <div class="filter-container">
         <el-input
-        v-model="params.search.userName"
-        style="width:200px;margin-right:1%"
-        placeholder="请输入账号"
-        clearable
-      ></el-input>
+          v-model="params.search.userName"
+          style="width:200px;margin-right:1%"
+          placeholder="请输入账号"
+          clearable
+        ></el-input>
         <el-date-picker
           v-model="selectTime"
           type="daterange"
@@ -51,7 +51,11 @@
         />
         <el-table-column label="消费订单号" prop="no"> </el-table-column>
         <el-table-column label="账号" prop="user.userName" />
-        <el-table-column label="类型" prop="orderType"> </el-table-column>
+        <el-table-column label="类型">
+          <template slot-scope="{ row }">
+            <span>{{ row.orderType | changeOrderType }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="创建时间" prop="createdOn"> </el-table-column>
         <el-table-column label="支付时间" prop="paymentOn"> </el-table-column>
         <el-table-column label="金额（元）" prop="orderTotal">
@@ -109,9 +113,9 @@ export default {
       orderStatus: null,
       params: {
         search: {
-          userName:null,
+          userName: null,
           orderStatus: null,
-          orderType: 2,
+          orderType: 0,
           createdOnStart: null,
           createdOnEnd: null
         },
@@ -125,6 +129,12 @@ export default {
       selectTime: null,
       list: []
     };
+  },
+  filters: {
+    changeOrderType(val) {
+      if (val == 2) return "Sip通话";
+      else if (val == 4) return "应用订单";
+    }
   },
   mounted() {
     this.getList();
@@ -145,13 +155,7 @@ export default {
     tableIndex(index) {
       return (this.params.page - 1) * this.params.limit + index + 1;
     },
-    changeOrderType(type) {
-      if (type == 2) return "Sip通话";
-      // switch(type){
-      //   case 1:return 'Sip通话';break;
-      //   default:return '';
-      // }
-    },
+
     /* eslint-disable */
     changePayStatus(type) {
       switch (type) {
@@ -188,11 +192,7 @@ export default {
           for (let i of res.data.data.items) {
             i.createdOn = updateTime(i.createdOn, 0);
             i.paymentOn = updateTime(i.paymentOn, 0);
-            i.orderType = this.changeOrderType(i.orderType);
             i.orderStatus = this.changePayStatus(i.orderStatus);
-            if (i.orderType == 1) {
-              i.orderType = "Sip通话";
-            }
           }
           this.total = res.data.data.totalCount;
           this.list = res.data.data.items;

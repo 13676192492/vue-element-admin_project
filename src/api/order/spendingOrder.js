@@ -9,10 +9,18 @@ export function getOrderList(params) {
     })
 }
 
-//查询物业订单详情列表
-export function getOrderDetails(no,params) {
+//查询物业订单详情列表(sip)
+export function getSipOrderDetails(no,params) {
     return request({
         url: '/api/orders/'+no+'/detail/sip',
+        method: 'get',
+        params
+    })
+}
+//查询物业订单详情列表(应用订单)
+export function getUcpOrderDetails(no,params) {
+    return request({
+        url: '/api/orders/'+no+'/detail/ucp',
         method: 'get',
         params
     })
@@ -37,9 +45,18 @@ export function getAdminOrderList(params) {
 }
 
 //查询管理员订单详情列表
-export function getAdminOrderDetails(no,params) {
+export function getAdminSipOrderDetails(no,params) {
     return request({
         url: '/api/admin/orders/'+no+'/detail/sip',
+        method: 'get',
+        params
+    })
+}
+
+//查询管理员订单详情列表
+export function getAdminUcpOrderDetails(no,params) {
+    return request({
+        url: '/api/admin/orders/'+no+'/detail/ucp',
         method: 'get',
         params
     })

@@ -19,17 +19,14 @@ Vue.use(Router)
     affix: true                  if true, the tag will affix in the tags-view
   }
 **/
-export const constantRouterMap = [
-  {
+export const constantRouterMap = [{
     path: '/redirect',
     component: Layout,
     hidden: true,
-    children: [
-      {
-        path: '/redirect/:path*',
-        component: () => import('@/views/redirect/index')
-      }
-    ]
+    children: [{
+      path: '/redirect/:path*',
+      component: () => import('@/views/redirect/index')
+    }]
   },
   // {
   //   path: '',
@@ -62,99 +59,175 @@ export const constantRouterMap = [
 ]
 export default new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: constantRouterMap
 })
-export const asyncRouterMap =
- [
-  {
+export const asyncRouterMap = [{
     path: '/',
     component: Layout,
     redirect: '/index',
-    meta: { title: '首页', icon: 'dashboard', noCache: true,roles:['USER','ADMIN'] },
-    children: [
-        {
-            path: '/index',
-            component: () => import('@/views/property/index'),
-            name: '首页',
-            meta: { title: '首页', noCache: true,roles:['USER'] }
-        },
-        {
-            path: '/index',
-            component: () => import('@/views/manage/index'),
-            name: '首页',
-            meta: { title: '首页', noCache: true,roles:['ADMIN'] }
+    meta: {
+      title: '首页',
+      icon: 'dashboard',
+      noCache: true,
+      roles: ['USER', 'ADMIN']
+    },
+    children: [{
+        path: '/index',
+        component: () => import('@/views/property/index'),
+        name: '首页',
+        meta: {
+          title: '首页',
+          noCache: true,
+          roles: ['USER']
         }
+      },
+      {
+        path: '/index',
+        component: () => import('@/views/manage/index'),
+        name: '首页',
+        meta: {
+          title: '首页',
+          noCache: true,
+          roles: ['ADMIN']
+        }
+      }
     ]
-},
-{
+  },
+  {
     path: '/spendingOrder',
     component: Layout,
     redirect: '/spendingOrder/index',
     name: '订单管理',
-    meta: { title: '订单管理', icon: 'chart', noCache: true },
-    children: [
-      {
+    meta: {
+      title: '订单管理',
+      icon: 'chart',
+      noCache: true
+    },
+    children: [{
         path: '/spendingOrder/index',
         component: () => import('@/views/spendingOrder/index'),
         name: '消费订单',
-        meta: { title: '消费订单', noCache: true ,roles:['USER']}
+        meta: {
+          title: '消费订单',
+          noCache: true,
+          roles: ['USER']
+        }
       },
       {
         path: '/rechargeOrder/index',
         component: () => import('@/views/rechargeOrder/index'),
         name: '充值记录',
-        meta: { title: '充值记录', noCache: true ,roles:['USER']}
+        meta: {
+          title: '充值记录',
+          noCache: true,
+          roles: ['USER']
+        }
       },
       {
         path: '/SpendingOrder/index',
         component: () => import('@/views/adminSpendingOrder/index'),
         name: '消费订单',
-        meta: { title: '消费订单', noCache: true ,roles:['ADMIN']}
+        meta: {
+          title: '消费订单',
+          noCache: true,
+          roles: ['ADMIN']
+        }
       },
       {
         path: '/RechargeOrder/index',
         component: () => import('@/views/adminRechargeOrder/index'),
         name: '充值记录',
-        meta: { title: '充值记录', noCache: true ,roles:['ADMIN']}
+        meta: {
+          title: '充值记录',
+          noCache: true,
+          roles: ['ADMIN']
+        }
       }
     ]
+  },
+  {
+    path: '/applicationBill',
+    component: Layout,
+    redirect: '/applicationBill/index',
+    meta: {
+      title: '应用话单',
+      icon: 'record',
+      noCache: true
+    },
+    children: [{
+      path: '/applicationBill/index',
+      component: () => import('@/views/applicationBill/index'),
+      name: '应用话单',
+      meta: {
+        title: '应用话单',
+        noCache: true,
+        roles: ['USER']
+      }
+    },{
+      path: '/adminApplicationBill/index',
+      component: () => import('@/views/adminApplicationBill/index'),
+      name: '应用话单',
+      meta: {
+        title: '应用话单',
+        noCache: true,
+        roles: ['ADMIN']
+      }
+    } ]
   },
   {
     path: '/phoneBill',
     component: Layout,
     redirect: '/phoneBill/index',
-    meta: { title: '话单记录', icon: 'record', noCache: true },
-    children: [
-      {
+    meta: {
+      title: '话单记录',
+      icon: 'record',
+      noCache: true
+    },
+    children: [{
         path: '/phoneBill/index',
         component: () => import('@/views/phoneBill/index'),
         name: '话单记录',
-        meta: { title: '话单记录', noCache: true ,roles:['USER']}
+        meta: {
+          title: '话单记录',
+          noCache: true,
+          roles: ['USER']
+        }
       },
       {
         path: '/PhoneBill/index',
         component: () => import('@/views/adminPhoneBill/index'),
         name: '话单记录',
-        meta: { title: '话单记录', noCache: true ,roles:['ADMIN']}
+        meta: {
+          title: '话单记录',
+          noCache: true,
+          roles: ['ADMIN']
+        }
       }
     ]
   },
- 
+
   {
     path: '/account',
     component: Layout,
     redirect: '/account/index',
     name: '账号管理',
-    meta: { noCache: true , icon: 'guide',roles:['ADMIN']},
-    children: [
-    {
+    meta: {
+      noCache: true,
+      icon: 'guide',
+      roles: ['ADMIN']
+    },
+    children: [{
       path: 'index',
       component: () => import('@/views/account/index'),
       name: '账号管理',
-      meta: { title: '账号管理', noCache: true }
-    }
-    ]
+      meta: {
+        title: '账号管理',
+        noCache: true
+      }
+    }]
   },
   // {
   //   path: '/plotConsumption',
@@ -170,42 +243,47 @@ export const asyncRouterMap =
   //     }
   //   ]
   // },
-   {
-     path: '/invoice',
-     component: Layout,
-     meta: {
-       title: '发票管理',
-       icon: 'invoice',
-       roles:['USER']
-     },
-     hidden:true,
-     children: [
-       {
-         path: '/invoice/index',
-         component: () => import('@/views/invoice/index'),
-         name: '发票管理',
-         meta: { title: '发票管理' }
-       }
-     ]
-   },
-   {
-     path: '/ticket',
-     component: Layout,
-     redirect: '/ticket/index',
-     hidden:true,
-     meta: {
+  {
+    path: '/invoice',
+    component: Layout,
+    meta: {
+      title: '发票管理',
+      icon: 'invoice',
+      roles: ['USER']
+    },
+    hidden: true,
+    children: [{
+      path: '/invoice/index',
+      component: () => import('@/views/invoice/index'),
+      name: '发票管理',
+      meta: {
+        title: '发票管理'
+      }
+    }]
+  },
+  {
+    path: '/ticket',
+    component: Layout,
+    redirect: '/ticket/index',
+    hidden: true,
+    meta: {
       title: '开票管理',
       icon: 'ticket',
-      roles:['ADMIN']
+      roles: ['ADMIN']
     },
-     children: [
-       {
-         path: 'index',
-         component: () => import('@/views/ticket/index'),
-         name: '开票管理',
-         meta: { title: '开票管理', noCache: true }
-       }
-     ]
-   },
-{ path: '*', redirect: '/404', hidden: true }
+    children: [{
+      path: 'index',
+      component: () => import('@/views/ticket/index'),
+      name: '开票管理',
+      meta: {
+        title: '开票管理',
+        noCache: true
+      }
+    }]
+  },
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  }
 ]

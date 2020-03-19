@@ -11,9 +11,15 @@
           end-placeholder="结束日期"
           style="margin-right:1%;"
         ></el-date-picker>
-        <!-- <el-select v-model="params.search.orderStatus" placeholder="请选择订单类型" style="margin-right:1%;">
-        <el-option label="Sip通话" value="1"></el-option>
-      </el-select> -->
+        <!-- <el-select
+          v-model="params.search.orderType"
+          placeholder="请选择订单类型"
+          style="margin-right:1%;"
+        >
+          <el-option label="全部" :value="0"></el-option>
+          <el-option label="Sip通话" :value="2"></el-option>
+          <el-option label="应用话单" :value="4"></el-option>
+        </el-select> -->
         <el-select
           v-model="orderStatus"
           placeholder="请选择支付状态"
@@ -44,7 +50,11 @@
           :index="tableIndex"
         />
         <el-table-column label="消费订单号" prop="no"> </el-table-column>
-        <el-table-column label="类型" prop="orderType"> </el-table-column>
+        <el-table-column label="类型" >
+          <template slot-scope="{ row }">
+            <span>{{row.orderType|changeOrderType}}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="创建时间" prop="createdOn"> </el-table-column>
         <el-table-column label="支付时间" prop="paymentOn"> </el-table-column>
         <el-table-column label="金额（元）" prop="orderTotal">
@@ -103,7 +113,7 @@ export default {
       params: {
         search: {
           orderStatus: null,
-          orderType: 2,
+          orderType: 0,
           createdOnStart: null,
           createdOnEnd: null
         },
@@ -121,6 +131,12 @@ export default {
   mounted() {
     this.getList();
   },
+  filters: {
+    changeOrderType(val) {
+      if (val == 2) return "Sip通话";
+      else if (val == 4) return "应用订单";
+    }
+  },
   methods: {
     getData() {
       this.params.page = 1;
@@ -136,13 +152,6 @@ export default {
     },
     tableIndex(index) {
       return (this.params.page - 1) * this.params.limit + index + 1;
-    },
-    changeOrderType(type) {
-      if (type == 2) return "Sip通话";
-      // switch(type){
-      //   case 1:return 'Sip通话';break;
-      //   default:return '';
-      // }
     },
     changePayStatus(type) {
       switch (type) {
@@ -179,11 +188,7 @@ export default {
           for (let i of res.data.data.items) {
             i.createdOn = updateTime(i.createdOn, 0);
             i.paymentOn = updateTime(i.paymentOn, 0);
-            i.orderType = this.changeOrderType(i.orderType);
             i.orderStatus = this.changePayStatus(i.orderStatus);
-            if (i.orderType == 1) {
-              i.orderType = "Sip通话";
-            }
           }
           this.total = res.data.data.totalCount;
           this.list = res.data.data.items;

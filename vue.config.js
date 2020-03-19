@@ -19,8 +19,9 @@ module.exports = {
 
     },
     devServer: {
+        hot:true,
         port: port,
-        host:'localhost',
+        host:'127.0.0.1',
         open: true,
         overlay: {
             warnings: false,
@@ -29,11 +30,11 @@ module.exports = {
         proxy: {
             "/api": {
                 // target: "http://10.0.1.222:55200",
-                target: "http://10.0.1.127:55200",
+                target: "http://10.0.1.112:8000",
                 pathRewrite: {
                     "^/api": ""
                 },
-                changeOrigin:false
+                changeOrigin:true
             }
         }
     }

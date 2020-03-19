@@ -1,4 +1,4 @@
-<template >
+<template>
   <div class="body" v-if="param.isShow">
     <div class="box">
       <div class="top">
@@ -6,28 +6,35 @@
         <el-button type="primary" @click="close">返回</el-button>
       </div>
       <ul class="center">
-        <li>消费订单号：{{param.data.no}}</li>
-        <li>客户账号：{{param.data.user.userName}}</li>
-        <li>类型：{{param.data.orderType}}</li>
-        <li>创建时间：{{param.data.createdOn}}</li>
-        <li>金额：{{param.data.orderTotal}} 元</li>
-        <li>支付状态：{{param.data.orderStatus}}</li>
-        <li>支付时间：{{param.data.paymentOn}}</li>
+        <li>消费订单号：{{ param.data.no }}</li>
+        <li>客户账号：{{ param.data.user.userName }}</li>
+        <li>类型：{{ param.data.orderType | changeOrderType }}</li>
+        <li>创建时间：{{ param.data.createdOn }}</li>
+        <li>金额：{{ param.data.orderTotal }} 元</li>
+        <li>支付状态：{{ param.data.orderStatus }}</li>
+        <li>支付时间：{{ param.data.paymentOn }}</li>
       </ul>
       <div class="detailsTable">
         <div class="tips">
-          <p>订单信息（sip通话）</p>
+          <p v-if="param.data.orderType == 2">订单信息（sip通话）</p>
+          <p v-if="param.data.orderType == 4">订单信息（应用订单）</p>
         </div>
         <el-table
+          v-if="param.data.orderType == 2"
           v-loading="loading"
           :data="list"
-          :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+          :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
           border
           fit
           highlight-current-row
           style="width: 96%;margin-left:2%"
         >
-          <el-table-column label="序号" width="60" type="index" :index="tableIndex" />
+          <el-table-column
+            label="序号"
+            width="60"
+            type="index"
+            :index="tableIndex"
+          />
           <el-table-column label="小区" prop="communityName"></el-table-column>
           <el-table-column label="呼叫类别">
             <template slot-scope="{ row }">
@@ -44,6 +51,32 @@
             </template>
           </el-table-column>
           <el-table-column label="费用（元）" prop="amount"></el-table-column>
+        </el-table>
+
+        <el-table
+          v-if="param.data.orderType == 4"
+          v-loading="loading"
+          :data="ucpList"
+          :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+          border
+          fit
+          highlight-current-row
+          style="width: 96%;margin-left:2%"
+        >
+          <el-table-column
+            label="序号"
+            width="60"
+            type="index"
+            :index="tableIndex"
+          />
+          <el-table-column label="appid" prop="appId"></el-table-column>
+          <el-table-column label="应用名称" prop="iotName"></el-table-column>
+          <el-table-column label="统计日期">
+            <template slot-scope="{ row }">
+              <span>{{ row.totalTime | changeTime }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="费用（元）" prop="fee"></el-table-column>
         </el-table>
 
         <el-pagination
@@ -63,7 +96,7 @@
 
 <script>
 import { updateTime, changeTimeFormat } from "@/assets/publicScript/public";
-import { getAdminOrderDetails } from "@/api/order/spendingOrder";
+import { getAdminSipOrderDetails,getAdminUcpOrderDetails } from "@/api/order/spendingOrder";
 export default {
   props: ["param"],
   data() {
@@ -90,6 +123,17 @@ export default {
       } else {
         return `${sec}秒`;
       }
+    },
+    changeOrderType(val) {
+      if (val == 2) return "Sip通话";
+      else if (val == 4) return "应用订单";
+    },
+    changeTime(val) {
+      let time = "-";
+      if (val) {
+        time = val.slice(0, 4) + "-" + val.slice(4, 6) + "-" + val.slice(6);
+      }
+      return time;
     }
   },
   methods: {
@@ -109,7 +153,9 @@ export default {
         page: this.page,
         limit: this.limit
       };
-      getAdminOrderDetails(this.param.data.no, data).then(res => {
+
+      if (this.param.orderType == 2) {
+      getAdminSipOrderDetails(this.param.data.no, data).then(res => {
         if (res.data.success) {
           for (let i of res.data.data.items) {
             i.createdOn = changeTimeFormat(i.createdOn);
@@ -120,6 +166,14 @@ export default {
           this.list = res.data.data.items;
         }
       });
+       } else {
+        getAdminUcpOrderDetails(this.param.data.no, data).then(res => {
+          if (res.data.success) {
+            this.total = res.data.data.totalCount;
+            this.ucpList = res.data.data.items;
+          }
+        });
+      }
     },
     close() {
       this.$emit("closeMask", false);

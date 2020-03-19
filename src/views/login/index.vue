@@ -406,6 +406,8 @@ export default {
                   this.$router.addRoutes(this.$store.getters.addRouters); // 动态添加可访问路由表
                   this.$router.push({ path: this.redirect || "/" });
                 });
+              }).catch(err=>{
+                console.log(err);
               });
 
               // this.$router.addRoutes(this.$store.getters.addRouters)

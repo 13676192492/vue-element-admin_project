@@ -124,7 +124,8 @@ const user = {
                 // console.log(getRoles())
                 let roles = getRoles();
                 let reg = new RegExp('"', "g");
-                roles = roles.substring(1, roles.length - 1).replace(reg, "").split(",");
+                if(roles)
+                    roles = roles.substring(1, roles.length - 1).replace(reg, "").split(",");
                 let data = {
                         roles
                     }
