@@ -55,8 +55,8 @@
                 <p class="plot-name">{{item.iotName}}</p>
                 <p>
                   <span style="margin-right: 8%;">Appid：{{item.appId}}</span>
-                  <span>Iot_ID：{{item.Iot_Id}}</span>
-                  <span v-show="item.appTyp">应用类型：{{item.appType===1?'云之讯':''}}</span>
+                  <span style="margin-right: 8%;">Iot_ID：{{item.iotId}}</span>
+                  <span v-show="item.appType">应用类型：{{item.appType===1?'云之讯':''}}</span>
                 </p>
               </div>
               <div class="plot-operate">
