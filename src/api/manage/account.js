@@ -52,6 +52,44 @@ export function cancelBindCommunity(id) {
     })
 }
 
+export function getAppAll(data) {
+    return request({
+        url: '/api/admin/application/search',
+        method: 'post',
+        data
+    })
+}
+
+export function getAppList(id) {
+    return request({
+        url: '/api/admin/application/user/' + id,
+        method: 'post'
+    })
+}
+
+export function addBindApp(data) {
+    return request({
+        url: '/api/admin/application',
+        method: 'post',
+        data
+    })
+}
+
+export function updateBindApp(id, data) {
+    return request({
+        url: '/api/admin/application/' + id,
+        method: 'put',
+        data
+    })
+}
+
+export function cancelBindApp(id) {
+    return request({
+        url: '/api/admin/application/' + id,
+        method: 'delete'
+    })
+}
+
 export function getOrders(data) {
     return request({
         url: '/api/admin/orders/search',

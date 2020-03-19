@@ -44,7 +44,8 @@ export default {
                 total_amount: [
                     { required: true, message: "请输入充值金额", trigger: "change" },
                     { pattern: /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/, message: "输入的充值金额格式错误", trigger: "blur" },
-                    { validator: this.checkAmount, trigger: "blur" }
+                    { max: 16, message: "单次充值金额不能超过16位", trigger: "blur" },
+                    // { validator: this.checkAmount, trigger: "blur" }
                 ],
                 note: [{ required: true, message: "请输入转账凭据", trigger: "change" }]
             }

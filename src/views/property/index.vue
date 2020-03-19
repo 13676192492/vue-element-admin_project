@@ -7,22 +7,17 @@
         <el-button class="title-button" type="primary" plain @click="goRecharge">充值</el-button>
         <el-button class="title-button" style="margin-right: 30px;" type="primary" plain @click="goPlot">新增关联社区</el-button>
       </div>
-      <div>
+      <!--<div>
         <div class="tip-name">已关联社区</div>
         <div v-if="communityData.length">
           <div class="plot-content" v-for="(item, index) in communityData" :key="index">
             <div class="plot-img"><img :src="item.logo"></div>
             <div class="plot-info" style="margin-top: .5%">
               <p class="plot-name">{{item.name}}</p>
-              <!--<p><span style="margin-right: 10%;">累计消费：{{item.amount?item.amount:'无'}}</span><span>昨日消费：{{item.lastDayAmount?item.lastDayAmount:'无'}}</span></p>-->
               <p><span style="margin-right: 8%;">地址：{{item.address?item.address:'无'}}</span><span>电话：{{item.tel?item.tel:'无'}}</span></p>
             </div>
-            <!--<div class="plot-consume">
-              <p>本月消费</p>
-              <span>{{item.nowMonthAmount?item.nowMonthAmount:'无'}}</span>
-            </div>-->
             <div class="plot-operate">
-              <!--<el-button class="btn-box">取消关联</el-button>-->
+              &lt;!&ndash;<el-button class="btn-box">取消关联</el-button>&ndash;&gt;
               <p class="btn-txt">{{ item.sipEnable? 'sip通话已开启':'sip通话已关闭' }}</p>
             </div>
           </div>
@@ -31,7 +26,61 @@
           <img class="none-img" :src="noneImgShow">
           <span>暂无关联社区</span>
         </div>
-      </div>
+      </div>-->
+      <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+        <el-tab-pane label="已关联社区" name="first">
+          <div v-if="communityData.length">
+            <div class="plot-content" v-for="(item, index) in communityData" :key="index">
+              <div class="plot-img"><img :src="item.logo"></div>
+              <div class="plot-info" style="margin-top: .5%">
+                <p class="plot-name">{{item.name}}</p>
+                <p><span style="margin-right: 8%;">地址：{{item.address?item.address:'无'}}</span><span>电话：{{item.tel?item.tel:'无'}}</span></p>
+              </div>
+              <div class="plot-operate">
+                <!--<el-button class="btn-box">取消关联</el-button>-->
+                <p class="btn-txt">{{ item.sipEnable? 'sip通话已开启':'sip通话已关闭' }}</p>
+              </div>
+            </div>
+          </div>
+          <div v-else class="none-tip">
+            <img class="none-img" :src="noneImgShow">
+            <span>暂无关联社区</span>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="已关联应用" name="second">
+          <div v-if="appData.length">
+            <div class="plot-content" v-for="(item, index) in appData" :key="index">
+              <div class="plot-img"><img :src="item.logo"></div>
+              <div class="plot-info" style="margin-top: .5%">
+                <p class="plot-name">{{item.iotName}}</p>
+                <p>
+                  <span style="margin-right: 8%;">Appid：{{item.appId}}</span>
+                  <span>Iot_ID：{{item.Iot_Id}}</span>
+                  <span v-show="item.appTyp">应用类型：{{item.appType===1?'云之讯':''}}</span>
+                </p>
+              </div>
+              <div class="plot-operate">
+                <!--<el-button class="btn-box">取消关联</el-button>-->
+                <p class="btn-txt">{{ item.sipEnable? 'sip通话已开启':'sip通话已关闭' }}</p>
+              </div>
+            </div>
+            <el-pagination
+                    background
+                    :current-page="params.page"
+                    :page-sizes="[5, 10, 20, 30]"
+                    :page-size="params.limit"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total"
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+            />
+          </div>
+          <div v-else class="none-tip">
+            <img class="none-img" :src="noneImgShow">
+            <span>暂无关联应用</span>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
     </div>
 
     <connect-plot ref="plotChild" v-show="plotTable" @backPlot="backPlot" @newList="newPlotData"/>
@@ -41,10 +90,11 @@
 </template>
 
 <script>
-import { getHomeId, getHomeData } from '@/api/property'
+import { getHomeId, getHomeData, searchApp } from '@/api/property'
 import connectPlot from "./components/ConnectPlot";
 import recharge from "./components/Recharge";
 import communityImg from './icon/community.png'
+import appImg from './icon/app.png'
 import noneImg from './icon/none.png'
 
 export default {
@@ -52,10 +102,17 @@ export default {
     components: { connectPlot, recharge },
     data() {
         return {
+            activeName: 'first',
             accountId: undefined,
             accountData: { account: undefined, amount: undefined },
             communityId: undefined,
             communityData: [],
+            appData: [],
+            params: {
+                page: 1,
+                limit: 5
+            },
+            total: 0,
             plotTable: false,
             rechargeTable: false,
             currentRow: {},
@@ -79,6 +136,21 @@ export default {
         this.getId();
     },
     methods: {
+        //模块切换
+        handleClick(tab, event) {
+            if(tab.name === 'first') this.getData(this.communityId);
+            else this.getAppList();
+        },
+        // 查询条数变更
+        handleSizeChange: function(val) {
+            this.params.limit = val;
+            this.getAppList();
+        },
+        // 查询页码变更
+        handleCurrentChange: function(val) {
+            this.params.page = val;
+            this.getAppList();
+        },
         //获取首页模块分类
         getId(){
             getHomeId().then(response => {
@@ -108,6 +180,21 @@ export default {
                     }
                 }).catch(err => {console.log(err);});
             }
+        },
+        //获取应用数据
+        getAppList(){
+            searchApp(this.params).then(res => {
+                console.log(res.data);
+                this.appData = res.data.data.items;
+                this.total = res.data.data.totalCount;
+                if(this.appData.length > 0){
+                    for(let i in this.appData){
+                        if(!this.appData[i].logo) this.appData[i].logo = appImg;
+                    }
+                } else {
+                    this.noneImgShow = noneImg;
+                }
+            }).catch(err => {console.log(err);});
         },
         //组件切换
         backPlot(a) {
@@ -268,5 +355,14 @@ export default {
       display: block;
       margin: 0 auto;
     }
+  }
+
+  /deep/ .el-tabs__item.is-active,
+  .el-tabs__item.is-active:hover{
+    color: #11A983;
+  }
+
+  /deep/ .el-tabs__item:hover{
+    color: #11A983;
   }
 </style>

@@ -53,7 +53,7 @@
   </div>
 </template>
 <script>
-import { getApplicationBillList } from "@/api/applicationBill/index";
+import { getAdminApplicationBillList } from "@/api/applicationBill/index";
 import { updateTime, changeTimeFormat } from "@/assets/publicScript/public";
 export default {
   data() {
@@ -128,7 +128,7 @@ export default {
         this.params.search.createdOnEnd = null;
       }
 
-      getApplicationBillList(this.params).then(res => {
+      getAdminApplicationBillList(this.params).then(res => {
         if (res.data.success) {
           this.total = res.data.data.totalCount;
           this.list = res.data.data.items;
