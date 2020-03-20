@@ -430,6 +430,10 @@ export default {
     //重置表单并返回
     goBack() {
       this.tabs = true;
+      this.plotList = [];
+      this.appList = [];
+      this.rechargeList = [];
+      this.doorList = [];
       this.$emit("backAccount", false);
     },
     //返回序号
