@@ -429,6 +429,7 @@ export default {
   methods: {
     //重置表单并返回
     goBack() {
+      this.tabs = true;
       this.$emit("backAccount", false);
     },
     //返回序号
