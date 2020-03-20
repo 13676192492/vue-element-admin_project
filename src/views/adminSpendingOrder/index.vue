@@ -115,7 +115,7 @@ export default {
         search: {
           userName: null,
           orderStatus: null,
-          orderType: 0,
+          orderType: 2,
           createdOnStart: null,
           createdOnEnd: null
         },

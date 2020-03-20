@@ -113,7 +113,7 @@ export default {
       params: {
         search: {
           orderStatus: null,
-          orderType: 0,
+          orderType: 2,
           createdOnStart: null,
           createdOnEnd: null
         },

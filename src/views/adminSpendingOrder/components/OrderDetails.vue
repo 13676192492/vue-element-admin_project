@@ -102,6 +102,7 @@ export default {
   data() {
     return {
       list: [],
+      ucpList:[],
       loading: null,
       page: 1,
       limit: 10,
@@ -230,7 +231,7 @@ export default {
     //
 
     li {
-      margin: 1.5%;
+      margin: 2%;
     }
   }
 

@@ -207,6 +207,8 @@ export default {
       border-bottom: 1px solid #eee;
       color: #666;
       display: flex;
+          -webkit-box-pack: initial;
+    -webkit-box-align: initial;
       // flex-direction: column;
       align-items: center;
       justify-content: space-between;
