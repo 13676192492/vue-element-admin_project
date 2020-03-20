@@ -231,7 +231,7 @@ export default {
     //
 
     li {
-      margin: 2%;
+      margin: 1.6%;
     }
   }
 

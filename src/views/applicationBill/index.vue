@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input
-        v-model="params.appId"
+        v-model="params.search.appId"
         style="width:200px;margin-right:1%"
         placeholder="请输入appid"
         clearable
