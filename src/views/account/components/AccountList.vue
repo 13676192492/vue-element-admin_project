@@ -103,14 +103,14 @@
                   width="60"
                   type="index"
           ></el-table-column>
-          <el-table-column label="应用名称" min-width="100">
-            <template slot-scope="{ row }">
-              <span>{{ row.iotName }}</span>
-            </template>
-          </el-table-column>
           <el-table-column label="appId" min-width="140">
             <template slot-scope="{ row }">
               <span>{{ row.appId }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="应用名称" min-width="100">
+            <template slot-scope="{ row }">
+              <span>{{ row.iotName }}</span>
             </template>
           </el-table-column>
           <el-table-column label="应用类型" min-width="100">
