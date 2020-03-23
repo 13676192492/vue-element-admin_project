@@ -18,7 +18,7 @@
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          v-model="loginForm.account"
+          v-model.trim="loginForm.account"
           :placeholder="$t('login.username')"
           name="account"
           type="text"
@@ -31,7 +31,7 @@
           <svg-icon icon-class="password" />
         </span>
         <el-input
-          v-model="loginForm.password"
+          v-model.trim="loginForm.password"
           :type="passwordType"
           :placeholder="$t('login.password')"
           name="password"
@@ -77,14 +77,14 @@
       >
         <el-form-item label="账号名:" prop="account">
           <el-input
-            v-model="newUser.account"
+            v-model.trim="newUser.account"
             placeholder="请输入账户名"
             clearable
           />
         </el-form-item>
         <el-form-item label="密码:" prop="password" ref="password">
           <el-input
-            v-model="newUser.password"
+            v-model.trim="newUser.password"
             show-password
             placeholder="请输入密码"
             clearable
@@ -96,7 +96,7 @@
           ref="confirmPassword"
         >
           <el-input
-            v-model="newUser.confirmPassword"
+            v-model.trim="newUser.confirmPassword"
             show-password
             placeholder="请输入确认密码"
             clearable
@@ -111,7 +111,7 @@
         </el-form-item>
         <el-form-item label="手机号:" prop="phone" ref="phone">
           <el-input
-            v-model="newUser.phone"
+            v-model.trim="newUser.phone"
             placeholder="请输入手机号"
             maxlength="11"
             style="width:80%"
@@ -120,14 +120,14 @@
         </el-form-item>
         <el-form-item label="验证码:" prop="captcha">
           <el-input
-            v-model="newUser.captcha"
+            v-model.trim="newUser.captcha"
             placeholder="请输入验证码"
             clearable
           />
         </el-form-item>
         <el-form-item label="邮箱:" prop="email">
           <el-input
-            v-model="newUser.email"
+            v-model.trim="newUser.email"
             placeholder="请输入邮箱"
             clearable
           />
