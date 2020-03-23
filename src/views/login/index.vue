@@ -336,7 +336,12 @@ export default {
         ],
         captcha: [
           { required: true, message: "必须填写验证码", trigger: "change" }
-        ]
+        ],
+        email:[{
+          pattern:/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/,
+          message:'请输入正确邮箱地址',
+          trigger: "blur"
+        }]
       },
 
       forgetPwdFormRules: {
