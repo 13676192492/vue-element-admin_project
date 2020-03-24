@@ -74,6 +74,11 @@
               <span class="see-show" @click="openDoorCom(row)">查看</span>
             </template>
           </el-table-column>
+          <el-table-column label="sip" min-width="80">
+            <template slot-scope="{ row }">
+              <span>{{ row.sipEnable? '已开启':'已关闭' }}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="操作" width="100">
             <template slot-scope="scope">
               <div class="btnGroup">
