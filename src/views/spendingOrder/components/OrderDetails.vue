@@ -155,7 +155,7 @@ export default {
         limit: this.limit
       };
 
-      if (this.param.orderType == 2) {
+      if (this.param.data.orderType == 2) {
         getSipOrderDetails(this.param.data.no, data).then(res => {
           if (res.data.success) {
             for (let i of res.data.data.items) {
