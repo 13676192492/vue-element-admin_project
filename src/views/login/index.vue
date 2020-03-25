@@ -10,7 +10,7 @@
     >
       <div class="title-container">
         <h3 class="title">{{ $t("login.title") }}</h3>
-        <lang-select class="set-language" />
+        <!-- <lang-select class="set-language" /> -->
       </div>
 
       <el-form-item prop="account">
@@ -55,9 +55,7 @@
         @click.native.prevent="handleLogin"
         >{{ $t("login.logIn") }}</el-button
       >
-      <el-button type="text" @click.native.prevent="registerDialog = true"
-        >注册</el-button
-      >
+      <el-button type="text" @click.native.prevent="addMask">注册</el-button>
       <el-button type="text" @click.native.prevent="openMask"
         >忘记密码</el-button
       >
@@ -337,11 +335,13 @@ export default {
         captcha: [
           { required: true, message: "必须填写验证码", trigger: "change" }
         ],
-        email:[{
-          pattern:/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/,
-          message:'请输入正确邮箱地址',
-          trigger: "blur"
-        }]
+        email: [
+          {
+            pattern: /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/,
+            message: "请输入正确邮箱地址",
+            trigger: "blur"
+          }
+        ]
       },
 
       forgetPwdFormRules: {
@@ -404,16 +404,19 @@ export default {
             .dispatch("LoginByUsername", this.loginForm)
             .then(() => {
               this.loading = false;
-              this.$store.dispatch("GetUserInfo").then(res => {
-                const roles = res.roles;
-                this.$store.dispatch("GenerateRoutes", { roles }).then(() => {
-                  // 根据roles权限生成可访问的路由表
-                  this.$router.addRoutes(this.$store.getters.addRouters); // 动态添加可访问路由表
-                  this.$router.push({ path: this.redirect || "/" });
+              this.$store
+                .dispatch("GetUserInfo")
+                .then(res => {
+                  const roles = res.roles;
+                  this.$store.dispatch("GenerateRoutes", { roles }).then(() => {
+                    // 根据roles权限生成可访问的路由表
+                    this.$router.addRoutes(this.$store.getters.addRouters); // 动态添加可访问路由表
+                    this.$router.push({ path: this.redirect || "/" });
+                  });
+                })
+                .catch(err => {
+                  console.log(err);
                 });
-              }).catch(err=>{
-                console.log(err);
-              });
 
               // this.$router.addRoutes(this.$store.getters.addRouters)
             })
@@ -549,6 +552,11 @@ export default {
       this.registerDialog = false;
       this.forgetPwdDialog = false;
       this.$refs[formName].resetFields();
+    },
+
+    addMask() {
+      this.time = "获取验证码";
+      this.registerDialog = true;
     },
     openMask() {
       this.time2 = "获取验证码";
