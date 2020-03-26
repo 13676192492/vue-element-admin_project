@@ -82,8 +82,8 @@
         size="medium"
         label-width="100px"
       >
-        <el-form-item label="AppId" prop="appId">
-          <el-select v-model="form.appId" filterable placeholder="请选择AppId">
+        <el-form-item label="应用名称" prop="appId">
+          <el-select v-model="form.appId" filterable placeholder="请选择应用" clearable>
             <el-option
               v-for="item in options"
               :key="item.appId"
@@ -98,6 +98,7 @@
             v-model="form.totalDateTime"
             type="date"
             placeholder="请输入统计时间"
+            :picker-options="timeLimit"
           >
           </el-date-picker>
         </el-form-item>
@@ -133,6 +134,11 @@ export default {
           );
         }
       },
+      timeLimit: {
+        disabledDate(time) {
+          return time.getTime() > Date.now()- 1 * 24 * 60 * 60 * 1000;
+        }
+      },
       loading: false,
       params: {
         search: {
@@ -154,7 +160,7 @@ export default {
       },
       rules: {
         appId: [
-          { required: true, message: "必须选择appId", trigger: "change" }
+          { required: true, message: "必须选择应用", trigger: "change" }
         ],
         totalDateTime: [
           { required: true, message: "必须填写统计时间", trigger: "change" }
