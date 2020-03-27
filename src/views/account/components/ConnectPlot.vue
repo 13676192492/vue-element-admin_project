@@ -70,7 +70,7 @@
             @current-change="handleCurrentChange"
     />
 
-    <el-dialog title="太川云社区门口机信息" :visible.sync="dialog" :close-on-click-modal="false" :append-to-body="true" width="50%">
+    <el-dialog title="门口机信息" :visible.sync="dialog" :close-on-click-modal="false" :append-to-body="true" width="50%">
       <el-table
               :data="doorList"
               :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
