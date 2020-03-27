@@ -705,7 +705,9 @@ export default {
     brushInfo() {
       getAccount(this.accountData.id)
         .then(res => {
-          this.accountData = res.data.data;
+          this.getRow(res.data.data);
+          this.getList();
+          this.getAppList();
           this.getRechargeList();
         })
         .catch(err => {
