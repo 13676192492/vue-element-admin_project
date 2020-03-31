@@ -79,7 +79,7 @@
       />
     </div>
 
-    <recharge ref="rechargeChild" v-show="rechargeTable" :type="0" @backRecharge="backRecharge"/>
+    <recharge ref="rechargeChild" v-show="rechargeTable" :type="0" @backRecharge="backRecharge" @getList="getList"/>
 
     <account-list ref="accountChild" v-show="accountTable" @backAccount="backAccount"/>
   </div>

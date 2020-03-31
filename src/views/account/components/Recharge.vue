@@ -69,6 +69,7 @@ export default {
                     accountRecharge(this.rechargeFormData).then(res => {
                         if(res.data.data.code==10000) {
                             if (this.type) this.$emit("brushInfo");
+                            else this.$emit("getList");
                             this.$notify({
                                 title: "成功",
                                 message: "充值成功",
